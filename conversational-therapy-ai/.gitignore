@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env/
+.venv/
+venv/
+
+# macOS
+.DS_Store
+
+# VSCode
+.vscode/
+
+# Node/Frontend
+node_modules/
+dist/
+
+# Environment/Secrets
+# Secrets und Umgebungsvariablen
+.env
+config.py
+config_secret.py

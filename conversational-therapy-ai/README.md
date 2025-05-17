@@ -1,31 +1,31 @@
 # 🧠 Conversational Therapy AI
 
-Ein privates, lokales, sprachbasiertes Therapie-Interface mit Whisper, Ollama & ElevenLabs.
+A private, local, speech-based therapy interface powered by Whisper, Ollama, and ElevenLabs.
 
-## Voraussetzungen (Installation)
+## Prerequisites (Installation)
 
-Folgendes muss auf deinem Computer installiert sein:
+Ensure the following are installed on your computer:
 
 ### 1. Python 3.9+
 
-Installiere Python von https://www.python.org/downloads/
+Download Python from https://www.python.org/downloads/
 
-### 2. pip (Python-Paketmanager)
+### 2. pip (Python Package Manager)
 
-Kommt meist mit Python, sonst: https://pip.pypa.io/en/stable/installation/
+Usually included with Python. If not, install it from https://pip.pypa.io/en/stable/installation/
 
-### 3. Ollama (für lokale LLMs)
+### 3. Ollama (for local LLMs)
 
-Installiere Ollama: https://ollama.com/download
+Install Ollama: https://ollama.com/download
 
-### 3a. Empfohlene Ollama-Modelle für Apple Silicon (M1/M2/M3)
+### 3a. Recommended Ollama Models for Apple Silicon (M1/M2/M3)
 
--   **llama2:7b** – Gute Qualität, läuft flüssig auf MacBook Air M2
--   **phi3:mini** – Sehr schnell, klein, für einfache Aufgaben
--   **mistral:7b** – Gute Balance aus Geschwindigkeit und Qualität
--   **gemma:2b** – Sehr ressourcenschonend
+-   **llama2:7b** – High quality, runs smoothly on MacBook Air M2
+-   **phi3:mini** – Very fast, lightweight, for simple tasks
+-   **mistral:7b** – Good balance of speed and quality
+-   **gemma:2b** – Very resource-efficient
 
-Modelle laden z.B. mit:
+Download models using:
 
 ```bash
 ollama pull llama2:7b
@@ -33,23 +33,23 @@ ollama pull phi3:mini
 ollama pull mistral:7b
 ```
 
-Alle Modelle: https://ollama.com/library
+Explore all models: https://ollama.com/library
 
-### 4. Git (optional, für Quellcodeverwaltung)
+### 4. Git (optional, for source code management)
 
-https://git-scm.com/downloads
+Download Git: https://git-scm.com/downloads
 
-### 5. ElevenLabs API-Key (für TTS, Registrierung nötig)
+### 5. ElevenLabs API Key (for TTS, registration required)
 
-https://elevenlabs.io/
+Register and get your API key: https://elevenlabs.io/
 
-### 6. (Optional) Node.js, falls du Frontend-Tools oder npm-Pakete nutzen willst
+### 6. (Optional) Node.js (for frontend tools or npm packages)
 
-https://nodejs.org/
+Download Node.js: https://nodejs.org/
 
 ---
 
-## Schnellstart
+## Quick Start
 
 ```bash
 cd backend
@@ -60,9 +60,46 @@ ollama serve
 uvicorn server:app --reload
 ```
 
-Frontend: http://localhost:8000
+Access the frontend at: http://localhost:8000
 
-## Architektur
+---
 
--   Mic → Whisper → Ollama → ElevenLabs → Speaker
--   Mood & Pattern Analysis parallel
+## Features
+
+### Backend
+- **Endpoints**:
+  - `/chat`: Processes user input and provides a response using the LLM.
+  - `/transcribe`: Converts audio input to text (Whisper integration).
+  - `/speak`: Converts text to speech (ElevenLabs integration).
+  - `/blobs`: Returns dynamic emotion blob data for visualization.
+
+### Frontend
+- **Dynamic Mode Selection**:
+  - Automatically switches between text and voice modes based on ambient noise levels.
+  - Uses the Web Audio API to analyze microphone input.
+- **Emotion Blobs**:
+  - Visualizes emotions dynamically based on user input.
+  - Adjusts size and color based on emotion severity and type.
+- **Guided Breathing Exercises**:
+  - Provides a step-by-step breathing guide with animations.
+- **Insights and Dashboards**:
+  - Displays emotion timelines and insights for self-reflection.
+
+---
+
+## Architecture
+
+-   Microphone → Whisper → Ollama → ElevenLabs → Speaker
+-   Parallel mood and pattern analysis
+
+---
+
+## Contributing
+
+Feel free to contribute by submitting issues or pull requests. Ensure your code adheres to the project's style and guidelines.
+
+---
+
+## License
+
+This project is licensed under the MIT License.

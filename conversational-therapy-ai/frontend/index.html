@@ -7,12 +7,21 @@
 	</head>
 	<body>
 		<h1>🧠 Conversational Therapy AI</h1>
-		<div id="main-screen">
-			<button id="voiceBtn" class="big-btn">🎤 Voice Chat</button>
-			<button id="textBtn" class="big-btn">📝 Text Chat</button>
-			<button id="dashboardBtn" class="small-btn">
-				📊 Emotion Dashboard
-			</button>
+		<div id="main-screen" class="grid-center">
+			<div id="caption-area">
+				Wie fühlst du dich heute? (Umgebung: ruhig)
+			</div>
+			<div class="main-btn-row">
+				<button id="voiceBtn" class="big-btn">🎤 Voice Chat</button>
+				<button id="textBtn" class="big-btn">📝 Text Chat</button>
+			</div>
+			<div class="main-btn-row">
+				<button id="dashboardBtn" class="small-btn">
+					📊 Emotion Dashboard
+				</button>
+				<button id="settingsBtn" class="icon-btn">⋯</button>
+				<button id="arrowBtn" class="icon-btn">→</button>
+			</div>
 		</div>
 		<div id="chat-screen" class="hidden">
 			<div id="input-area"></div>
@@ -22,8 +31,44 @@
 			<div id="mood-pattern"></div>
 			<button id="backBtn" class="small-btn">Zurück</button>
 		</div>
+		<div id="settings-screen" class="hidden">
+			<h2>Einstellungen</h2>
+			<ul>
+				<li>Therapeut: <span id="therapist-status">Verbunden</span></li>
+				<li>Im Programm seit: <span id="active-since">2021</span></li>
+				<li>
+					<a href="#" id="insurance-link">Krankenkasse verknüpfen</a>
+				</li>
+				<li>
+					<a href="#" id="biometrics-link">Biometrie verbinden</a>
+				</li>
+				<li><a href="#" id="devices-link">Geräteübersicht (NFC)</a></li>
+				<li>
+					<button id="cameraBtn">Kamera/Emotionserkennung</button>
+				</li>
+			</ul>
+			<button id="closeSettingsBtn" class="small-btn">Zurück</button>
+		</div>
+		<div id="biometrics-widget" class="hidden">
+			Herzfrequenz: <span id="hr-value">--</span> bpm
+			<span id="hr-alert"></span>
+		</div>
+		<div id="insight-screen" class="hidden">
+			<h2>AI-Insight Blobs</h2>
+			<div id="insight-blobs"></div>
+			<button id="closeInsightBtn" class="small-btn">Zurück</button>
+		</div>
 		<div id="dashboard-screen" class="hidden">
 			<h2>Emotion Blobs</h2>
+			<div id="blobs"></div>
+			<div id="timeline" class="hidden"></div>
+			<button id="closeDashboardBtn" class="small-btn">Zurück</button>
 		</div>
-	</body>
+		<div id="coping-tool" class="hidden">
+			<h3>Empfohlene Übung</h3>
+			<div id="coping-content"></div>
+			<button id="closeCopingBtn" class="small-btn">Schließen</button>
+		</div>
+	<script src="script.js"></script>
+</body>
 </html>

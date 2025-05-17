@@ -1,7 +1,7 @@
-fastapi
-uvicorn
-requests
-pydantic
-python-multipart
-fastapi[all]
-openai-whisper
+fastapi==0.95.2
+uvicorn==0.22.0
+requests==2.31.0
+pydantic==1.10.7
+python-multipart==0.0.6
+fastapi[all]==0.95.2
+openai-whisper==20230314

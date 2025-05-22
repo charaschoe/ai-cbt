@@ -342,9 +342,172 @@ document.addEventListener("DOMContentLoaded", () => {
 	// Settings
 	settingsBtn.onclick = () => showScreen(settingsScreen);
 
-	document.getElementById("cameraBtn").onclick = () => {
-		alert("Kamera/Emotionserkennung (Platzhalter)");
+	document.getElementById("cameraBtn").onclick = async () => {
+		// Zuerst explizit nach Kamera-Berechtigung fragen, bevor wir die UI erstellen
+		try {
+			console.log("Requesting camera permission...");
+
+			// Wichtig: Navigator-Berechtigung explizit abfragen
+			// Wir fragen zuerst, ob wir die Kamera verwenden dürfen, bevor wir sie öffnen
+			const permissionResult = await navigator.permissions.query({
+				name: "camera",
+			});
+
+			if (permissionResult.state === "denied") {
+				alert(
+					"Kamerazugriff wurde verweigert. Bitte erlauben Sie den Zugriff in Ihren Browsereinstellungen."
+				);
+				return;
+			}
+
+			// Wenn wir hier ankommen, ist die Berechtigung "granted" oder "prompt"
+			// Bei "prompt" wird der Browser die Berechtigungsfrage zeigen
+			const stream = await navigator.mediaDevices.getUserMedia({
+				video: {
+					width: { ideal: 400 },
+					height: { ideal: 300 },
+				},
+				audio: false,
+			});
+
+			console.log("Camera permission granted, creating UI...");
+
+			// Erstelle erst jetzt die Kamera-UI
+			createCameraUI(stream);
+		} catch (error) {
+			console.error("Fehler beim Zugriff auf die Kamera:", error);
+			alert("Kamerazugriff nicht möglich: " + error.message);
+		}
 	};
+
+	// Hilfsfunktion zum Erstellen der Kamera-UI
+	function createCameraUI(stream) {
+		// Erstelle HTML-Elemente für den Kamera-Bereich
+		const cameraContainer = document.createElement("div");
+		cameraContainer.className = "camera-container";
+
+		// Kamera-Elemente
+		cameraContainer.innerHTML = `
+			<div class="camera-header">
+				<h3>Emotionserkennung</h3>
+				<button id="closeCamera" class="icon-btn close-btn">×</button>
+			</div>
+			<div class="camera-content">
+				<video id="camera-video" width="400" height="300" autoplay playsinline></video>
+				<canvas id="camera-canvas" width="400" height="300" style="display: none;"></canvas>
+				<div class="camera-controls">
+					<button id="takePicture" class="small-btn">Foto aufnehmen</button>
+					<div id="emotion-result" class="emotion-result"></div>
+				</div>
+			</div>
+		`;
+
+		// Füge die Kamera-Container zum Body hinzu
+		document.body.appendChild(cameraContainer);
+
+		// Kamera-Stream starten
+		const video = document.getElementById("camera-video");
+		const canvas = document.getElementById("camera-canvas");
+		const emotionResult = document.getElementById("emotion-result");
+
+		// Setze den Stream
+		video.srcObject = stream;
+
+		// Event-Handler für die Buttons
+		document.getElementById("closeCamera").onclick = () => {
+			// Stream beenden
+			if (stream) {
+				const tracks = stream.getTracks();
+				tracks.forEach((track) => track.stop());
+			}
+			// Container entfernen
+			document.body.removeChild(cameraContainer);
+		};
+
+		document.getElementById("takePicture").onclick = async () => {
+			// Foto aufnehmen
+			const context = canvas.getContext("2d");
+			context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+			// Bild als base64 holen
+			const imageDataUrl = canvas.toDataURL("image/jpeg");
+
+			// Lade-Anzeige
+			emotionResult.textContent = "Analysiere...";
+			emotionResult.className = "emotion-result loading";
+
+			try {
+				// Sende Bild an den Server
+				const formData = new FormData();
+				// Konvertiere base64 zu Blob
+				const blob = await (await fetch(imageDataUrl)).blob();
+				formData.append("image", blob, "face.jpg");
+
+				const response = await fetch(
+					"http://localhost:8080/analyze-face",
+					{
+						method: "POST",
+						body: formData,
+					}
+				);
+
+				if (!response.ok) {
+					throw new Error(`Server antwortete mit ${response.status}`);
+				}
+
+				const result = await response.json();
+
+				// Zeige das Ergebnis an
+				emotionResult.textContent = `Erkannte Emotion: ${result.emotion}`;
+				emotionResult.className = "emotion-result";
+
+				// Optional: Füge als Nachricht zum Chat hinzu
+				if (messagesContainer) {
+					addMessage(
+						`Erkannte Emotion durch Gesichtsanalyse: ${result.emotion}`,
+						false
+					);
+					moodPattern.textContent = `Stimmung: ${result.emotion}`;
+				}
+
+				// Aktualisiere Feedback-Blob, falls im Chat-Modus
+				if (feedbackBlob) {
+					feedbackBlob.classList.remove("hidden");
+
+					// Farbe basierend auf der Emotion
+					let backgroundColor = "#a3a3a3"; // default
+					if (
+						result.emotion === "happy" ||
+						result.emotion === "freudig"
+					)
+						backgroundColor = "#22c55e";
+					else if (
+						result.emotion === "sad" ||
+						result.emotion === "traurig"
+					)
+						backgroundColor = "#ef4444";
+					else if (
+						result.emotion === "angry" ||
+						result.emotion === "wütend"
+					)
+						backgroundColor = "#b91c1c";
+					else if (result.emotion === "neutral")
+						backgroundColor = "#6366f1";
+					else if (
+						result.emotion === "surprise" ||
+						result.emotion === "überrascht"
+					)
+						backgroundColor = "#f97316";
+
+					feedbackBlob.style.background = backgroundColor;
+				}
+			} catch (error) {
+				console.error("Fehler bei der Emotionsanalyse:", error);
+				emotionResult.textContent = "Fehler: " + error.message;
+				emotionResult.className = "emotion-result error";
+			}
+		};
+	}
 
 	document.getElementById("insurance-link").onclick = (e) => {
 		e.preventDefault();

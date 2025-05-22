@@ -1,7 +1,10 @@
 fastapi==0.95.2
 uvicorn==0.22.0
-requests==2.32.2
-pydantic==1.10.13
-python-multipart==0.0.18
-fastapi[all]==0.95.2
-openai-whisper==20230314
+python-multipart==0.0.6
+transformers==4.33.2
+torch==2.0.1
+pydub==0.25.1
+SpeechRecognition==3.10.0
+whisper==1.0
+fer==22.9
+opencv-python==4.8.0.76

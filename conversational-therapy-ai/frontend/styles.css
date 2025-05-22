@@ -4,13 +4,27 @@ html {
 	height: 100%;
 	margin: 0;
 	padding: 0;
+	overflow-x: hidden; /* Verhindert horizontales Scrollen */
 }
 body {
 	font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
 	background: #f0f2f5;
 	color: #333;
 	line-height: 1.6;
+	display: flex;
+	flex-direction: column;
+	align-items: center; /* Zentriert den Inhalt horizontal */
 }
+
+/* Hauptheader-Stil */
+body > h1 {
+	text-align: center;
+	margin-top: 1.5rem;
+	margin-bottom: 1rem;
+	width: 100%;
+	font-size: 1.75rem;
+}
+
 .grid-center {
 	display: grid;
 	place-items: center;
@@ -30,25 +44,32 @@ body {
 	flex-direction: column;
 	justify-content: space-between;
 	gap: 2rem;
+	width: 90%;
 	max-width: 500px;
-	padding: 3rem 1.5rem;
-	margin: 2rem auto;
+	padding: 2rem 1.5rem;
+	margin: 1rem auto;
 	border-radius: 2rem;
 	background: #fff;
 	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 	position: relative;
+	overflow: hidden; /* Verhindert Überlauf */
+	height: auto;
+	min-height: 70vh;
 }
 #dashboard-screen,
 #settings-screen,
 #insight-screen,
 #coping-tool {
+	width: 90%;
 	max-width: 500px;
-	margin: 2em auto;
-	padding: 2em 1em;
-	border-radius: 2em;
+	margin: 1rem auto;
+	padding: 2rem 1.5rem;
+	border-radius: 2rem;
 	background: #fff;
 	box-shadow: 0 2px 16px #0001;
 	position: relative;
+	overflow: auto; /* Scollbar bei Bedarf */
+	max-height: 80vh; /* Begrenzte Höhe */
 }
 .welcome-header {
 	text-align: center;
@@ -62,6 +83,7 @@ body {
 	-webkit-background-clip: text;
 	background-clip: text;
 	-webkit-text-fill-color: transparent;
+	text-align: center;
 }
 .app-subtitle {
 	margin-top: 0.5rem;
@@ -245,15 +267,17 @@ body {
 
 /* Modern Chat Interface */
 .chat-container {
-	display: grid;
-	grid-template-rows: auto 1fr auto auto;
-	height: calc(100vh - 2rem);
-	max-width: 800px;
-	margin: 0 auto;
-	background: #fff;
-	border-radius: 1.5rem;
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+	display: flex;
+	flex-direction: column;
+	height: 80vh;
+	max-height: 700px;
+	width: 90%;
+	max-width: 500px;
+	margin: 1rem auto;
+	border-radius: 2rem;
 	overflow: hidden;
+	background: #fff;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
 .chat-header {
@@ -273,58 +297,9 @@ body {
 }
 
 #messages-container {
-	display: flex;
-	flex-direction: column;
-	padding: 1.5rem;
+	flex: 1;
 	overflow-y: auto;
-	background-color: #f8fafc;
-	gap: 1rem;
-}
-
-.message {
-	max-width: 80%;
-	padding: 0.75rem 1rem;
-	border-radius: 1rem;
-	margin-bottom: 0.5rem;
-	line-height: 1.5;
-	animation: fade-in 0.3s ease-in-out;
-}
-
-@keyframes fade-in {
-	from {
-		opacity: 0;
-		transform: translateY(10px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
-}
-
-.user-message {
-	align-self: flex-end;
-	background-color: #6366f1;
-	color: white;
-	border-radius: 1rem 1rem 0 1rem;
-	box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
-}
-
-.bot-message {
-	align-self: flex-start;
-	background-color: white;
-	color: #333;
-	border-radius: 1rem 1rem 1rem 0;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.chat-input-container {
-	display: grid;
-	grid-template-columns: 1fr auto;
-	align-items: center;
-	gap: 0.75rem;
-	padding: 1rem 1.5rem;
-	background: white;
-	border-top: 1px solid #e2e8f0;
+	padding: 1rem;
 }
 
 /* Modern Dashboard Styles */
@@ -443,4 +418,120 @@ body {
 	stroke: #cbd5e1;
 	width: 4rem;
 	height: 4rem;
+}
+
+/* Kamera & Emotionserkennungs-Styles */
+.camera-container {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 90%;
+	max-width: 450px;
+	background: #fff;
+	border-radius: 1.5rem;
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+	z-index: 1000;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	max-height: 90vh;
+}
+
+.camera-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1rem 1.5rem;
+	background: #f1f5f9;
+	border-bottom: 1px solid #e2e8f0;
+}
+
+.camera-header h3 {
+	margin: 0;
+	color: #334155;
+	font-size: 1.25rem;
+	font-weight: 600;
+}
+
+.camera-content {
+	padding: 1.5rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	overflow-y: auto;
+}
+
+#camera-video {
+	width: 100%;
+	border-radius: 1rem;
+	background-color: #f1f5f9;
+	margin-bottom: 1.5rem;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.camera-controls {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+	width: 100%;
+}
+
+#takePicture {
+	background-color: #6366f1;
+	color: white;
+	padding: 0.75rem 1.5rem;
+	border-radius: 0.75rem;
+	border: none;
+	font-size: 1rem;
+	cursor: pointer;
+	transition: background-color 0.2s;
+	width: 100%;
+	font-weight: 500;
+}
+
+#takePicture:hover {
+	background-color: #4f46e5;
+}
+
+#closeCamera {
+	background-color: transparent;
+	border: none;
+	font-size: 1.5rem;
+	cursor: pointer;
+	color: #64748b;
+	height: 2rem;
+	width: 2rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+}
+
+#closeCamera:hover {
+	color: #334155;
+	background-color: rgba(0, 0, 0, 0.05);
+}
+
+.emotion-result {
+	margin-top: 1rem;
+	padding: 0.75rem 1.25rem;
+	border-radius: 0.75rem;
+	background-color: #f8fafc;
+	font-size: 1rem;
+	color: #334155;
+	text-align: center;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.emotion-result.loading {
+	background-color: #fef3c7;
+	color: #92400e;
+}
+
+.emotion-result.error {
+	background-color: #fee2e2;
+	color: #b91c1c;
 }

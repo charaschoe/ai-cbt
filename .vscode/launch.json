@@ -1,0 +1,57 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Backend: Python FastAPI",
+			"type": "python",
+			"request": "launch",
+			"program": "${workspaceFolder}/conversational-therapy-ai/backend/server.py",
+			"console": "integratedTerminal",
+			"justMyCode": true,
+			"env": {
+				"PYTHONPATH": "${workspaceFolder}/conversational-therapy-ai/backend"
+			},
+			"cwd": "${workspaceFolder}/conversational-therapy-ai/backend"
+		},
+		{
+			"name": "Frontend: Live Server",
+			"type": "node",
+			"request": "launch",
+			"runtimeExecutable": "npx",
+			"runtimeArgs": ["live-server", "--port=5500", "--no-browser"],
+			"cwd": "${workspaceFolder}/conversational-therapy-ai/frontend",
+			"serverReadyAction": {
+				"pattern": "Server running at http://127.0.0.1:([0-9]+)",
+				"uriFormat": "http://localhost:%s",
+				"action": "openExternally"
+			}
+		},
+		{
+			"name": "Vollständige Anwendung starten",
+			"type": "pwa-node",
+			"request": "launch",
+			"dependsOn": ["Backend: Python FastAPI", "Frontend: Live Server"],
+			"preLaunchTask": "installDependencies",
+			"presentation": {
+				"hidden": false,
+				"group": "start",
+				"order": 1
+			},
+			"skipFiles": ["<node_internals>/**"]
+		}
+	],
+	"compounds": [
+		{
+			"name": "Backend + Frontend",
+			"configurations": [
+				"Backend: Python FastAPI",
+				"Frontend: Live Server"
+			],
+			"presentation": {
+				"hidden": false,
+				"group": "serve",
+				"order": 1
+			}
+		}
+	]
+}

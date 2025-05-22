@@ -1,0 +1,58 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "installDependencies",
+			"type": "shell",
+			"command": "cd ${workspaceFolder}/conversational-therapy-ai/backend && pip install -r requirements.txt",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "Server starten: Backend",
+			"type": "shell",
+			"command": "cd ${workspaceFolder}/conversational-therapy-ai/backend && python server.py",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "Server starten: Frontend",
+			"type": "shell",
+			"command": "cd ${workspaceFolder}/conversational-therapy-ai/frontend && npx live-server --port=5500",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "Server stoppen",
+			"type": "shell",
+			"command": "echo 'Beende Server...' && pkill -f 'python server.py' || echo 'Backend gestoppt' && pkill -f 'live-server' || echo 'Frontend gestoppt'",
+			"windows": {
+				"command": "echo 'Beende Server...' && taskkill /f /im python.exe /fi \"WINDOWTITLE eq server.py\" || echo 'Backend gestoppt' && taskkill /f /im node.exe /fi \"WINDOWTITLE eq live-server\" || echo 'Frontend gestoppt'"
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "Anwendung starten",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"installDependencies",
+				"Server starten: Backend",
+				"Server starten: Frontend"
+			],
+			"problemMatcher": []
+		}
+	]
+}

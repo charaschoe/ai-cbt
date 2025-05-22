@@ -5,9 +5,12 @@ from fastapi import FastAPI, UploadFile, File, Form, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 import uvicorn
 import json
+import os
+import tempfile
+import random
 
 # Lokale Module importieren
 from llm import chat_with_llm
@@ -162,6 +165,65 @@ async def get_blobs_data():
     # Ensure emotion_tracker is passed to calculate_blob_data
     blob_data = calculate_blob_data(emotion_tracker)
     return blob_data
+
+@app.post("/analyze-face")
+async def analyze_face(image: UploadFile = File(...)):
+    """Analysiert ein Bild und erkennt die Emotion des Gesichts."""
+    try:
+        # Speichere das hochgeladene Bild temporär
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as temp_file:
+            temp_file_path = temp_file.name
+            content = await image.read()
+            temp_file.write(content)
+        
+        # In einer realen Anwendung würden wir hier OpenCV verwenden, um:
+        # 1. Das Gesicht im Bild zu erkennen (cv2.CascadeClassifier)
+        # 2. Das Gesicht für die Emotionsanalyse zu extrahieren
+        # 3. Ein trainiertes Modell zu verwenden, um die Emotion zu bestimmen
+        
+        # Temporäre Datei löschen
+        os.unlink(temp_file_path)
+        
+        # Simulierte Emotionserkennung für Demo-Zwecke 
+        # In einer echten Anwendung würde hier ein ML-Modell verwendet werden
+        emotions = {
+            "freudig": random.uniform(0.0, 0.6),
+            "traurig": random.uniform(0.0, 0.6),
+            "wütend": random.uniform(0.0, 0.6),
+            "überrascht": random.uniform(0.0, 0.6),
+            "neutral": random.uniform(0.0, 0.6)
+        }
+        
+        # Wähle eine Emotion zufällig aus und verstärke sie
+        chosen_emotion = random.choice(list(emotions.keys()))
+        emotions[chosen_emotion] += 0.4  # Erhöhe den Wert der gewählten Emotion
+        
+        # Normalisiere die Werte
+        max_value = max(emotions.values())
+        if max_value > 0:
+            for emotion in emotions:
+                emotions[emotion] = emotions[emotion] / max_value
+                
+        # Die Emotion mit dem höchsten Wert ist das Ergebnis
+        max_emotion = max(emotions.items(), key=lambda x: x[1])[0]
+        confidence = emotions[max_emotion]
+        
+        # Aktualisiere Emotionstracker im Backend
+        update_emotion_tracker(emotion_tracker, f"Gesichtserkennung: {max_emotion}", max_emotion)
+        
+        return {
+            "success": True,
+            "emotion": max_emotion,
+            "confidence": round(confidence, 2),
+            "emotions": {k: round(v, 2) for k, v in emotions.items()}
+        }
+        
+    except Exception as e:
+        print(f"Fehler bei der Gesichtserkennung: {str(e)}")
+        return JSONResponse(
+            status_code=500,
+            content={"success": False, "error": str(e)},
+        )
 
 # Hauptfunktion zum Starten des Servers
 if __name__ == "__main__":

@@ -2,7 +2,7 @@
 # ElevenLabs TTS Integration
 
 import requests
-from .config_secret import ELEVENLABS_API_KEY
+from config_secret import ELEVENLABS_API_KEY
 
 def synthesize_speech(text: str) -> str:
     """Sendet Text an ElevenLabs API, gibt URL zum Audio zurück (Dummy)."""

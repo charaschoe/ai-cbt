@@ -2,7 +2,7 @@
 // Frontend-Logik für Conversational Therapy AI
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("DOM fully loaded and parsed.");
+	console.log("DOM fully loaded and parsed.");
 	const mainScreen = document.getElementById("main-screen");
 	const chatScreen = document.getElementById("chat-screen");
 	const dashboardScreen = document.getElementById("dashboard-screen");
@@ -36,29 +36,9 @@ document.addEventListener("DOMContentLoaded", () => {
 	const captionArea = document.getElementById("caption-area");
 
 	let currentMode = null;
-	let entries = [
-		{
-			emotion: "Grief",
-			text: "Vermisse meine Mutter.",
-			mood: "negativ",
-			date: "2025-05-16",
-		},
-		{
-			emotion: "Joy",
-			text: "Schöner Spaziergang.",
-			mood: "positiv",
-			date: "2025-05-15",
-		},
-		{
-			emotion: "Anxiety",
-			text: "Zu viele Mails.",
-			mood: "negativ",
-			date: "2025-05-14",
-		},
-	];
 
 	function showScreen(screen) {
-  console.log("Switching to screen:", screen.id);
+		console.log("Switching to screen:", screen.id);
 		mainScreen.classList.add("hidden");
 		chatScreen.classList.add("hidden");
 		dashboardScreen.classList.add("hidden");
@@ -68,15 +48,39 @@ document.addEventListener("DOMContentLoaded", () => {
 		screen.classList.remove("hidden");
 	}
 
+	// Nachrichten-Container referenz
+	const messagesContainer = document.getElementById("messages-container");
+
+	// Funktion zum Hinzufügen einer Chat-Nachricht
+	function addMessage(text, isUser = false) {
+		const message = document.createElement("div");
+		message.className = isUser
+			? "message user-message"
+			: "message bot-message";
+		message.textContent = text;
+		messagesContainer.appendChild(message);
+		// Automatisch zum Ende scrollen
+		messagesContainer.scrollTop = messagesContainer.scrollHeight;
+	}
+
+	// Willkommensnachricht hinzufügen
+	function addWelcomeMessage() {
+		messagesContainer.innerHTML = ""; // Löscht vorherige Nachrichten
+		addMessage(
+			"Hallo! Ich bin dein CBT-Therapeut. Wie geht es dir heute?",
+			false
+		);
+	}
+
 	// Voice Chat: Aufnahme und Transkription (Platzhalter mit Whisper-Integration)
 	voiceBtn.onclick = async () => {
 		currentMode = "voice";
 		inputArea.innerHTML =
 			'<div class="mic-placeholder">🎤<br><small>Sprich jetzt und klicke auf Senden</small></div>';
-		responseDiv.textContent = "";
 		moodPattern.textContent = "";
 		feedbackBlob.classList.add("hidden");
 		showScreen(chatScreen);
+		addWelcomeMessage();
 		// Optional: Automatisch Aufnahme starten (Web Audio API)
 	};
 
@@ -85,10 +89,16 @@ document.addEventListener("DOMContentLoaded", () => {
 		currentMode = "text";
 		inputArea.innerHTML =
 			'<input type="text" id="userInput" placeholder="Deine Nachricht...">';
-		responseDiv.textContent = "";
 		moodPattern.textContent = "";
 		feedbackBlob.classList.add("hidden");
 		showScreen(chatScreen);
+		addWelcomeMessage();
+
+		// Focus auf das Eingabefeld setzen
+		setTimeout(() => {
+			const userInput = document.getElementById("userInput");
+			if (userInput) userInput.focus();
+		}, 100);
 	};
 
 	// Senden-Button: Text oder Audio an Backend schicken
@@ -97,8 +107,14 @@ document.addEventListener("DOMContentLoaded", () => {
 		feedbackBlob.textContent = "⏳";
 		let text = "";
 		if (currentMode === "text") {
-			const userInput = document.getElementById("userInput").value;
-text = DOMPurify.sanitize(userInput);
+			const userInput = document.getElementById("userInput");
+			if (!userInput) {
+				responseDiv.textContent = "Fehler: Eingabefeld nicht gefunden";
+				feedbackBlob.textContent = "❌";
+				feedbackBlob.style.background = "#f88";
+				return;
+			}
+			text = userInput.value.trim();
 		} else if (currentMode === "voice") {
 			// Simuliert: In echt hier Audio aufnehmen und an /transcribe schicken
 			// Hier: Prompt für Datei-Upload (Platzhalter)
@@ -112,7 +128,7 @@ text = DOMPurify.sanitize(userInput);
 				formData.append("file", file);
 				try {
 					const res = await fetch(
-						"http://localhost:8000/transcribe",
+						"http://localhost:8080/transcribe",
 						{
 							method: "POST",
 							body: formData,
@@ -123,9 +139,9 @@ text = DOMPurify.sanitize(userInput);
 					// Automatisch an Chat schicken
 					await sendToChat(text);
 				} catch (e) {
-					responseDiv.textContent = "Fehler bei Transkription: " + e;
+					addMessage("Fehler bei Transkription: " + e, false);
 					feedbackBlob.textContent = "❌";
-					feedbackBlob.style.background = "#f88";
+					feedbackBlob.style.background = "#ef4444"; // red-500
 				}
 			};
 			fileInput.click();
@@ -135,48 +151,78 @@ text = DOMPurify.sanitize(userInput);
 	};
 
 	async function sendToChat(text) {
-		try {
-			const res = await fetch("http://localhost:8000/chat", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ text }),
-			});
-			const data = await res.json();
-			responseDiv.textContent = data.response;
-			moodPattern.textContent = `Stimmung: ${
-				data.mood
-			} | Muster: ${data.patterns.join(", ")}`;
-			feedbackBlob.textContent = "✅";
-			feedbackBlob.style.background =
-				data.mood === "positiv"
-					? "#8f8"
-					: data.mood === "negativ"
-					? "#f88"
-					: "#ff8";
-			// Nach kurzer Zeit Coping-Tool vorschlagen
-			setTimeout(() => {
-copingContent.innerHTML =
-"<b>Atemübung:</b> 5 tiefe Atemzüge.<br><button id='startBreathingBtn'>Starten</button>";
+		console.log("Sending text to chat:", text);
 
-document.getElementById("startBreathingBtn").onclick = () => {
-  let breathCount = 5;
-  copingContent.innerHTML = "<b>Einatmen...</b>";
-  const interval = setInterval(() => {
-    if (breathCount === 0) {
-      clearInterval(interval);
-      copingContent.innerHTML = "<b>Übung abgeschlossen! Gut gemacht!</b>";
-    } else {
-      copingContent.innerHTML = breathCount % 2 === 0 ? "<b>Einatmen...</b>" : "<b>Ausatmen...</b>";
-      breathCount--;
-    }
-  }, 3000); // 3 seconds for each breath phase
-};
-				showScreen(copingTool);
-			}, 1200);
-		} catch (e) {
-			responseDiv.textContent = "Fehler: " + e;
+		if (!text || text.trim() === "") {
+			addMessage("Bitte gib eine Nachricht ein.", false);
 			feedbackBlob.textContent = "❌";
 			feedbackBlob.style.background = "#f88";
+			return;
+		}
+
+		// Benutzer-Nachricht zum Chat hinzufügen
+		addMessage(text, true);
+
+		// Feedback-Blob zeigt Ladezustand
+		feedbackBlob.classList.remove("hidden");
+		feedbackBlob.textContent = "";
+		feedbackBlob.style.background = "#fbbf24"; // Amber loading color
+
+		try {
+			const res = await fetch("http://localhost:8080/chat", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ text: text.trim() }),
+			});
+
+			console.log("Response status:", res.status);
+
+			if (!res.ok) {
+				throw new Error(`HTTP Error: ${res.status}`);
+			}
+
+			const data = await res.json();
+			console.log("Response data:", data);
+
+			// Bot-Antwort zum Chat hinzufügen
+			addMessage(data.response, false);
+
+			// Stimmungsanzeige aktualisieren
+			const patterns = Array.isArray(data.patterns)
+				? data.patterns.join(", ")
+				: "keine";
+			moodPattern.textContent = `Stimmung: ${data.mood} | Muster: ${patterns}`;
+			feedbackBlob.textContent = "";
+
+			// Erweiterte Stimmungsfarben
+			let backgroundColor = "#a3a3a3"; // default neutral (gray-400)
+			if (data.mood === "positiv")
+				backgroundColor = "#22c55e"; // green-500
+			else if (data.mood === "negativ")
+				backgroundColor = "#ef4444"; // red-500
+			else if (data.mood === "krise")
+				backgroundColor = "#b91c1c"; // red-700
+			else if (data.mood === "gemischt") backgroundColor = "#f97316"; // orange-500
+
+			feedbackBlob.style.background = backgroundColor;
+
+			// Eingabefeld leeren nach erfolgreichem Senden
+			if (currentMode === "text") {
+				const userInput = document.getElementById("userInput");
+				if (userInput) {
+					userInput.value = "";
+					userInput.focus();
+				}
+			}
+		} catch (e) {
+			console.error("Chat error:", e);
+			addMessage(
+				"Verbindungsfehler. Bitte versuche es erneut. Details: " +
+					e.message,
+				false
+			);
+			feedbackBlob.textContent = "❌";
+			feedbackBlob.style.background = "#ef4444"; // red-500
 		}
 	}
 
@@ -187,49 +233,96 @@ document.getElementById("startBreathingBtn").onclick = () => {
 	closeInsightBtn.onclick = () => showScreen(mainScreen);
 
 	dashboardBtn.onclick = async () => {
-  try {
-    const res = await fetch("http://localhost:8000/blobs");
-    const blobData = await res.json();
-    blobsDiv.innerHTML = "";
-    Object.keys(blobData).forEach((emotion) => {
-      const blob = document.createElement("div");
-      blob.className = "emotion-blob";
-      blob.textContent = emotion;
-      blob.style.width = `${blobData[emotion].size * 2}px`;
-      blob.style.height = `${blobData[emotion].size * 2}px`;
-      blob.style.opacity = blobData[emotion].transparency;
-      blob.style.background = emotion === "Joy"
-        ? "linear-gradient(135deg, #a8ff78, #78ffd6)"
-        : "linear-gradient(135deg, #ff9a9e, #fad0c4)";
-      blob.onclick = () => showTimeline(emotion);
-      blobsDiv.appendChild(blob);
-    });
-  } catch (e) {
-    blobsDiv.innerHTML = "<p>Error loading blobs.</p>";
-  }
-		blobsDiv.innerHTML = "";
-		const emotions = {};
-		entries.forEach((e) => {
-			if (!emotions[e.emotion])
-				emotions[e.emotion] = { count: 0, mood: e.mood };
-			emotions[e.emotion].count++;
-		});
-		Object.keys(emotions).forEach((em) => {
-			const blob = document.createElement("div");
-			blob.className = "emotion-blob";
-			blob.textContent = em;
-			blob.style.width = 60 + emotions[em].count * 20 + "px";
-			blob.style.height = 60 + emotions[em].count * 20 + "px";
-			blob.style.background =
-				emotions[em].mood === "positiv"
-					? "#8f8"
-					: emotions[em].mood === "negativ"
-					? "#f88"
-					: "#ff8";
-			blob.onclick = () => showTimeline(em);
-			blobsDiv.appendChild(blob);
-		});
-		timelineDiv.classList.add("hidden");
+		try {
+			const res = await fetch("http://localhost:8080/blobs");
+			if (!res.ok) {
+				throw new Error(`HTTP Error: ${res.status}`);
+			}
+			const blobData = await res.json();
+			console.log("Fetched blob data:", blobData); // Debugging
+			blobsDiv.innerHTML = ""; // Clear previous blobs
+
+			if (Object.keys(blobData).length === 0) {
+				blobsDiv.innerHTML =
+					'<div class="empty-state"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg><p>Noch keine Emotionen zum Anzeigen vorhanden.<br/>Beginne ein Gespräch!</p></div>';
+			} else {
+				// Sortiere Themen nach Größe (und damit Häufigkeit)
+				const sortedThemes = Object.keys(blobData).sort(
+					(a, b) => blobData[b].size - blobData[a].size
+				);
+
+				sortedThemes.forEach((theme) => {
+					const data = blobData[theme];
+					const blob = document.createElement("div");
+					blob.className = "emotion-blob";
+
+					// Innere Struktur für besseres Styling
+					const innerContent = document.createElement("span");
+					innerContent.className = "blob-text";
+					innerContent.textContent = theme;
+					blob.appendChild(innerContent);
+
+					// Größe basierend auf 'size'
+					const size = Math.max(60, Math.min(data.size * 20, 180)); // Skalierung und Min/Max-Größe
+					blob.style.width = `${size}px`;
+					blob.style.height = `${size}px`;
+
+					// Transparenz basierend auf 'transparency'
+					blob.style.opacity = Math.max(0.6, data.transparency); // Mindestopazität für Lesbarkeit
+
+					// Modernes Farbschema mit Gradient erstellen
+					if (data.color) {
+						const colorBase = data.color;
+						// Hellere Variante des Farbtons für den Gradienten berechnen
+						const lighterColor =
+							colorBase
+								.replace(/^#/, "")
+								.match(/.{2}/g)
+								?.map((c) => {
+									const num = parseInt(c, 16);
+									const lighter = Math.min(255, num + 40)
+										.toString(16)
+										.padStart(2, "0");
+									return lighter;
+								})
+								.join("") || "ffffff";
+
+						blob.style.background = `linear-gradient(135deg, ${data.color}, #${lighterColor})`;
+						blob.style.boxShadow = `0 8px 16px ${data.color}33`; // Leichter Schatten mit 20% Opazität
+					}
+
+					// Modernes Animation beim Hovern
+					blob.style.transition = "all 0.3s ease-in-out";
+
+					// Tooltip für Details
+					blob.title = `Thema: ${theme}\nHäufigkeit: ${
+						data.frequency
+					}\nIntensität: ${data.intensity.toFixed(2)}`;
+
+					// Optional: Klick-Event für Details
+					blob.onclick = () => {
+						// Pulsieren-Animation beim Klick
+						blob.style.transform = "scale(1.05)";
+						setTimeout(() => {
+							blob.style.transform = "scale(1)";
+						}, 300);
+
+						// Hier könnte in Zukunft eine detailliertere Ansicht angezeigt werden
+						alert(
+							`Thema: ${theme}\nHäufigkeit: ${
+								data.frequency
+							}\nIntensität: ${data.intensity.toFixed(2)}`
+						);
+					};
+
+					blobsDiv.appendChild(blob);
+				});
+			}
+		} catch (e) {
+			console.error("Error loading blobs:", e);
+			blobsDiv.innerHTML = `<p>Fehler beim Laden der Emotions-Bubbles: ${e.message}</p>`;
+		}
+		// timelineDiv.classList.add("hidden"); // Timeline vorerst nicht anzeigen
 		showScreen(dashboardScreen);
 	};
 
@@ -272,43 +365,55 @@ document.getElementById("startBreathingBtn").onclick = () => {
 	};
 
 	// Simulierte dynamische Caption (z.B. Umgebungsgeräusch)
-let audioContext;
-let analyser;
-let dataArray;
+	let audioContext;
+	let analyser;
+	let dataArray;
 
-async function startNoiseDetection() {
-  try {
-    if (confirm("This application uses your microphone to detect ambient noise levels and recommend the best interaction mode (text or voice). Do you want to allow microphone access?")) {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const source = audioContext.createMediaStreamSource(stream);
-    analyser = audioContext.createAnalyser();
-    analyser.fftSize = 256;
-    const bufferLength = analyser.frequencyBinCount;
-    dataArray = new Uint8Array(bufferLength);
-    source.connect(analyser);
+	async function startNoiseDetection() {
+		try {
+			if (
+				confirm(
+					"This application uses your microphone to detect ambient noise levels and recommend the best interaction mode (text or voice). Do you want to allow microphone access?"
+				)
+			) {
+				const stream = await navigator.mediaDevices.getUserMedia({
+					audio: true,
+				});
+				audioContext = new (window.AudioContext ||
+					window.webkitAudioContext)();
+				const source = audioContext.createMediaStreamSource(stream);
+				analyser = audioContext.createAnalyser();
+				analyser.fftSize = 256;
+				const bufferLength = analyser.frequencyBinCount;
+				dataArray = new Uint8Array(bufferLength);
+				source.connect(analyser);
 
-    setInterval(() => {
-      analyser.getByteFrequencyData(dataArray);
-      const avgVolume = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
+				setInterval(() => {
+					analyser.getByteFrequencyData(dataArray);
+					const avgVolume =
+						dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
 
-      if (avgVolume > 60) {
-        captionArea.textContent = "Environment: loud – Text mode recommended.";
-      } else {
-        captionArea.textContent = "Environment: quiet – How are you feeling today?";
-      }
-    }, 2000);
-    } else {
-        captionArea.textContent = "Microphone access denied. Defaulting to text mode.";
-        return;
-    }
-} catch (err) {
-    console.error("Error accessing microphone:", err);
-    captionArea.textContent = "Microphone access denied. Defaulting to text mode.";
-  }
-}
+					if (avgVolume > 60) {
+						captionArea.textContent =
+							"Environment: loud – Text mode recommended.";
+					} else {
+						captionArea.textContent =
+							"Environment: quiet – How are you feeling today?";
+					}
+				}, 2000);
+			} else {
+				captionArea.textContent =
+					"Microphone access denied. Defaulting to text mode.";
+				return;
+			}
+		} catch (err) {
+			console.error("Error accessing microphone:", err);
+			captionArea.textContent =
+				"Microphone access denied. Defaulting to text mode.";
+		}
+	}
 
-startNoiseDetection();
+	startNoiseDetection();
 
 	// Swipe-Events für Insights und Biometrics
 	let touchStartX = null;

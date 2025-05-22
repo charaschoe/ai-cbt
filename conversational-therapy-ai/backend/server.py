@@ -1,69 +1,168 @@
 # server.py
-# FastAPI-Server für Conversational Therapy AI
+# FastAPI Server für Conversational Therapy AI
 
-from fastapi import FastAPI, UploadFile, File, HTTPException
-from fastapi.responses import JSONResponse
-from fastapi.exceptions import RequestValidationError
+from fastapi import FastAPI, UploadFile, File, Form, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from .llm import chat_with_llm
-from .speech_to_text import transcribe_audio
-from .text_to_speech import synthesize_speech
-from .analysis import analyze_mood, find_thought_patterns, calculate_blob_data
+from typing import Optional, Dict, Any
+import uvicorn
+import json
 
-app = FastAPI()
+# Lokale Module importieren
+from llm import chat_with_llm
+from analysis import analyze_mood, find_thought_patterns, calculate_blob_data, update_emotion_tracker, extract_themes
+from speech_to_text import transcribe_audio
+from text_to_speech import synthesize_speech
+from config_secret import ELEVENLABS_API_KEY, CHAT_KITEGG_API_KEY
 
+app = FastAPI(title="Conversational Therapy AI")
+
+# CORS-Einstellungen für Frontend-Zugriffe
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8000"],  # Replace with trusted domains
+    allow_origins=["*"],  # Für Produktion einschränken!
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-@app.exception_handler(Exception)
-async def general_exception_handler(request, exc):
-    return JSONResponse(
-        status_code=500,
-        content={"message": "An unexpected error occurred. Please try again later."},
-    )
-
-@app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request, exc):
-    return JSONResponse(
-        status_code=422,
-        content={"message": "Invalid input. Please check your data and try again."},
-    )
-
-def root():
-    return {"message": "Conversational Therapy AI Backend läuft!"}
-
+# Datenmodelle
 class ChatRequest(BaseModel):
     text: str
 
-@app.post("/chat")
-def chat(req: ChatRequest):
-    llm_response = chat_with_llm(req.text)
-    mood = analyze_mood(req.text)
-    patterns = find_thought_patterns(req.text)
-    return {"response": llm_response, "mood": mood, "patterns": patterns}
+class ChatResponse(BaseModel):
+    response: str
+    mood: str
+    patterns: list
+
+# Globaler Chat-Verlauf mit CBT-Therapie-System-Prompt
+chat_history = [
+    {
+        "role": "system", 
+        "content": """Du bist ein professioneller CBT-Therapeut (Kognitive Verhaltenstherapie). Führe ein therapeutisches Gespräch nach CBT-Prinzipien.
+
+CBT-GESPRÄCHSFÜHRUNG:
+- Stelle offene, explorative Fragen (Was, Wie, Wann statt Warum)
+- Erkunde Gedanken, Gefühle und Verhaltensweisen systematisch
+- Verwende Sokratische Fragentechnik
+- Identifiziere kognitive Verzerrungen behutsam
+- Hilf beim Erkennen von Gedanken-Gefühls-Verhaltens-Zyklen
+- Arbeite mit konkreten Situationen und Beispielen
+
+THERAPEUTISCHE HALTUNG:
+- Empathisch und nicht-wertend
+- Kollaborativ (wir arbeiten zusammen)
+- Strukturiert aber warm
+- Validiere Gefühle, hinterfrage Gedanken
+- Fokus auf Hier und Jetzt
+
+TECHNIKEN:
+- Gedankenprotokoll-Ansätze
+- Verhaltensexperimente vorschlagen
+- Realitätstests durchführen
+- Alternative Perspektiven entwickeln
+- Konkrete Beispiele erfragen
+
+SAFEGUARDS:
+- Bei Krisen: Sofort professionelle Hilfe empfehlen
+- Keine Diagnosen stellen
+- Bei Überforderung: Tempo drosseln
+
+Führe jetzt ein CBT-basiertes therapeutisches Gespräch auf Deutsch. Stelle 1-2 gezielte Fragen pro Antwort."""
+    }
+]
+
+# Globaler Emotionstracker für dynamische Bubbles
+emotion_tracker = {
+    "sessions": [],  # Speichert Sitzungsdaten (Zeitstempel, Text, Stimmung, Themen)
+    "themes": {},    # Speichert Themenhäufigkeiten und Intensitäten
+    "thought_patterns": {} # Speichert identifizierte Denkmuster und ihre Häufigkeit
+}
+
+# Endpunkte
+@app.post("/chat", response_model=ChatResponse)
+async def chat(request: ChatRequest):
+    global chat_history
+    global emotion_tracker
+    user_input = request.text.strip()
+
+    if not user_input:
+        return ChatResponse(
+            response="Ich bin hier, um dir zuzuhören. Möchtest du mir erzählen, was dich beschäftigt?",
+            mood="neutral",
+            patterns=[]
+        )
+
+    # Sicherheitsprüfungen
+    crisis_keywords = ["suizid", "selbstmord", "umbringen", "sterben wollen", "nicht mehr leben", 
+                      "selbstverletzung", "ritzen", "schneiden", "schmerzen zufügen"]
+    
+    if any(keyword in user_input.lower() for keyword in crisis_keywords):
+        mood = "krise"
+        response_text = "Ich merke, dass du gerade in einer sehr schweren Zeit bist. Bitte wende dich sofort an professionelle Hilfe: Telefonseelsorge 0800 111 0 111 oder 0800 111 0 222 (kostenfrei, 24h). Du bist nicht allein, und es gibt Menschen, die dir helfen können."
+        update_emotion_tracker(emotion_tracker, user_input, mood) # Corrected call
+        thought_pattern = [] # Initialize for crisis case
+    else:
+        chat_history.append({"role": "user", "content": user_input})
+
+        try:
+            response = chat_with_llm(chat_history, CHAT_KITEGG_API_KEY)
+            response_text = response.strip()
+            chat_history.append({"role": "assistant", "content": response_text})
+        except Exception as e:
+            response_text = "Entschuldige, ich hatte einen kurzen Moment der Unaufmerksamkeit. Könntest du das nochmal sagen?"
+            if chat_history and chat_history[-1]["role"] == "user": # Added check for non-empty chat_history
+                chat_history.pop()
+
+
+        # Analysiere Stimmung und Gedankenmuster
+        mood = analyze_mood(user_input)
+        thought_pattern = find_thought_patterns(user_input)
+        # themes = extract_themes(user_input) # REMOVED - themes are handled in update_emotion_tracker
+
+        # Aktualisiere Emotionstracker
+        update_emotion_tracker(emotion_tracker, user_input, mood) # Corrected call
+
+
+    return ChatResponse(
+        response=response_text,
+        mood=mood,
+        patterns=thought_pattern # Corrected assignment
+    )
 
 @app.post("/transcribe")
-def transcribe(file: UploadFile = File(...)):
-    text = transcribe_audio(file)
-    mood = analyze_mood(text)
-    patterns = find_thought_patterns(text)
-    return {"transcript": text, "mood": mood, "patterns": patterns}
-
-@app.get("/blobs")
-def get_blobs():
-    """Returns dynamic blob data for the frontend."""
-    return calculate_blob_data()
-
-class SpeakRequest(BaseModel):
-    text: str
+async def process_transcription(file: UploadFile = File(...)):
+    """Transkribiert Audiodatei und gibt Text zurück."""
+    try:
+        # Audio-Datei verarbeiten und transkribieren
+        transcript = transcribe_audio(file)
+        return {"success": True, "transcript": transcript}
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"success": False, "error": str(e)},
+        )
 
 @app.post("/speak")
-def speak(req: SpeakRequest):
-    audio_url = synthesize_speech(req.text)
-    return {"audio_url": audio_url}
+async def process_speech_synthesis(text: str = Form(...)):
+    """Generiert Sprachdatei aus Text und gibt URL zurück."""
+    try:
+        audio_url = synthesize_speech(text)
+        return {"success": True, "audio_url": audio_url}
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"success": False, "error": str(e)},
+        )
+
+@app.get("/blobs")
+async def get_blobs_data():
+    global emotion_tracker
+    # Ensure emotion_tracker is passed to calculate_blob_data
+    blob_data = calculate_blob_data(emotion_tracker)
+    return blob_data
+
+# Hauptfunktion zum Starten des Servers
+if __name__ == "__main__":
+    uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)

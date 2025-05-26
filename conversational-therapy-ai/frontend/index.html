@@ -1,240 +1,320 @@
 <!DOCTYPE html>
-<html lang="de">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Conversational Therapy AI</title>
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-			rel="stylesheet"
-		/>
-		<link rel="stylesheet" href="styles.css" />
-	</head>
-	<body>
-		<h1>🧠 Conversational Therapy AI</h1>
-		<div id="main-screen" class="grid-center">
-			<div class="welcome-header">
-				<h1>CBT Therapie</h1>
-				<div class="app-subtitle">
-					Konversationsbasierte kognitive Verhaltenstherapie
-				</div>
-			</div>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBT AI - Technical Interface</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="tech-header">
+        <div class="header-left">
+            <h1>🧠 CBT AI - Technical Interface</h1>
+            <span class="version">v2.1.0</span>
+        </div>
+        <div class="header-right">
+            <div class="status-indicator">
+                <span class="status-dot" id="server-status"></span>
+                <span id="connection-status">Connecting...</span>
+            </div>
+            <button id="toggle-mode" class="mode-toggle">Technical Mode</button>
+        </div>
+    </header>
 
-			<div id="caption-area">
-				Wie fühlst du dich heute? (Umgebung: ruhig)
-			</div>
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar - Function List -->
+        <aside class="function-sidebar">
+            <h3>🔧 Available Functions</h3>
+            
+            <div class="function-category">
+                <h4>Core Chat Functions</h4>
+                <div class="function-list">
+                    <div class="function-item" data-endpoint="/chat">
+                        <span class="function-name">chat_with_llm</span>
+                        <span class="function-status active">✓</span>
+                    </div>
+                    <div class="function-item" data-endpoint="/blobs">
+                        <span class="function-name">get_blobs_data</span>
+                        <span class="function-status active">✓</span>
+                    </div>
+                </div>
+            </div>
 
-			<div class="main-btn-container">
-				<div class="main-btn-row">
-					<button id="textBtn" class="big-btn">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="24"
-							height="24"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						>
-							<path
-								d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
-							></path>
-						</svg>
-						Text Chat
-					</button>
-					<button id="voiceBtn" class="big-btn secondary-btn">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="24"
-							height="24"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						>
-							<path
-								d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"
-							></path>
-							<path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-							<line x1="12" y1="19" x2="12" y2="23"></line>
-							<line x1="8" y1="23" x2="16" y2="23"></line>
-						</svg>
-						Voice Chat
-					</button>
-				</div>
+            <div class="function-category">
+                <h4>Audio Processing</h4>
+                <div class="function-list">
+                    <div class="function-item" data-endpoint="/transcribe">
+                        <span class="function-name">transcribe_audio</span>
+                        <span class="function-status active">✓</span>
+                    </div>
+                    <div class="function-item" data-endpoint="/speak">
+                        <span class="function-name">synthesize_speech</span>
+                        <span class="function-status active">✓</span>
+                    </div>
+                </div>
+            </div>
 
-				<div class="secondary-actions">
-					<button id="dashboardBtn" class="action-btn">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="20"
-							height="20"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						>
-							<rect
-								x="3"
-								y="3"
-								width="18"
-								height="18"
-								rx="2"
-								ry="2"
-							></rect>
-							<rect x="7" y="7" width="3" height="9"></rect>
-							<rect x="14" y="7" width="3" height="5"></rect>
-						</svg>
-						Emotions-Dashboard
-					</button>
-					<div class="icon-buttons">
-						<button id="settingsBtn" class="icon-round-btn">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="20"
-								height="20"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<circle cx="12" cy="12" r="3"></circle>
-								<path
-									d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
-								></path>
-							</svg>
-						</button>
-						<button
-							id="arrowBtn"
-							class="icon-round-btn primary-icon-btn"
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="20"
-								height="20"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<line x1="5" y1="12" x2="19" y2="12"></line>
-								<polyline points="12 5 19 12 12 19"></polyline>
-							</svg>
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div id="chat-screen" class="hidden">
-			<div class="chat-container">
-				<div class="chat-header">
-					<button id="backBtn" class="icon-btn">←</button>
-					<div class="chat-header-title">CBT Therapeut</div>
-					<div id="feedback-blob" class="blob hidden"></div>
-				</div>
-				<div id="messages-container">
-					<!-- Chat-Nachrichten werden hier eingefügt -->
-				</div>
-				<div class="chat-input-container">
-					<div id="input-area"></div>
-					<button id="sendBtn" class="send-btn">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="24"
-							height="24"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						>
-							<line x1="22" y1="2" x2="11" y2="13"></line>
-							<polygon
-								points="22 2 15 22 11 13 2 9 22 2"
-							></polygon>
-						</svg>
-					</button>
-				</div>
-				<div id="mood-pattern" class="mood-indicator"></div>
-			</div>
-		</div>
-		<div id="settings-screen" class="hidden">
-			<h2>Einstellungen</h2>
-			<ul>
-				<li>Therapeut: <span id="therapist-status">Verbunden</span></li>
-				<li>Im Programm seit: <span id="active-since">2021</span></li>
-				<li>
-					<a href="#" id="insurance-link">Krankenkasse verknüpfen</a>
-				</li>
-				<li>
-					<a href="#" id="biometrics-link">Biometrie verbinden</a>
-				</li>
-				<li><a href="#" id="devices-link">Geräteübersicht (NFC)</a></li>
-				<li>
-					<button id="cameraBtn">Kamera/Emotionserkennung</button>
-				</li>
-			</ul>
-			<button id="closeSettingsBtn" class="small-btn">Zurück</button>
-		</div>
-		<div id="biometrics-widget" class="hidden">
-			Herzfrequenz: <span id="hr-value">--</span> bpm
-			<span id="hr-alert"></span>
-		</div>
-		<div id="insight-screen" class="hidden">
-			<h2>AI-Insight Blobs</h2>
-			<div id="insight-blobs"></div>
-			<button id="closeInsightBtn" class="small-btn">Zurück</button>
-		</div>
-		<div id="dashboard-screen" class="hidden">
-			<div class="dashboard-container">
-				<div class="dashboard-header">
-					<h2>Emotionales Dashboard</h2>
-					<button id="closeDashboardBtn" class="icon-btn close-btn">
-						×
-					</button>
-				</div>
-				<div class="dashboard-content">
-					<div id="blobs-container">
-						<div id="blobs"></div>
-						<div class="blobs-legend">
-							<div class="legend-item">
-								<div
-									class="legend-color"
-									style="background: #95e1d3"
-								></div>
-								<div>Geringe Intensität</div>
-							</div>
-							<div class="legend-item">
-								<div
-									class="legend-color"
-									style="background: #ff6b6b"
-								></div>
-								<div>Hohe Intensität</div>
-							</div>
-						</div>
-					</div>
-					<div id="timeline" class="hidden"></div>
-				</div>
-			</div>
-		</div>
-		<div id="coping-tool" class="hidden">
-			<h3>Empfohlene Übung</h3>
-			<div id="coping-content"></div>
-			<button id="closeCopingBtn" class="small-btn">Schließen</button>
-		</div>
-		<script src="script.js"></script>
-	</body>
+            <div class="function-category">
+                <h4>Analysis Functions</h4>
+                <div class="function-list">
+                    <div class="function-item" data-endpoint="/analyze-face">
+                        <span class="function-name">analyze_face</span>
+                        <span class="function-status active">✓</span>
+                    </div>
+                    <div class="function-item">
+                        <span class="function-name">analyze_mood</span>
+                        <span class="function-status active">✓</span>
+                    </div>
+                    <div class="function-item">
+                        <span class="function-name">find_thought_patterns</span>
+                        <span class="function-status active">✓</span>
+                    </div>
+                    <div class="function-item">
+                        <span class="function-name">extract_themes</span>
+                        <span class="function-status active">✓</span>
+                    </div>
+                    <div class="function-item">
+                        <span class="function-name">calculate_blob_data</span>
+                        <span class="function-status active">✓</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="function-category">
+                <h4>System Status</h4>
+                <div class="system-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Uptime:</span>
+                        <span class="stat-value" id="uptime">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Requests:</span>
+                        <span class="stat-value" id="request-count">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Memory:</span>
+                        <span class="stat-value" id="memory-usage">--</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Tab Navigation -->
+            <nav class="tab-nav">
+                <button class="tab-btn active" data-tab="chat">💬 Chat Interface</button>
+                <button class="tab-btn" data-tab="analysis">📊 Analysis Dashboard</button>
+                <button class="tab-btn" data-tab="face">📷 Facial Analysis</button>
+                <button class="tab-btn" data-tab="audio">🎤 Audio Processing</button>
+                <button class="tab-btn" data-tab="logs">📋 System Logs</button>
+            </nav>
+
+            <!-- Chat Interface Tab -->
+            <div class="tab-content active" id="chat-tab">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <div class="chat-title">CBT Therapeutic Chat</div>
+                        <div class="chat-controls">
+                            <button id="clear-chat" class="control-btn">Clear</button>
+                            <button id="export-chat" class="control-btn">Export</button>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message bot-message">
+                            <div class="message-header">
+                                <span class="sender">CBT Therapist</span>
+                                <span class="timestamp" id="init-timestamp"></span>
+                            </div>
+                            <div class="message-content">
+                                Hello! I'm your CBT therapist. How are you feeling today? What would you like to explore in our session?
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-area">
+                        <div class="input-row">
+                            <textarea id="chat-input" placeholder="Type your message here..." rows="2"></textarea>
+                            <div class="input-controls">
+                                <button id="voice-input-btn" class="input-btn" title="Voice Input">🎤</button>
+                                <button id="send-message-btn" class="input-btn primary" title="Send Message">Send</button>
+                            </div>
+                        </div>
+                        <div class="mood-display" id="mood-display">
+                            <span class="mood-label">Current Mood:</span>
+                            <span class="mood-value" id="current-mood">neutral</span>
+                            <span class="patterns-label">Patterns:</span>
+                            <span class="patterns-value" id="current-patterns">none detected</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis Dashboard Tab -->
+            <div class="tab-content" id="analysis-tab">
+                <div class="analysis-container">
+                    <div class="analysis-header">
+                        <h3>Emotional Analysis Dashboard</h3>
+                        <button id="refresh-analysis" class="control-btn">Refresh Data</button>
+                    </div>
+                    
+                    <div class="analysis-grid">
+                        <div class="analysis-card">
+                            <h4>Emotion Bubbles</h4>
+                            <div class="emotion-bubbles" id="emotion-bubbles">
+                                <div class="empty-state">No emotion data available yet. Start a conversation to see analysis.</div>
+                            </div>
+                        </div>
+                        
+                        <div class="analysis-card">
+                            <h4>Mood Trends</h4>
+                            <div class="mood-chart" id="mood-chart">
+                                <div class="chart-placeholder">Mood trend chart will appear here</div>
+                            </div>
+                        </div>
+                        
+                        <div class="analysis-card">
+                            <h4>Thought Patterns</h4>
+                            <div class="pattern-list" id="pattern-list">
+                                <div class="empty-state">No patterns identified yet</div>
+                            </div>
+                        </div>
+                        
+                        <div class="analysis-card">
+                            <h4>Session Statistics</h4>
+                            <div class="session-stats" id="session-stats">
+                                <div class="stat-row">
+                                    <span>Messages Sent:</span>
+                                    <span id="messages-count">0</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span>Session Duration:</span>
+                                    <span id="session-duration">0m</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span>Dominant Mood:</span>
+                                    <span id="dominant-mood">neutral</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Facial Analysis Tab -->
+            <div class="tab-content" id="face-tab">
+                <div class="face-analysis-container">
+                    <div class="face-header">
+                        <h3>Facial Emotion Recognition</h3>
+                        <div class="face-controls">
+                            <button id="start-camera" class="control-btn primary">Start Camera</button>
+                            <button id="stop-camera" class="control-btn" disabled>Stop Camera</button>
+                            <button id="take-snapshot" class="control-btn" disabled>Take Snapshot</button>
+                        </div>
+                    </div>
+                    
+                    <div class="face-content">
+                        <div class="camera-section">
+                            <div class="camera-display">
+                                <video id="camera-video" autoplay playsinline></video>
+                                <canvas id="camera-canvas" style="display: none;"></canvas>
+                                <div class="camera-overlay" id="camera-placeholder">
+                                    <div class="camera-icon">📷</div>
+                                    <p>Click "Start Camera" to begin facial emotion recognition</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="emotion-results">
+                            <h4>Emotion Detection Results</h4>
+                            <div class="emotion-data" id="emotion-data">
+                                <div class="no-data">No facial analysis data yet</div>
+                            </div>
+                            <div class="emotion-history" id="emotion-history">
+                                <h5>Detection History</h5>
+                                <div class="history-list" id="emotion-history-list">
+                                    <div class="empty-state">No detections recorded</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audio Processing Tab -->
+            <div class="tab-content" id="audio-tab">
+                <div class="audio-container">
+                    <div class="audio-header">
+                        <h3>Audio Processing Tools</h3>
+                    </div>
+                    
+                    <div class="audio-tools">
+                        <div class="audio-card">
+                            <h4>Speech to Text</h4>
+                            <div class="audio-controls">
+                                <button id="start-recording" class="control-btn primary">Start Recording</button>
+                                <button id="stop-recording" class="control-btn" disabled>Stop Recording</button>
+                                <input type="file" id="audio-file-input" accept="audio/*" style="display: none;">
+                                <button id="upload-audio" class="control-btn">Upload Audio File</button>
+                            </div>
+                            <div class="audio-status" id="recording-status">Ready to record</div>
+                            <div class="transcription-result" id="transcription-result">
+                                <div class="empty-state">No transcription available</div>
+                            </div>
+                        </div>
+                        
+                        <div class="audio-card">
+                            <h4>Text to Speech</h4>
+                            <div class="tts-controls">
+                                <textarea id="tts-text" placeholder="Enter text to synthesize..." rows="3"></textarea>
+                                <button id="synthesize-speech" class="control-btn primary">Generate Speech</button>
+                            </div>
+                            <div class="audio-player" id="audio-player">
+                                <div class="empty-state">No audio generated yet</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Logs Tab -->
+            <div class="tab-content" id="logs-tab">
+                <div class="logs-container">
+                    <div class="logs-header">
+                        <h3>System Logs</h3>
+                        <div class="log-controls">
+                            <button id="clear-logs" class="control-btn">Clear Logs</button>
+                            <button id="export-logs" class="control-btn">Export</button>
+                            <select id="log-level">
+                                <option value="all">All Levels</option>
+                                <option value="info">Info</option>
+                                <option value="warning">Warning</option>
+                                <option value="error">Error</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="logs-content" id="logs-content">
+                        <div class="log-entry info">
+                            <span class="log-timestamp">[<span id="log-init-time"></span>]</span>
+                            <span class="log-level">INFO</span>
+                            <span class="log-message">CBT AI Technical Interface initialized</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notification System -->
+    <div class="notification-container" id="notification-container"></div>
+
+    <script src="script.js"></script>
+</body>
 </html>

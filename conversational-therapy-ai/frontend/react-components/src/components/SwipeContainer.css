@@ -1,0 +1,51 @@
+.swipe-container-wrapper {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  background: #fbf4f1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.simple-container {
+  width: 100%;
+  height: 100%;
+  max-width: 400px;
+  max-height: 852px;
+  border-radius: 25px;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.screen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.screen.active {
+  display: flex;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .simple-container {
+    max-width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+
+/* Desktop: iPhone-like appearance */
+@media (min-width: 769px) {
+  .swipe-container-wrapper {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+}

@@ -4,6 +4,7 @@ import "./AnimateStreamingNameChunk1.css";
 export const AnimateStreamingNameChunk1 = ({
   name = "chunk-1",
   className,
+  text = "Hi Ann",
   ...props
 }) => {
   const variantsClassName = "name-" + name;
@@ -14,7 +15,7 @@ export const AnimateStreamingNameChunk1 = ({
         "animate-streaming-name-chunk-1 " + className + " " + variantsClassName
       }
     >
-      <div className="generated-text">Hi Ann </div>
+      <div className="generated-text">{text}</div>
       <img className="frame" src="frame0.svg" />
     </div>
   );

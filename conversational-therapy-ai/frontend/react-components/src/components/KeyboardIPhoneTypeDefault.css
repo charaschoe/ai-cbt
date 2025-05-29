@@ -1,0 +1,95 @@
+.keyboard-i-phone-type-default {
+  width: 100%;
+  height: 329px;
+  position: relative;
+}
+
+.keyboard-background {
+  background: #d1d5db;
+  border-radius: 12px 12px 0 0;
+  padding: 16px 8px 8px 8px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.keyboard-key {
+  background: #ffffff;
+  border-radius: 6px;
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  color: #000000;
+  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 22px;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;
+  min-width: 32px;
+  flex: 1;
+  max-width: 35px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.1s ease;
+}
+
+.keyboard-key:active {
+  background: #e5e7eb;
+  transform: scale(0.95);
+}
+
+.keyboard-key.special-key {
+  background: #9ca3af;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  max-width: 42px;
+}
+
+.keyboard-key.space-key {
+  flex: 4;
+  max-width: none;
+  font-size: 16px;
+  color: #6b7280;
+}
+
+/* Row specific adjustments */
+.keyboard-row:nth-child(1) {
+  margin: 0 0;
+}
+
+.keyboard-row:nth-child(2) {
+  margin: 0 16px;
+}
+
+.keyboard-row:nth-child(3) {
+  margin: 0 0;
+}
+
+.keyboard-row:nth-child(4) {
+  gap: 8px;
+}
+
+.keyboard-row:nth-child(4) .keyboard-key {
+  max-width: 60px;
+}
+
+.keyboard-row:nth-child(4) .keyboard-key:nth-child(1),
+.keyboard-row:nth-child(4) .keyboard-key:nth-child(4) {
+  flex: 1.5;
+}
+
+.keyboard-row:nth-child(4) .keyboard-key:nth-child(2) {
+  flex: 1;
+  max-width: 40px;
+}

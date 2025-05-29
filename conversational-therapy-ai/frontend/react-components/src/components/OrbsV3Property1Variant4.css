@@ -1,0 +1,26 @@
+.orbs-v-3-property-1-variant-4,
+.orbs-v-3-property-1-variant-4 * {
+  box-sizing: border-box;
+}
+.orbs-v-3-property-1-variant-4 {
+  width: 300px;
+  height: 300px;
+  position: relative;
+}
+.orbs-v-3-property-1-variant-4 .ellipse-3 {
+  background: radial-gradient(
+    closest-side,
+    rgba(255, 248, 157, 1) 17.309357225894928%,
+    rgba(150, 208, 255, 0.5) 53.84873151779175%,
+    rgba(219, 233, 255, 0.5) 64.90670442581177%,
+    rgba(255, 220, 181, 0.5) 71.15685939788818%,
+    rgba(255, 187, 148, 0) 100%
+  );
+  border-radius: 50%;
+  width: 203.26px;
+  height: 203.26px;
+  position: absolute;
+  left: 50%;
+  translate: -50% -50%;
+  top: 50%;
+}

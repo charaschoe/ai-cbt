@@ -1,0 +1,34 @@
+.keys-i-phone-type-lowercase,
+.keys-i-phone-type-lowercase * {
+  box-sizing: border-box;
+}
+.keys-i-phone-type-lowercase {
+  border-radius: 4.6px;
+  width: 32px;
+  height: 42px;
+  position: relative;
+}
+.keys-i-phone-type-lowercase .key-instance {
+  position: absolute !important;
+  right: 0px !important;
+  left: 0px !important;
+  bottom: 0px !important;
+  top: 0px !important;
+  width: unset !important;
+  height: unset !important;
+}
+.keys-i-phone-type-lowercase .q {
+  color: var(--labels-primary, #000000);
+  text-align: center;
+  font-family: "SfPro-Regular", sans-serif;
+  font-size: 25px;
+  line-height: 28px;
+  font-weight: 400;
+  position: absolute;
+  left: 50%;
+  translate: -50%;
+  top: calc(50% - 17px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

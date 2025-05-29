@@ -1,0 +1,21 @@
+.home-indicator-device-i-phone-orientation-portrait,
+.home-indicator-device-i-phone-orientation-portrait * {
+  box-sizing: border-box;
+}
+.home-indicator-device-i-phone-orientation-portrait {
+  padding: 21px 129px 8px 129px;
+  flex-shrink: 0;
+  height: 34px;
+  position: relative;
+}
+.home-indicator-device-i-phone-orientation-portrait .home-indicator {
+  background: var(--labels-primary, #000000);
+  border-radius: 100px;
+  width: 144px;
+  height: 5px;
+  position: absolute;
+  left: calc(50% - -72px);
+  bottom: 8px;
+  transform-origin: 0 0;
+  transform: rotate(0deg) scale(-1, 1);
+}

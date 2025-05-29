@@ -1,19 +1,11 @@
-import React from 'react';
-import './ChatFlow.css';
+import "./ChatFlow05.css";
+import { AnimateStreamingNameChunk1 } from "../AnimateStreamingNameChunk1/AnimateStreamingNameChunk1.jsx";
+import { OrbsV3Property1Component2 } from "../OrbsV3Property1Component2/OrbsV3Property1Component2.jsx";
 
-const ChatFlow = ({ onArrowClick }) => {
-  const handleArrowClick = () => {
-    if (onArrowClick) {
-      onArrowClick();
-    }
-  };
+export const ChatFlow05 = ({ className, ...props }) => {
   return (
-    <div className="chat-flow-01">
-      <div className="rectangle-2"></div>
-      <div className="rectangle-1"></div>
-      <div className="rectangle-3"></div>
-      <div className="check-in">Check In</div>
-      
+    <div className={"chat-flow-05 " + className}>
+      <div className="check-in">Check In </div>
       <div className="home">
         <div className="ellipse-4"></div>
         <div className="ellipse-5"></div>
@@ -33,26 +25,14 @@ const ChatFlow = ({ onArrowClick }) => {
         <div className="ellipse-11"></div>
         <div className="ellipse-12"></div>
       </div>
-      
-      <div className="settings">
+      <img className="vector-1" src="vector-10.svg" />
+      <AnimateStreamingNameChunk1 className="animate-streaming-2-instance"></AnimateStreamingNameChunk1>
+      <div className="frame-1">
         <div className="ellipse-52"></div>
         <div className="ellipse-62"></div>
         <div className="ellipse-72"></div>
       </div>
-      
-      <img 
-        className="vector-1" 
-        src="/vector-10.svg" 
-        alt="bottom indicator" 
-        onClick={handleArrowClick}
-        style={{ cursor: 'pointer' }}
-      />
-      
-      <div className="orbs-v-1">
-        <div className="ellipse-1"></div>
-      </div>
+      <OrbsV3Property1Component2 className="orbs-v-3-instance"></OrbsV3Property1Component2>
     </div>
   );
 };
-
-export default ChatFlow;

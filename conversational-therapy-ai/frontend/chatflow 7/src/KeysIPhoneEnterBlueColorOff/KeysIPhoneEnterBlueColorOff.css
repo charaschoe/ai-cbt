@@ -1,0 +1,37 @@
+.keys-i-phone-enter-blue-color-off,
+.keys-i-phone-enter-blue-color-off * {
+  box-sizing: border-box;
+}
+.keys-i-phone-enter-blue-color-off {
+  border-radius: 4.6px;
+  width: 92px;
+  height: 42px;
+  position: relative;
+}
+.keys-i-phone-enter-blue-color-off .key-instance {
+  position: absolute !important;
+  right: 0px !important;
+  left: 0px !important;
+  bottom: 0px !important;
+  top: 0px !important;
+  width: unset !important;
+  height: unset !important;
+}
+.keys-i-phone-enter-blue-color-off .q {
+  color: var(--labels-primary, #000000);
+  text-align: center;
+  font-family: var(--callout-regular-font-family, "SfPro-Regular", sans-serif);
+  font-size: var(--callout-regular-font-size, 16px);
+  line-height: var(--callout-regular-line-height, 21px);
+  letter-spacing: var(--callout-regular-letter-spacing, -0.31px);
+  font-weight: var(--callout-regular-font-weight, 400);
+  position: absolute;
+  right: 0px;
+  left: 0px;
+  top: 50%;
+  translate: 0 -50%;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

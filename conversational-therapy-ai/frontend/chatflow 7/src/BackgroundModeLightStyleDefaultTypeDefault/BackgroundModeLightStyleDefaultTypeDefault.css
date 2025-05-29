@@ -1,0 +1,19 @@
+.background-mode-light-style-default-type-default,
+.background-mode-light-style-default-type-default * {
+  box-sizing: border-box;
+}
+.background-mode-light-style-default-type-default {
+  background: linear-gradient(to left, #939393, #939393),
+    linear-gradient(to left, rgba(86, 88, 92, 0.87), rgba(86, 88, 92, 0.87)),
+    linear-gradient(to left, rgba(85, 85, 85, 0.9), rgba(85, 85, 85, 0.9));
+  padding: 6px 0px 0px 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 58px;
+  align-items: center;
+  justify-content: flex-start;
+  width: 200px;
+  height: 200px;
+  position: relative;
+  backdrop-filter: blur(75px);
+}

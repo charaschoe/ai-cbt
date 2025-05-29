@@ -1,0 +1,67 @@
+.keyboard-i-phone-type-default,
+.keyboard-i-phone-type-default * {
+  box-sizing: border-box;
+}
+.keyboard-i-phone-type-default {
+  padding: 3px 0px 0px 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+}
+.keyboard-i-phone-type-default .background-instance {
+  flex-shrink: 0 !important;
+  height: 336px !important;
+  position: absolute !important;
+  right: 0px !important;
+  left: 0px !important;
+  top: 50% !important;
+  translate: 0 -50% !important;
+  width: unset !important;
+}
+.keyboard-i-phone-type-default .accessory-bar {
+  padding: 2px 0px 2px 0px;
+  display: flex;
+  flex-direction: row;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.keyboard-i-phone-type-default .autocorrection-instance {
+  flex: 1 !important;
+  height: 39px !important;
+}
+.keyboard-i-phone-type-default .spacer {
+  opacity: 0.6;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: 5px;
+  position: relative;
+  transform-origin: 0 0;
+  transform: rotate(0deg) scale(1, -1);
+}
+.keyboard-i-phone-type-default .keyboard-layouts-instance {
+  align-self: stretch !important;
+  flex-shrink: 0 !important;
+}
+.keyboard-i-phone-type-default .emoji-and-mic {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: 55px;
+  position: relative;
+  overflow: visible;
+}
+.keyboard-i-phone-type-default .home-indicator-instance {
+  width: 402px !important;
+  height: 26px !important;
+}

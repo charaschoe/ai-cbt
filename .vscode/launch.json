@@ -1,57 +1,132 @@
 {
-	"version": "0.2.0",
-	"configurations": [
-		{
-			"name": "Backend: Python FastAPI",
-			"type": "python",
-			"request": "launch",
-			"program": "${workspaceFolder}/conversational-therapy-ai/backend/server.py",
-			"console": "integratedTerminal",
-			"justMyCode": true,
-			"env": {
-				"PYTHONPATH": "${workspaceFolder}/conversational-therapy-ai/backend"
-			},
-			"cwd": "${workspaceFolder}/conversational-therapy-ai/backend"
-		},
-		{
-			"name": "Frontend: Live Server",
-			"type": "node",
-			"request": "launch",
-			"runtimeExecutable": "npx",
-			"runtimeArgs": ["live-server", "--port=5500", "--no-browser"],
-			"cwd": "${workspaceFolder}/conversational-therapy-ai/frontend",
-			"serverReadyAction": {
-				"pattern": "Server running at http://127.0.0.1:([0-9]+)",
-				"uriFormat": "http://localhost:%s",
-				"action": "openExternally"
-			}
-		},
-		{
-			"name": "Vollständige Anwendung starten",
-			"type": "pwa-node",
-			"request": "launch",
-			"dependsOn": ["Backend: Python FastAPI", "Frontend: Live Server"],
-			"preLaunchTask": "installDependencies",
-			"presentation": {
-				"hidden": false,
-				"group": "start",
-				"order": 1
-			},
-			"skipFiles": ["<node_internals>/**"]
-		}
-	],
-	"compounds": [
-		{
-			"name": "Backend + Frontend",
-			"configurations": [
-				"Backend: Python FastAPI",
-				"Frontend: Live Server"
-			],
-			"presentation": {
-				"hidden": false,
-				"group": "serve",
-				"order": 1
-			}
-		}
-	]
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "React App - Development",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/conversational-therapy-ai/frontend/react-components",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["start"],
+            "serverReadyAction": {
+                "pattern": "webpack compiled|compiled successfully",
+                "uriFormat": "http://localhost:3000",
+                "action": "openExternally"
+            },
+            "env": {
+                "NODE_ENV": "development",
+                "BROWSER": "none",
+                "PORT": "3000"
+            },
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "skipFiles": ["<node_internals>/**"]
+        },
+        {
+            "name": "React App - Build Production",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/conversational-therapy-ai/frontend/react-components",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["run", "build"],
+            "env": {
+                "NODE_ENV": "production"
+            },
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "skipFiles": ["<node_internals>/**"]
+        },
+        {
+            "name": "Backend Server - FastAPI",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/conversational-therapy-ai/backend/server.py",
+            "cwd": "${workspaceFolder}/conversational-therapy-ai/backend",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/conversational-therapy-ai/backend"
+            },
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "serverReadyAction": {
+                "pattern": "Uvicorn running on",
+                "uriFormat": "http://localhost:8000",
+                "action": "openExternally"
+            }
+        },
+        {
+            "name": "Full Stack - React + FastAPI",
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Full Stack",
+            "compounds": [
+                "Backend Server - FastAPI",
+                "React App - Development"
+            ]
+        },
+        {
+            "name": "Debug React Components",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}/conversational-therapy-ai/frontend/react-components/src",
+            "sourceMapPathOverrides": {
+                "webpack:///src/*": "${webRoot}/*",
+                "webpack:///./src/*": "${webRoot}/*",
+                "webpack:///./*": "${workspaceFolder}/conversational-therapy-ai/frontend/react-components/*",
+                "webpack:///.*": "${workspaceFolder}/conversational-therapy-ai/frontend/react-components/*"
+            },
+            "userDataDir": false,
+            "runtimeArgs": [
+                "--disable-web-security",
+                "--disable-features=VizDisplayCompositor"
+            ]
+        },
+        {
+            "name": "Debug Vanilla JavaScript Frontend",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:8080",
+            "webRoot": "${workspaceFolder}/conversational-therapy-ai/frontend",
+            "userDataDir": false
+        },
+        {
+            "name": "Test Multilingual Features",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/conversational-therapy-ai/test_multilingual.py",
+            "cwd": "${workspaceFolder}/conversational-therapy-ai",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/conversational-therapy-ai"
+            },
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Debug Backend Language Detection",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/conversational-therapy-ai/backend/language_detection.py",
+            "cwd": "${workspaceFolder}/conversational-therapy-ai/backend",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/conversational-therapy-ai/backend"
+            },
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Full Stack Development",
+            "configurations": [
+                "Backend Server - FastAPI",
+                "React App - Development"
+            ],
+            "stopAll": true,
+            "presentation": {
+                "hidden": false,
+                "group": "Full Stack",
+                "order": 1
+            }
+        }
+    ]
 }

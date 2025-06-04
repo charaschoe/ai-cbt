@@ -11,6 +11,7 @@ const AppState = {
 	messageCount: 0,
 	currentMood: "neutral",
 	currentPatterns: [],
+	detectedLanguage: "de",
 	cameraStream: null,
 	mediaRecorder: null,
 	isRecording: false,
@@ -221,9 +222,10 @@ const ChatManager = {
 			// Add bot response
 			ChatManager.addMessage(response.response, false);
 
-			// Update mood and patterns
+			// Update mood, patterns, and language
 			AppState.currentMood = response.mood;
 			AppState.currentPatterns = response.patterns || [];
+			AppState.detectedLanguage = response.detected_language || "de";
 
 			// Update mood display
 			document.getElementById("current-mood").textContent =
@@ -233,7 +235,7 @@ const ChatManager = {
 					? AppState.currentPatterns.join(", ")
 					: "none detected";
 
-			Logger.info(`Chat: Mood detected as ${response.mood}`);
+			Logger.info(`Chat: Mood detected as ${response.mood}, Language: ${AppState.detectedLanguage}`);
 		} catch (error) {
 			Logger.error(`Chat error: ${error.message}`);
 			NotificationSystem.error(
@@ -248,19 +250,27 @@ const ChatManager = {
 
 	clear: () => {
 		const messagesContainer = document.getElementById("chat-messages");
+		const welcomeMessages = {
+			"de": "Hallo! Ich bin dein CBT-Therapeut. Wie fühlst du dich heute? Was möchtest du in unserer Sitzung erkunden?",
+			"en": "Hello! I'm your CBT therapist. How are you feeling today? What would you like to explore in our session?",
+			"fr": "Bonjour! Je suis votre thérapeute TCC. Comment vous sentez-vous aujourd'hui? Qu'aimeriez-vous explorer dans notre séance?",
+			"es": "¡Hola! Soy tu terapeuta TCC. ¿Cómo te sientes hoy? ¿Qué te gustaría explorar en nuestra sesión?",
+			"it": "Ciao! Sono il tuo terapeuta TCC. Come ti senti oggi? Cosa vorresti esplorare nella nostra sessione?"
+		};
+		
 		messagesContainer.innerHTML = `
-            <div class="message bot-message">
-                <div class="message-header">
-                    <span class="sender">CBT Therapist</span>
-                    <span class="timestamp">${Utils.formatTime(
+		          <div class="message bot-message">
+		              <div class="message-header">
+		                  <span class="sender">CBT Therapist</span>
+		                  <span class="timestamp">${Utils.formatTime(
 						Date.now()
 					)}</span>
-                </div>
-                <div class="message-content">
-                    Hello! I'm your CBT therapist. How are you feeling today? What would you like to explore in our session?
-                </div>
-            </div>
-        `;
+		              </div>
+		              <div class="message-content">
+		                  ${welcomeMessages[AppState.detectedLanguage] || welcomeMessages["de"]}
+		              </div>
+		          </div>
+		      `;
 		AppState.messageCount = 0;
 		StatusManager.updateStats();
 		Logger.info("Chat cleared");

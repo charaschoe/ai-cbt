@@ -37,8 +37,9 @@ const SwipeContainer = () => {
   // Handle sending a message in chat mode
   const handleSendMessage = async (message) => {
     try {
-      const response = await chatService.sendMessage(message);
-      return response;
+      const responseData = await chatService.sendMessage(message);
+      // Return just the response text for the chat interface
+      return responseData.response || responseData;
     } catch (error) {
       console.error('Error sending message:', error);
       return 'I\'m sorry, I\'m having trouble connecting right now. Please try again.';

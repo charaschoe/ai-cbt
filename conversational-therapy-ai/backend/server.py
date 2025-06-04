@@ -17,6 +17,7 @@ from llm import chat_with_llm
 from analysis import analyze_mood, find_thought_patterns, calculate_blob_data, update_emotion_tracker, extract_themes
 from speech_to_text import transcribe_audio
 from text_to_speech import synthesize_speech
+from language_detection import detect_language, get_system_prompt, get_crisis_response, get_empty_input_response, get_crisis_keywords
 from config_secret import ELEVENLABS_API_KEY, CHAT_KITEGG_API_KEY
 
 app = FastAPI(title="Conversational Therapy AI")
@@ -38,43 +39,11 @@ class ChatResponse(BaseModel):
     response: str
     mood: str
     patterns: list
+    detected_language: str
 
-# Globaler Chat-Verlauf mit CBT-Therapie-System-Prompt
-chat_history = [
-    {
-        "role": "system", 
-        "content": """Du bist ein professioneller CBT-Therapeut (Kognitive Verhaltenstherapie). Führe ein therapeutisches Gespräch nach CBT-Prinzipien.
-
-CBT-GESPRÄCHSFÜHRUNG:
-- Stelle offene, explorative Fragen (Was, Wie, Wann statt Warum)
-- Erkunde Gedanken, Gefühle und Verhaltensweisen systematisch
-- Verwende Sokratische Fragentechnik
-- Identifiziere kognitive Verzerrungen behutsam
-- Hilf beim Erkennen von Gedanken-Gefühls-Verhaltens-Zyklen
-- Arbeite mit konkreten Situationen und Beispielen
-
-THERAPEUTISCHE HALTUNG:
-- Empathisch und nicht-wertend
-- Kollaborativ (wir arbeiten zusammen)
-- Strukturiert aber warm
-- Validiere Gefühle, hinterfrage Gedanken
-- Fokus auf Hier und Jetzt
-
-TECHNIKEN:
-- Gedankenprotokoll-Ansätze
-- Verhaltensexperimente vorschlagen
-- Realitätstests durchführen
-- Alternative Perspektiven entwickeln
-- Konkrete Beispiele erfragen
-
-SAFEGUARDS:
-- Bei Krisen: Sofort professionelle Hilfe empfehlen
-- Keine Diagnosen stellen
-- Bei Überforderung: Tempo drosseln
-
-Führe jetzt ein CBT-basiertes therapeutisches Gespräch auf Deutsch. Stelle 1-2 gezielte Fragen pro Antwort."""
-    }
-]
+# Globaler Chat-Verlauf und aktuell erkannte Sprache
+chat_history = []
+current_language = "de"  # Default zu Deutsch
 
 # Globaler Emotionstracker für dynamische Bubbles
 emotion_tracker = {
@@ -88,24 +57,48 @@ emotion_tracker = {
 async def chat(request: ChatRequest):
     global chat_history
     global emotion_tracker
+    global current_language
+    
     user_input = request.text.strip()
 
     if not user_input:
         return ChatResponse(
-            response="Ich bin hier, um dir zuzuhören. Möchtest du mir erzählen, was dich beschäftigt?",
+            response=get_empty_input_response(current_language),
             mood="neutral",
-            patterns=[]
+            patterns=[],
+            detected_language=current_language
         )
 
-    # Sicherheitsprüfungen
-    crisis_keywords = ["suizid", "selbstmord", "umbringen", "sterben wollen", "nicht mehr leben", 
-                      "selbstverletzung", "ritzen", "schneiden", "schmerzen zufügen"]
+    # Sprache erkennen
+    detected_lang = detect_language(user_input)
+    
+    # Sprache wechseln wenn nötig und Chat-Historie anpassen
+    if detected_lang != current_language:
+        current_language = detected_lang
+        # Chat-Historie mit neuem System-Prompt zurücksetzen
+        chat_history = [
+            {
+                "role": "system",
+                "content": get_system_prompt(current_language)
+            }
+        ]
+    elif not chat_history:
+        # Ersten System-Prompt hinzufügen falls Chat-Historie leer ist
+        chat_history = [
+            {
+                "role": "system",
+                "content": get_system_prompt(current_language)
+            }
+        ]
+
+    # Sicherheitsprüfungen mit sprachspezifischen Schlüsselwörtern
+    crisis_keywords = get_crisis_keywords(current_language)
     
     if any(keyword in user_input.lower() for keyword in crisis_keywords):
         mood = "krise"
-        response_text = "Ich merke, dass du gerade in einer sehr schweren Zeit bist. Bitte wende dich sofort an professionelle Hilfe: Telefonseelsorge 0800 111 0 111 oder 0800 111 0 222 (kostenfrei, 24h). Du bist nicht allein, und es gibt Menschen, die dir helfen können."
-        update_emotion_tracker(emotion_tracker, user_input, mood) # Corrected call
-        thought_pattern = [] # Initialize for crisis case
+        response_text = get_crisis_response(current_language)
+        update_emotion_tracker(emotion_tracker, user_input, mood)
+        thought_pattern = []
     else:
         chat_history.append({"role": "user", "content": user_input})
 
@@ -114,24 +107,30 @@ async def chat(request: ChatRequest):
             response_text = response.strip()
             chat_history.append({"role": "assistant", "content": response_text})
         except Exception as e:
-            response_text = "Entschuldige, ich hatte einen kurzen Moment der Unaufmerksamkeit. Könntest du das nochmal sagen?"
-            if chat_history and chat_history[-1]["role"] == "user": # Added check for non-empty chat_history
+            # Sprachspezifische Fehlermeldung
+            error_messages = {
+                "de": "Entschuldige, ich hatte einen kurzen Moment der Unaufmerksamkeit. Könntest du das nochmal sagen?",
+                "en": "Sorry, I had a brief moment of inattention. Could you say that again?",
+                "fr": "Désolé, j'ai eu un bref moment d'inattention. Peux-tu répéter?",
+                "es": "Perdón, tuve un breve momento de distracción. ¿Podrías repetir eso?",
+                "it": "Scusa, ho avuto un breve momento di disattenzione. Potresti ripetere?"
+            }
+            response_text = error_messages.get(current_language, error_messages["de"])
+            if chat_history and chat_history[-1]["role"] == "user":
                 chat_history.pop()
-
 
         # Analysiere Stimmung und Gedankenmuster
         mood = analyze_mood(user_input)
         thought_pattern = find_thought_patterns(user_input)
-        # themes = extract_themes(user_input) # REMOVED - themes are handled in update_emotion_tracker
 
         # Aktualisiere Emotionstracker
-        update_emotion_tracker(emotion_tracker, user_input, mood) # Corrected call
-
+        update_emotion_tracker(emotion_tracker, user_input, mood)
 
     return ChatResponse(
         response=response_text,
         mood=mood,
-        patterns=thought_pattern # Corrected assignment
+        patterns=thought_pattern,
+        detected_language=current_language
     )
 
 @app.post("/transcribe")

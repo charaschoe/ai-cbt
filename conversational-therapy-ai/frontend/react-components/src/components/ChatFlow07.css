@@ -271,23 +271,82 @@
   top: 50%;
   translate: 0 -50%;
 }
+/* Enhanced chat messages container with better scrolling */
 .chat-flow-07 .chat-messages-container {
   position: absolute;
   left: calc(50% - 176.5px);
-  top: 25%;
+  top: 15%; /* Moved up more */
   width: 353px;
-  height: 50%;
+  height: 70%; /* Much more height */
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: 12px;
   padding: 10px 0;
-  padding-bottom: 20px;
-  transition: height 0.3s ease;
+  padding-bottom: 30px; /* More bottom padding */
+  transition: all 0.3s ease;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
 }
 
 .chat-flow-07.keyboard-hidden .chat-messages-container {
-  height: 65%;
+  height: 80%; /* Much more space when keyboard is hidden */
+  top: 12%; /* Move up even more when keyboard hidden */
+}
+
+/* Old messages indicator at the top */
+.chat-flow-07 .old-messages-indicator {
+  position: sticky;
+  top: 0;
+  background: rgba(251, 244, 241, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 12px 0;
+  margin-bottom: 8px;
+  text-align: center;
+  border-radius: 12px;
+  z-index: 10;
+}
+
+.chat-flow-07 .ellipsis-barrier {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.chat-flow-07 .barrier-ellipse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #9a7a7a;
+  animation: barrier-pulse 2s infinite ease-in-out;
+}
+
+.chat-flow-07 .barrier-ellipse:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.chat-flow-07 .barrier-ellipse:nth-child(3) {
+  animation-delay: 0.8s;
+}
+
+@keyframes barrier-pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.chat-flow-07 .old-messages-text {
+  font-size: 12px;
+  color: #9a7a7a;
+  font-style: italic;
+  font-family: "PpNeueMontreal-Book", sans-serif;
 }
 
 .chat-flow-07 .message {
@@ -314,19 +373,19 @@
 }
 
 .chat-flow-07 .ai-message .message-bubble {
-  background: #f0f0f0;
+  background: #F2F2F4;
   color: #383232;
   border-bottom-left-radius: 6px;
 }
 
 .chat-flow-07 .user-message .message-bubble {
-  background: #007AFF;
-  color: white;
+  background: #F2F2F4;
+  color: #383232;
   border-bottom-right-radius: 6px;
 }
 
 .chat-flow-07 .message-bubble.loading {
-  background: #f0f0f0;
+  background: #F2F2F4;
   padding: 16px 20px;
 }
 
@@ -363,6 +422,102 @@
   }
 }
 
+/* Thinking indicator styles */
+.chat-flow-07 .thinking-indicator {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.chat-flow-07 .thinking-text {
+  font-size: 14px;
+  color: #666;
+  font-style: italic;
+}
+
+.chat-flow-07 .thinking-dots {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.chat-flow-07 .thought-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #9a7a7a;
+  animation: thinking 2s infinite ease-in-out;
+}
+
+.chat-flow-07 .thought-dot:nth-child(1) {
+  animation-delay: -0.4s;
+}
+
+.chat-flow-07 .thought-dot:nth-child(2) {
+  animation-delay: -0.2s;
+}
+
+@keyframes thinking {
+  0%, 60%, 100% {
+    transform: translateY(0px) scale(0.8);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-8px) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Segment message styling */
+.chat-flow-07 .message.segment {
+  margin-bottom: 4px;
+}
+
+.chat-flow-07 .message.segment:last-of-type {
+  margin-bottom: 12px;
+}
+
+/* Pause indicator between segments */
+.chat-flow-07 .segment-pause {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+  opacity: 0.6;
+}
+
+.chat-flow-07 .pause-dots {
+  display: flex;
+  gap: 3px;
+}
+
+.chat-flow-07 .pause-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #9a7a7a;
+  animation: pause-pulse 1.5s infinite ease-in-out;
+}
+
+.chat-flow-07 .pause-dot:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.chat-flow-07 .pause-dot:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+@keyframes pause-pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
 /* Scrollbar styling */
 .chat-flow-07 .chat-messages-container::-webkit-scrollbar {
   width: 4px;
@@ -382,7 +537,7 @@
 }
 
 .chat-flow-07 .message-bubble.typing-animation {
-  background: #f0f0f0;
+  background: #F2F2F4;
   color: #383232;
   border-bottom-left-radius: 6px;
 }
@@ -402,6 +557,138 @@
     opacity: 0;
   }
 }
+
+/* Enhanced Facial Expression Styles */
+.chat-flow-07 .expression-happy .message-bubble {
+  background: linear-gradient(135deg, #fff3cd, #F2F2F4);
+  border-left: 3px solid #ffc107;
+  animation: happy-glow 2s ease-in-out;
+}
+
+.chat-flow-07 .expression-sad .message-bubble {
+  background: linear-gradient(135deg, #e3f2fd, #F2F2F4);
+  border-left: 3px solid #2196f3;
+  animation: sad-fade 2s ease-in-out;
+}
+
+.chat-flow-07 .expression-thoughtful .message-bubble {
+  background: linear-gradient(135deg, #f3e5f5, #F2F2F4);
+  border-left: 3px solid #9c27b0;
+  animation: thoughtful-pulse 3s ease-in-out;
+}
+
+.chat-flow-07 .expression-anxious .message-bubble {
+  background: linear-gradient(135deg, #ffebee, #F2F2F4);
+  border-left: 3px solid #f44336;
+  animation: anxious-tremble 1.5s ease-in-out;
+}
+
+.chat-flow-07 .expression-surprised .message-bubble {
+  background: linear-gradient(135deg, #e8f5e8, #F2F2F4);
+  border-left: 3px solid #4caf50;
+  animation: surprised-bounce 1s ease-in-out;
+}
+
+/* Emotional State Styles */
+.chat-flow-07 .emotional-empathetic {
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+}
+
+.chat-flow-07 .emotional-celebratory {
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+}
+
+.chat-flow-07 .emotional-calming {
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.chat-flow-07 .emotional-understanding {
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+}
+
+.chat-flow-07 .emotional-contemplative {
+  box-shadow: 0 2px 8px rgba(156, 39, 176, 0.3);
+}
+
+/* Enhanced thinking dots for different expressions */
+.chat-flow-07 .thinking-dots.expression-thoughtful .thought-dot {
+  animation: thinking-deep 2.5s infinite ease-in-out;
+}
+
+.chat-flow-07 .thinking-dots.expression-empathetic .thought-dot {
+  animation: thinking-empathetic 2s infinite ease-in-out;
+  background: #2196f3;
+}
+
+.chat-flow-07 .thinking-dots.expression-happy .thought-dot {
+  animation: thinking-happy 1.5s infinite ease-in-out;
+  background: #ffc107;
+}
+
+/* Expression Animations */
+@keyframes happy-glow {
+  0% { box-shadow: 0 0 0 rgba(255, 193, 7, 0); }
+  50% { box-shadow: 0 0 20px rgba(255, 193, 7, 0.4); }
+  100% { box-shadow: 0 0 0 rgba(255, 193, 7, 0); }
+}
+
+@keyframes sad-fade {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+@keyframes thoughtful-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+@keyframes anxious-tremble {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-1px); }
+  75% { transform: translateX(1px); }
+}
+
+@keyframes surprised-bounce {
+  0% { transform: translateY(0); }
+  30% { transform: translateY(-3px); }
+  50% { transform: translateY(0); }
+  70% { transform: translateY(-1px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes thinking-deep {
+  0%, 80%, 100% {
+    transform: translateY(0px) scale(0.8);
+    opacity: 0.4;
+  }
+  40% {
+    transform: translateY(-12px) scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes thinking-empathetic {
+  0%, 60%, 100% {
+    transform: translateY(0px) scale(0.9);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-6px) scale(1);
+    opacity: 0.9;
+  }
+}
+
+@keyframes thinking-happy {
+  0%, 60%, 100% {
+    transform: translateY(0px) scale(0.8) rotate(0deg);
+    opacity: 0.6;
+  }
+  30% {
+    transform: translateY(-8px) scale(1.1) rotate(10deg);
+    opacity: 1;
+  }
+}
 .chat-flow-07 .orbs-v-3-instance {
   position: absolute !important;
   left: 50% !important;
@@ -412,6 +699,7 @@
   position: absolute;
   inset: 0;
 }
+/* Much lower keyboard positioning */
 .chat-flow-07 .keyboard-i-phone-instance {
   width: 100% !important;
   max-width: 393px !important;
@@ -419,7 +707,7 @@
   position: absolute !important;
   left: 50% !important;
   translate: -50% !important;
-  bottom: -20px !important;
+  bottom: -100px !important; /* Moved much lower */
 }
 .chat-flow-07 .keyboard-text-inputs {
   background: #e8dede;
@@ -434,7 +722,7 @@
   position: absolute;
   left: 50%;
   translate: -50%;
-  bottom: 309px;
+  bottom: 229px; /* Moved much lower */
 }
 .chat-flow-07 .frame-14 {
   display: flex;

@@ -1,77 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="./vars.css">
-  <link rel="stylesheet" href="./style.css">
-  
-  
-  <style>
-   a,
-   button,
-   input,
-   select,
-   h1,
-   h2,
-   h3,
-   h4,
-   h5,
-   * {
-       box-sizing: border-box;
-       margin: 0;
-       padding: 0;
-       border: none;
-       text-decoration: none;
-       background: none;
-   
-       -webkit-font-smoothing: antialiased;
-   }
-   
-   menu, ol, ul {
-       list-style-type: none;
-       margin: 0;
-       padding: 0;
-   }
-   </style>
-  <title>Document</title>
-</head>
-<body>
-  <div class="chat-flow-01">
-    <div class="rectangle-2"></div>
-    <div class="rectangle-1"></div>
-    <div class="rectangle-3"></div>
-    <div class="check-in">Check In</div>
-    <div class="home">
-      <div class="ellipse-4"></div>
-      <div class="ellipse-5"></div>
-      <div class="ellipse-6"></div>
-      <div class="ellipse-14"></div>
-      <div class="ellipse-15"></div>
-      <div class="ellipse-16"></div>
-      <div class="ellipse-17"></div>
-      <div class="ellipse-18"></div>
-      <div class="ellipse-19"></div>
-      <div class="ellipse-20"></div>
-      <div class="ellipse-21"></div>
-      <div class="ellipse-7"></div>
-      <div class="ellipse-8"></div>
-      <div class="ellipse-9"></div>
-      <div class="ellipse-10"></div>
-      <div class="ellipse-11"></div>
-      <div class="ellipse-12"></div>
-    </div>
-    <div class="settings">
-      <div class="ellipse-52"></div>
-      <div class="ellipse-62"></div>
-      <div class="ellipse-72"></div>
-    </div>
-    <img class="vector-1" src="vector-10.svg" />
-    <div class="orbs-v-1">
-      <div class="ellipse-1"></div>
-    </div>
-  </div>
-  
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="./vars.css" />
+		<link rel="stylesheet" href="./style.css" />
+
+		<style>
+			a,
+			button,
+			input,
+			select,
+			h1,
+			h2,
+			h3,
+			h4,
+			h5,
+			* {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+				border: none;
+				text-decoration: none;
+				background: none;
+
+				-webkit-font-smoothing: antialiased;
+			}
+
+			menu,
+			ol,
+			ul {
+				list-style-type: none;
+				margin: 0;
+				padding: 0;
+			}
+		</style>
+		<title>Document</title>
+	</head>
+	<body>
+		<div class="chat-flow-01">
+			<div class="rectangle-2"></div>
+			<div class="rectangle-1"></div>
+			<div class="rectangle-3"></div>
+			<div class="check-in">Check In</div>
+			<div class="home">
+				<div class="ellipse-4"></div>
+				<div class="ellipse-5"></div>
+				<div class="ellipse-6"></div>
+				<div class="ellipse-14"></div>
+				<div class="ellipse-15"></div>
+				<div class="ellipse-16"></div>
+				<div class="ellipse-17"></div>
+				<div class="ellipse-18"></div>
+				<div class="ellipse-19"></div>
+				<div class="ellipse-20"></div>
+				<div class="ellipse-21"></div>
+				<div class="ellipse-7"></div>
+				<div class="ellipse-8"></div>
+				<div class="ellipse-9"></div>
+				<div class="ellipse-10"></div>
+				<div class="ellipse-11"></div>
+				<div class="ellipse-12"></div>
+			</div>
+			<div class="settings">
+				<div class="ellipse-52"></div>
+				<div class="ellipse-62"></div>
+				<div class="ellipse-72"></div>
+			</div>
+			<img class="vector-1" src="vector-10.svg" />
+			<div class="orbs-v-1">
+				<div class="ellipse-1" id="audioOrb"></div>
+			</div>
+		</div>
+
+		<!-- Hidden audio element -->
+		<audio id="audioElement" preload="auto">
+			<source
+				src="public/ElevenLabs_2025-06-11T12_10_17_Juniper_pvc_sp100_s50_sb75_v3.mp3"
+				type="audio/mpeg"
+			/>
+		</audio>
+
+		<script>
+			class AudioReactiveOrb {
+				constructor() {
+					this.audio = document.getElementById("audioElement");
+					this.orb = document.getElementById("audioOrb");
+					this.isPlaying = false;
+					this.audioContext = null;
+					this.analyser = null;
+					this.dataArray = null;
+					this.animationId = null;
+
+					// Base size for the orb
+					this.baseSize = 347.04;
+					this.minSize = this.baseSize * 0.8;
+					this.maxSize = this.baseSize * 1.4;
+
+					this.initAudio();
+					this.bindEvents();
+				}
+
+				async initAudio() {
+					try {
+						// Create audio context
+						this.audioContext = new (window.AudioContext ||
+							window.webkitAudioContext)();
+
+						// Create analyser
+						this.analyser = this.audioContext.createAnalyser();
+						this.analyser.fftSize = 256;
+						this.analyser.smoothingTimeConstant = 0.8;
+
+						// Create data array
+						this.dataArray = new Uint8Array(
+							this.analyser.frequencyBinCount
+						);
+
+						// Connect audio source to analyser
+						const source =
+							this.audioContext.createMediaElementSource(
+								this.audio
+							);
+						source.connect(this.analyser);
+						this.analyser.connect(this.audioContext.destination);
+					} catch (error) {
+						console.error("Audio initialization failed:", error);
+					}
+				}
+
+				bindEvents() {
+					// Click to start/stop audio
+					this.orb.addEventListener("click", () => {
+						if (this.isPlaying) {
+							this.stopAudio();
+						} else {
+							this.startAudio();
+						}
+					});
+
+					// Audio ended event
+					this.audio.addEventListener("ended", () => {
+						this.stopAudio();
+					});
+
+					// Add visual feedback for clickability
+					this.orb.style.cursor = "pointer";
+					this.orb.style.transition = "all 0.1s ease-out";
+				}
+
+				async startAudio() {
+					try {
+						// Resume audio context if suspended
+						if (this.audioContext.state === "suspended") {
+							await this.audioContext.resume();
+						}
+
+						await this.audio.play();
+						this.isPlaying = true;
+						this.startVisualization();
+					} catch (error) {
+						console.error("Failed to start audio:", error);
+					}
+				}
+
+				stopAudio() {
+					this.audio.pause();
+					this.audio.currentTime = 0;
+					this.isPlaying = false;
+					this.stopVisualization();
+
+					// Reset to base size
+					this.updateOrbSize(this.baseSize);
+				}
+
+				startVisualization() {
+					const animate = () => {
+						if (!this.isPlaying) return;
+
+						// Get frequency data
+						this.analyser.getByteFrequencyData(this.dataArray);
+
+						// Calculate average volume
+						let sum = 0;
+						for (let i = 0; i < this.dataArray.length; i++) {
+							sum += this.dataArray[i];
+						}
+						const average = sum / this.dataArray.length;
+
+						// Map volume to size (0-255 -> minSize-maxSize)
+						const normalizedVolume = average / 255;
+						const targetSize =
+							this.minSize +
+							normalizedVolume * (this.maxSize - this.minSize);
+
+						// Apply smoothing and update orb
+						this.updateOrbSize(targetSize);
+
+						this.animationId = requestAnimationFrame(animate);
+					};
+
+					animate();
+				}
+
+				stopVisualization() {
+					if (this.animationId) {
+						cancelAnimationFrame(this.animationId);
+						this.animationId = null;
+					}
+				}
+
+				updateOrbSize(size) {
+					const roundedSize = Math.round(size * 100) / 100;
+					this.orb.style.width = `${roundedSize}px`;
+					this.orb.style.height = `${roundedSize}px`;
+
+					// Add subtle glow effect based on size
+					const glowIntensity =
+						(size - this.minSize) / (this.maxSize - this.minSize);
+					const glowSize = 15 + glowIntensity * 20;
+					const glowOpacity = 0.3 + glowIntensity * 0.5;
+
+					this.orb.style.filter = `drop-shadow(0 0 ${glowSize}px rgba(0, 255, 161, ${glowOpacity}))`;
+				}
+			}
+
+			// Initialize when DOM is loaded
+			document.addEventListener("DOMContentLoaded", () => {
+				new AudioReactiveOrb();
+			});
+		</script>
+	</body>
 </html>

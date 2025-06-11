@@ -1,0 +1,198 @@
+.blob-shape {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.blob-svg {
+  width: 100%;
+  height: auto;
+  max-width: 300px;
+  filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
+}
+
+/* Haupt-Blob Styling */
+.blob-main {
+  filter: url(#glow);
+  transform-origin: center;
+}
+
+/* Glow-Effekt */
+.blob-glow {
+  transform-origin: center;
+  opacity: 0.6;
+}
+
+/* Kontur-Animation */
+.blob-outline {
+  transform-origin: center;
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  filter: drop-shadow(0 0 5px currentColor);
+}
+
+/* Debug Information (nur in Development) */
+.blob-debug {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  line-height: 1.4;
+  min-width: 120px;
+  z-index: 10;
+}
+
+.blob-debug div {
+  margin-bottom: 4px;
+}
+
+.blob-debug div:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .blob-svg {
+    max-width: 250px;
+  }
+  
+  .blob-debug {
+    font-size: 10px;
+    padding: 8px;
+    min-width: 100px;
+  }
+}
+
+/* Animations für verschiedene Zustände */
+@keyframes blob-idle-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+@keyframes blob-listening-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 10px rgba(74, 144, 226, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(74, 144, 226, 0.8));
+  }
+}
+
+@keyframes blob-speaking-intensity {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 15px rgba(255, 165, 0, 0.6));
+  }
+  100% {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 25px rgba(255, 165, 0, 0.9));
+  }
+}
+
+/* Zustandsspezifische Klassen für fallback ohne Framer Motion */
+.blob-shape.idle .blob-main {
+  animation: blob-idle-pulse 3s ease-in-out infinite;
+}
+
+.blob-shape.listening .blob-main {
+  animation: blob-listening-glow 2s ease-in-out infinite;
+}
+
+.blob-shape.speaking .blob-main {
+  animation: blob-speaking-intensity 0.3s ease-out;
+}
+
+/* Accessibility - Reduzierte Bewegung */
+@media (prefers-reduced-motion: reduce) {
+  .blob-main,
+  .blob-glow,
+  .blob-outline {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .blob-shape.idle .blob-main,
+  .blob-shape.listening .blob-main,
+  .blob-shape.speaking .blob-main {
+    animation: none;
+  }
+  
+  @keyframes blob-idle-pulse {
+    0%, 100% {
+      transform: none;
+      filter: none;
+    }
+  }
+  
+  @keyframes blob-listening-glow {
+    0%, 100% {
+      transform: none;
+      filter: none;
+    }
+  }
+  
+  @keyframes blob-speaking-intensity {
+    0%, 100% {
+      transform: none;
+      filter: none;
+    }
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .blob-main {
+    stroke: currentColor;
+    stroke-width: 2px;
+  }
+  
+  .blob-glow {
+    opacity: 0.3;
+  }
+  
+  .blob-debug {
+    background: black;
+    border: 1px solid white;
+  }
+}
+
+/* Dark Mode spezifische Anpassungen */
+@media (prefers-color-scheme: dark) {
+  .blob-svg {
+    filter: drop-shadow(0 4px 20px rgba(255, 255, 255, 0.1));
+  }
+  
+  .blob-debug {
+    background: rgba(255, 255, 255, 0.9);
+    color: black;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .blob-shape {
+    filter: none;
+  }
+  
+  .blob-debug {
+    display: none;
+  }
+  
+  .blob-main,
+  .blob-glow {
+    animation: none;
+    transition: none;
+  }
+}

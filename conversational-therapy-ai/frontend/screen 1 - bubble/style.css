@@ -1,327 +1,339 @@
 .chat-flow-01,
 .chat-flow-01 * {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 .chat-flow-01 {
-  background: #fbf4f1;
-  height: 852px;
-  position: relative;
-  overflow: hidden;
+	background: #fbf4f1;
+	height: 852px;
+	position: relative;
+	overflow: hidden;
 }
 .rectangle-2 {
-  background: radial-gradient(
-    closest-side,
-    rgba(65, 137, 240, 0.5) 0%,
-    rgba(65, 137, 240, 0.25) 41.347599029541016%,
-    rgba(65, 137, 240, 0) 100%
-  );
-  width: 426.69px;
-  height: 549.06px;
-  position: absolute;
-  left: -62.14px;
-  top: 364px;
-  transform-origin: 0 0;
-  transform: rotate(-26.142deg) scale(1, 1);
+	background: radial-gradient(
+		closest-side,
+		rgba(65, 137, 240, 0.5) 0%,
+		rgba(65, 137, 240, 0.25) 41.347599029541016%,
+		rgba(65, 137, 240, 0) 100%
+	);
+	width: 426.69px;
+	height: 549.06px;
+	position: absolute;
+	left: -62.14px;
+	top: 364px;
+	transform-origin: 0 0;
+	transform: rotate(-26.142deg) scale(1, 1);
 }
 .rectangle-1 {
-  background: radial-gradient(
-    closest-side,
-    rgba(35, 255, 193, 0.4) 0%,
-    rgba(35, 255, 193, 0.2) 41.347599029541016%,
-    rgba(35, 255, 193, 0) 100%
-  );
-  width: 402.22px;
-  height: 420.29px;
-  position: absolute;
-  left: 141.99px;
-  top: 164.4px;
-  transform-origin: 0 0;
-  transform: rotate(62.874deg) scale(1, 1);
+	background: radial-gradient(
+		closest-side,
+		rgba(35, 255, 193, 0.4) 0%,
+		rgba(35, 255, 193, 0.2) 41.347599029541016%,
+		rgba(35, 255, 193, 0) 100%
+	);
+	width: 402.22px;
+	height: 420.29px;
+	position: absolute;
+	left: 141.99px;
+	top: 164.4px;
+	transform-origin: 0 0;
+	transform: rotate(62.874deg) scale(1, 1);
 }
 .rectangle-3 {
-  background: radial-gradient(
-    closest-side,
-    rgba(0, 122, 253, 0.5) 0%,
-    rgba(0, 122, 253, 0.25) 41.347599029541016%,
-    rgba(0, 122, 253, 0) 100%
-  );
-  width: 440.36px;
-  height: 566.64px;
-  position: absolute;
-  left: 101.75px;
-  top: 34.08px;
-  transform-origin: 0 0;
-  transform: rotate(62.874deg) scale(-1, 1);
+	background: radial-gradient(
+		closest-side,
+		rgba(0, 122, 253, 0.5) 0%,
+		rgba(0, 122, 253, 0.25) 41.347599029541016%,
+		rgba(0, 122, 253, 0) 100%
+	);
+	width: 440.36px;
+	height: 566.64px;
+	position: absolute;
+	left: 101.75px;
+	top: 34.08px;
+	transform-origin: 0 0;
+	transform: rotate(62.874deg) scale(-1, 1);
 }
 .check-in {
-  color: #9a7a7a;
-  text-align: center;
-  font-family: "PpWriter-Regular", sans-serif;
-  font-size: 16px;
-  font-weight: 400;
-  position: absolute;
-  left: 50%;
-  translate: -50%;
-  top: 70px;
+	color: #9a7a7a;
+	text-align: center;
+	font-family: "PpWriter-Regular", sans-serif;
+	font-size: 16px;
+	font-weight: 400;
+	position: absolute;
+	left: 50%;
+	translate: -50%;
+	top: 70px;
 }
 .home {
-  width: 40px;
-  height: 40px;
-  position: absolute;
-  left: calc(50% - -122.5px);
-  top: 765px;
+	width: 40px;
+	height: 40px;
+	position: absolute;
+	left: calc(50% - -122.5px);
+	top: 765px;
 }
 .group-1 {
-  position: absolute;
-  inset: 0;
+	position: absolute;
+	inset: 0;
 }
 .ellipse-4 {
-  background: #9a7a7a;
-  border-radius: 50%;
-  width: 2.67px;
-  height: 2.67px;
-  position: absolute;
-  left: 18.67px;
-  top: 28px;
+	background: #9a7a7a;
+	border-radius: 50%;
+	width: 2.67px;
+	height: 2.67px;
+	position: absolute;
+	left: 18.67px;
+	top: 28px;
 }
 .ellipse-5 {
-  background: #9a7a7a;
-  border-radius: 50%;
-  width: 5.33px;
-  height: 5.33px;
-  position: absolute;
-  left: 17.33px;
-  top: 17.33px;
+	background: #9a7a7a;
+	border-radius: 50%;
+	width: 5.33px;
+	height: 5.33px;
+	position: absolute;
+	left: 17.33px;
+	top: 17.33px;
 }
 .ellipse-6 {
-  background: #9a7a7a;
-  border-radius: 50%;
-  width: 2.67px;
-  height: 2.67px;
-  position: absolute;
-  left: 18.67px;
-  top: 9.33px;
+	background: #9a7a7a;
+	border-radius: 50%;
+	width: 2.67px;
+	height: 2.67px;
+	position: absolute;
+	left: 18.67px;
+	top: 9.33px;
 }
 .ellipse-14 {
-  background: #9a7a7a;
-  border-radius: 50%;
-  width: 2.67px;
-  height: 2.67px;
-  position: absolute;
-  left: 18.67px;
-  top: 0px;
+	background: #9a7a7a;
+	border-radius: 50%;
+	width: 2.67px;
+	height: 2.67px;
+	position: absolute;
+	left: 18.67px;
+	top: 0px;
 }
 .ellipse-15 {
-  background: #9a7a7a;
-  border-radius: 50%;
-  width: 2.67px;
-  height: 2.67px;
-  position: absolute;
-  left: 18.67px;
-  top: 37.33px;
+	background: #9a7a7a;
+	border-radius: 50%;
+	width: 2.67px;
+	height: 2.67px;
+	position: absolute;
+	left: 18.67px;
+	top: 37.33px;
 }
 .ellipse-16 {
-  background: #9a7a7a;
-  border-radius: 50%;
-  width: 2.67px;
-  height: 2.67px;
-  position: absolute;
-  left: 40px;
-  top: 18.67px;
-  transform-origin: 0 0;
-  transform: rotate(90deg) scale(1, 1);
+	background: #9a7a7a;
+	border-radius: 50%;
+	width: 2.67px;
+	height: 2.67px;
+	position: absolute;
+	left: 40px;
+	top: 18.67px;
+	transform-origin: 0 0;
+	transform: rotate(90deg) scale(1, 1);
 }
 .ellipse-17 {
-  background: #9a7a7a;
-  border-radius: 50%;
-  width: 2.67px;
-  height: 2.67px;
-  position: absolute;
-  left: 2.67px;
-  top: 18.67px;
-  transform-origin: 0 0;
-  transform: rotate(90deg) scale(1, 1);
+	background: #9a7a7a;
+	border-radius: 50%;
+	width: 2.67px;
+	height: 2.67px;
+	position: absolute;
+	left: 2.67px;
+	top: 18.67px;
+	transform-origin: 0 0;
+	transform: rotate(90deg) scale(1, 1);
 }
 .ellipse-18 {
-  background: #9a7a7a;
-  border-radius: 50%;
-  width: 2.67px;
-  height: 2.67px;
-  position: absolute;
-  left: 35.08px;
-  top: 33.2px;
-  transform-origin: 0 0;
-  transform: rotate(135deg) scale(1, 1);
+	background: #9a7a7a;
+	border-radius: 50%;
+	width: 2.67px;
+	height: 2.67px;
+	position: absolute;
+	left: 35.08px;
+	top: 33.2px;
+	transform-origin: 0 0;
+	transform: rotate(135deg) scale(1, 1);
 }
 .ellipse-19 {
-  background: #9a7a7a;
-  border-radius: 50%;
-  width: 2.67px;
-  height: 2.67px;
-  position: absolute;
-  left: 8.69px;
-  top: 6.8px;
-  transform-origin: 0 0;
-  transform: rotate(135deg) scale(1, 1);
+	background: #9a7a7a;
+	border-radius: 50%;
+	width: 2.67px;
+	height: 2.67px;
+	position: absolute;
+	left: 8.69px;
+	top: 6.8px;
+	transform-origin: 0 0;
+	transform: rotate(135deg) scale(1, 1);
 }
 .ellipse-20 {
-  background: #9a7a7a;
-  border-radius: 50%;
-  width: 2.67px;
-  height: 2.67px;
-  position: absolute;
-  left: 6.8px;
-  top: 35.08px;
-  transform-origin: 0 0;
-  transform: rotate(-135deg) scale(1, 1);
+	background: #9a7a7a;
+	border-radius: 50%;
+	width: 2.67px;
+	height: 2.67px;
+	position: absolute;
+	left: 6.8px;
+	top: 35.08px;
+	transform-origin: 0 0;
+	transform: rotate(-135deg) scale(1, 1);
 }
 .ellipse-21 {
-  background: #9a7a7a;
-  border-radius: 50%;
-  width: 2.67px;
-  height: 2.67px;
-  position: absolute;
-  left: 33.2px;
-  top: 8.69px;
-  transform-origin: 0 0;
-  transform: rotate(-135deg) scale(1, 1);
+	background: #9a7a7a;
+	border-radius: 50%;
+	width: 2.67px;
+	height: 2.67px;
+	position: absolute;
+	left: 33.2px;
+	top: 8.69px;
+	transform-origin: 0 0;
+	transform: rotate(-135deg) scale(1, 1);
 }
 .ellipse-7 {
-  background: #9a7a7a;
-  border-radius: 50%;
-  width: 2.67px;
-  height: 2.67px;
-  position: absolute;
-  left: 12px;
-  top: 18.67px;
-  transform-origin: 0 0;
-  transform: rotate(90deg) scale(1, 1);
+	background: #9a7a7a;
+	border-radius: 50%;
+	width: 2.67px;
+	height: 2.67px;
+	position: absolute;
+	left: 12px;
+	top: 18.67px;
+	transform-origin: 0 0;
+	transform: rotate(90deg) scale(1, 1);
 }
 .ellipse-8 {
-  background: #9a7a7a;
-  border-radius: 50%;
-  width: 2.67px;
-  height: 2.67px;
-  position: absolute;
-  left: 30.67px;
-  top: 18.67px;
-  transform-origin: 0 0;
-  transform: rotate(90deg) scale(1, 1);
+	background: #9a7a7a;
+	border-radius: 50%;
+	width: 2.67px;
+	height: 2.67px;
+	position: absolute;
+	left: 30.67px;
+	top: 18.67px;
+	transform-origin: 0 0;
+	transform: rotate(90deg) scale(1, 1);
 }
 .ellipse-9 {
-  background: #9a7a7a;
-  border-radius: 50%;
-  width: 2.67px;
-  height: 2.67px;
-  position: absolute;
-  left: 15.29px;
-  top: 13.4px;
-  transform-origin: 0 0;
-  transform: rotate(135deg) scale(1, 1);
+	background: #9a7a7a;
+	border-radius: 50%;
+	width: 2.67px;
+	height: 2.67px;
+	position: absolute;
+	left: 15.29px;
+	top: 13.4px;
+	transform-origin: 0 0;
+	transform: rotate(135deg) scale(1, 1);
 }
 .ellipse-10 {
-  background: #9a7a7a;
-  border-radius: 50%;
-  width: 2.67px;
-  height: 2.67px;
-  position: absolute;
-  left: 28.49px;
-  top: 26.6px;
-  transform-origin: 0 0;
-  transform: rotate(135deg) scale(1, 1);
+	background: #9a7a7a;
+	border-radius: 50%;
+	width: 2.67px;
+	height: 2.67px;
+	position: absolute;
+	left: 28.49px;
+	top: 26.6px;
+	transform-origin: 0 0;
+	transform: rotate(135deg) scale(1, 1);
 }
 .ellipse-11 {
-  background: #9a7a7a;
-  border-radius: 50%;
-  width: 2.67px;
-  height: 2.67px;
-  position: absolute;
-  left: 24.71px;
-  top: 13.4px;
-  transform-origin: 0 0;
-  transform: rotate(-45deg) scale(1, -1);
+	background: #9a7a7a;
+	border-radius: 50%;
+	width: 2.67px;
+	height: 2.67px;
+	position: absolute;
+	left: 24.71px;
+	top: 13.4px;
+	transform-origin: 0 0;
+	transform: rotate(-45deg) scale(1, -1);
 }
 .ellipse-12 {
-  background: #9a7a7a;
-  border-radius: 50%;
-  width: 2.67px;
-  height: 2.67px;
-  position: absolute;
-  left: 11.51px;
-  top: 26.6px;
-  transform-origin: 0 0;
-  transform: rotate(-45deg) scale(1, -1);
+	background: #9a7a7a;
+	border-radius: 50%;
+	width: 2.67px;
+	height: 2.67px;
+	position: absolute;
+	left: 11.51px;
+	top: 26.6px;
+	transform-origin: 0 0;
+	transform: rotate(-45deg) scale(1, -1);
 }
 .settings {
-  width: 46.67px;
-  height: 14px;
-  position: absolute;
-  right: 32.67px;
-  top: 72px;
+	width: 46.67px;
+	height: 14px;
+	position: absolute;
+	right: 32.67px;
+	top: 72px;
 }
 .group-2 {
-  position: absolute;
-  inset: 0;
+	position: absolute;
+	inset: 0;
 }
 .ellipse-52 {
-  background: #9a7a7a;
-  border-radius: 50%;
-  width: 3.11px;
-  height: 3.11px;
-  position: absolute;
-  left: calc(50% - -7px);
-  top: 50%;
-  translate: 0 -50%;
+	background: #9a7a7a;
+	border-radius: 50%;
+	width: 3.11px;
+	height: 3.11px;
+	position: absolute;
+	left: calc(50% - -7px);
+	top: 50%;
+	translate: 0 -50%;
 }
 .ellipse-62 {
-  background: #9a7a7a;
-  border-radius: 50%;
-  width: 3.11px;
-  height: 3.11px;
-  position: absolute;
-  left: calc(50% - -13.22px);
-  top: 50%;
-  translate: 0 -50%;
+	background: #9a7a7a;
+	border-radius: 50%;
+	width: 3.11px;
+	height: 3.11px;
+	position: absolute;
+	left: calc(50% - -13.22px);
+	top: 50%;
+	translate: 0 -50%;
 }
 .ellipse-72 {
-  background: #9a7a7a;
-  border-radius: 50%;
-  width: 3.11px;
-  height: 3.11px;
-  position: absolute;
-  left: calc(50% - -19.44px);
-  top: 50%;
-  translate: 0 -50%;
+	background: #9a7a7a;
+	border-radius: 50%;
+	width: 3.11px;
+	height: 3.11px;
+	position: absolute;
+	left: calc(50% - -19.44px);
+	top: 50%;
+	translate: 0 -50%;
 }
 .vector-1 {
-  width: 20px;
-  height: 6px;
-  position: absolute;
-  left: 50%;
-  translate: -50%;
-  top: 835px;
-  overflow: visible;
+	width: 20px;
+	height: 6px;
+	position: absolute;
+	left: 50%;
+	translate: -50%;
+	top: 835px;
+	overflow: visible;
 }
 .orbs-v-1 {
-  width: 617px;
-  height: 617px;
-  position: absolute;
-  left: 50%;
-  translate: -50% -50%;
-  top: 50%;
+	width: 617px;
+	height: 617px;
+	position: absolute;
+	left: 50%;
+	translate: -50% -50%;
+	top: 50%;
 }
 .ellipse-1 {
-  background: radial-gradient(
-    closest-side,
-    rgba(0, 255, 161, 1) 11.059201508760452%,
-    rgba(68, 140, 255, 0.5) 61.54123544692993%,
-    rgba(255, 187, 148, 0) 100%
-  );
-  border-radius: 50%;
-  width: 347.04px;
-  height: 347.04px;
-  position: absolute;
-  left: 50%;
-  translate: -50% -50%;
-  top: 50%;
+	background: radial-gradient(
+		closest-side,
+		rgba(0, 255, 161, 1) 11.059201508760452%,
+		rgba(68, 140, 255, 0.5) 61.54123544692993%,
+		rgba(255, 187, 148, 0) 100%
+	);
+	border-radius: 50%;
+	width: 347.04px;
+	height: 347.04px;
+	position: absolute;
+	left: 50%;
+	translate: -50% -50%;
+	top: 50%;
+	cursor: pointer;
+	transition: all 0.05s ease-out;
+	filter: drop-shadow(0 0 15px rgba(0, 255, 161, 0.3));
+}
+
+.ellipse-1:hover {
+	filter: drop-shadow(0 0 25px rgba(0, 255, 161, 0.5));
+	transform: translate(-50%, -50%) scale(1.02);
+}
+
+.ellipse-1:active {
+	transform: translate(-50%, -50%) scale(0.98);
 }

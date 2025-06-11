@@ -1,0 +1,249 @@
+.audio-reactive-orb {
+  width: 617px;
+  height: 617px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Orb Container - entspricht .orbs-v-1 aus dem Original */
+.orb-container {
+  width: 617px;
+  height: 617px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s ease-out;
+}
+
+/* Haupt-Ellipse mit exaktem "calmly tuned in" Gradient */
+.main-ellipse {
+  background: radial-gradient(
+    50% 50% at 50% 50%, 
+    #00FFA2 11.06%, 
+    rgba(68, 140, 255, 0.5) 61.54%, 
+    rgba(255, 187, 148, 0) 100%
+  );
+  border-radius: 50%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s ease-out, height 0.2s ease-out, filter 0.3s ease-out;
+}
+
+/* Status-basierte Effekte */
+.main-ellipse.idle {
+  filter: drop-shadow(0 0 15px rgba(0, 255, 161, 0.3));
+}
+
+.main-ellipse.listening {
+  filter: drop-shadow(0 0 25px rgba(0, 255, 161, 0.6));
+  animation: listening-pulse 2s ease-in-out infinite;
+}
+
+.main-ellipse.speaking {
+  filter: drop-shadow(0 0 35px rgba(0, 255, 161, 0.8));
+  animation: speaking-intensity 0.3s ease-out;
+}
+
+/* Pulse Ring für Listening-Status */
+.pulse-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid rgba(0, 255, 161, 0.4);
+  border-radius: 50%;
+  animation: pulse-ring 2s ease-in-out infinite;
+}
+
+/* Animationen */
+@keyframes listening-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 25px rgba(0, 255, 161, 0.6));
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 35px rgba(0, 255, 161, 0.8));
+    transform: translate(-50%, -50%) scale(1.02);
+  }
+}
+
+@keyframes speaking-intensity {
+  0% {
+    filter: drop-shadow(0 0 35px rgba(0, 255, 161, 0.8));
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    filter: drop-shadow(0 0 45px rgba(0, 255, 161, 1));
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: translate(-50%, -50%) scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.05);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.95);
+    opacity: 0.8;
+  }
+}
+
+/* Debug Info */
+.debug-info {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  z-index: 1000;
+  min-width: 140px;
+}
+
+.debug-info div {
+  margin-bottom: 4px;
+}
+
+.debug-info div:last-child {
+  margin-bottom: 0;
+}
+
+/* Hidden Audio Element */
+audio {
+  display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .audio-reactive-orb {
+    width: 400px;
+    height: 400px;
+  }
+  
+  .orb-container {
+    width: 400px;
+    height: 400px;
+  }
+  
+  .main-ellipse {
+    /* Skalierung für kleinere Bildschirme */
+  }
+  
+  .debug-info {
+    font-size: 10px;
+    padding: 8px;
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .audio-reactive-orb {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .orb-container {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .debug-info {
+    font-size: 9px;
+    padding: 6px;
+    min-width: 100px;
+  }
+}
+
+/* Accessibility - Reduzierte Bewegung */
+@media (prefers-reduced-motion: reduce) {
+  .main-ellipse,
+  .orb-container,
+  .pulse-ring {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .main-ellipse.listening,
+  .main-ellipse.speaking {
+    animation: none;
+  }
+  
+  @keyframes listening-pulse {
+    0%, 100% {
+      transform: translate(-50%, -50%);
+      filter: none;
+      opacity: 1;
+    }
+  }
+  
+  @keyframes speaking-intensity {
+    0%, 100% {
+      transform: translate(-50%, -50%);
+      filter: none;
+      opacity: 1;
+    }
+  }
+  
+  @keyframes pulse-ring {
+    0%, 100% {
+      transform: translate(-50%, -50%);
+      filter: none;
+      opacity: 1;
+    }
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .main-ellipse {
+    border: 2px solid #00FFA2;
+  }
+  
+  .debug-info {
+    background: black;
+    border: 1px solid white;
+  }
+}
+
+/* Dark Mode spezifische Anpassungen */
+@media (prefers-color-scheme: dark) {
+  .debug-info {
+    background: rgba(255, 255, 255, 0.9);
+    color: black;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .audio-reactive-orb {
+    filter: none;
+  }
+  
+  .debug-info {
+    display: none;
+  }
+  
+  .main-ellipse,
+  .orb-container,
+  .pulse-ring {
+    animation: none;
+    transition: none;
+  }
+}

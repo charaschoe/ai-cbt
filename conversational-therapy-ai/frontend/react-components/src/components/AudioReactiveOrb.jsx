@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./ChatFlow.css";
+import "./AudioReactiveOrb.css";
 
-const ChatFlow = ({ onArrowClick }) => {
+const AudioReactiveOrb = ({ className }) => {
 	const audioRef = useRef(null);
 	const orbRef = useRef(null);
 	const [isPlaying, setIsPlaying] = useState(false);
@@ -16,14 +16,6 @@ const ChatFlow = ({ onArrowClick }) => {
 
 	useEffect(() => {
 		initAudio();
-
-		// Set initial orb size
-		if (orbRef.current) {
-			orbRef.current.style.width = `${baseSize}px`;
-			orbRef.current.style.height = `${baseSize}px`;
-			console.log("Initial orb size set to:", baseSize);
-		}
-
 		return () => {
 			if (animationIdRef.current) {
 				cancelAnimationFrame(animationIdRef.current);
@@ -69,21 +61,19 @@ const ChatFlow = ({ onArrowClick }) => {
 				await audioContext.resume();
 			}
 
-			// Connect audio source to analyser only once
-			if (!audioRef.current.connectedToAnalyser) {
+			// Connect audio source to analyser
+			if (!audioRef.current.audioSource) {
 				const source = audioContext.createMediaElementSource(
 					audioRef.current
 				);
 				source.connect(analyser);
 				analyser.connect(audioContext.destination);
-				audioRef.current.connectedToAnalyser = true;
-				console.log("Audio connected to analyser");
+				audioRef.current.audioSource = source;
 			}
 
 			await audioRef.current.play();
 			setIsPlaying(true);
 			startVisualization();
-			console.log("Audio started and visualization began");
 		} catch (error) {
 			console.error("Failed to start audio:", error);
 		}
@@ -99,17 +89,12 @@ const ChatFlow = ({ onArrowClick }) => {
 
 		// Reset to base size
 		updateOrbSize(baseSize);
-		console.log("Audio stopped and orb reset to base size");
 	};
 
 	const startVisualization = () => {
 		if (!analyser) return;
 
 		const dataArray = new Uint8Array(analyser.frequencyBinCount);
-		console.log(
-			"Starting visualization with frequency bins:",
-			analyser.frequencyBinCount
-		);
 
 		const animate = () => {
 			if (!isPlaying) return;
@@ -127,17 +112,6 @@ const ChatFlow = ({ onArrowClick }) => {
 			// Map volume to size (0-255 -> minSize-maxSize)
 			const normalizedVolume = average / 255;
 			const targetSize = minSize + normalizedVolume * (maxSize - minSize);
-
-			// Debug output occasionally
-			if (Math.random() < 0.01) {
-				console.log(
-					`Audio data - Average: ${average.toFixed(
-						2
-					)}, Normalized: ${normalizedVolume.toFixed(
-						3
-					)}, Target size: ${targetSize.toFixed(2)}`
-				);
-			}
 
 			// Apply smoothing and update orb
 			updateOrbSize(targetSize);
@@ -165,14 +139,6 @@ const ChatFlow = ({ onArrowClick }) => {
 		const glowSize = 15 + glowIntensity * 20;
 		const glowOpacity = 0.3 + glowIntensity * 0.5;
 
-		// Debug output
-		if (Math.random() < 0.01) {
-			// Log only occasionally to avoid spam
-			console.log(
-				`Updating orb size: ${roundedSize}px, glow: ${glowSize}px`
-			);
-		}
-
 		orbRef.current.style.width = `${roundedSize}px`;
 		orbRef.current.style.height = `${roundedSize}px`;
 		orbRef.current.style.filter = `drop-shadow(0 0 ${glowSize}px rgba(0, 255, 161, ${glowOpacity}))`;
@@ -182,65 +148,17 @@ const ChatFlow = ({ onArrowClick }) => {
 		stopAudio();
 	};
 
-	const handleArrowClick = () => {
-		if (onArrowClick) {
-			onArrowClick();
-		}
-	};
 	return (
-		<div className="chat-flow-01">
-			<div className="rectangle-2"></div>
-			<div className="rectangle-1"></div>
-			<div className="rectangle-3"></div>
-			<div className="check-in">Check In</div>
-
-			<div className="home">
-				<div className="ellipse-4"></div>
-				<div className="ellipse-5"></div>
-				<div className="ellipse-6"></div>
-				<div className="ellipse-14"></div>
-				<div className="ellipse-15"></div>
-				<div className="ellipse-16"></div>
-				<div className="ellipse-17"></div>
-				<div className="ellipse-18"></div>
-				<div className="ellipse-19"></div>
-				<div className="ellipse-20"></div>
-				<div className="ellipse-21"></div>
-				<div className="ellipse-7"></div>
-				<div className="ellipse-8"></div>
-				<div className="ellipse-9"></div>
-				<div className="ellipse-10"></div>
-				<div className="ellipse-11"></div>
-				<div className="ellipse-12"></div>
-			</div>
-
-			<div className="settings">
-				<div className="ellipse-52"></div>
-				<div className="ellipse-62"></div>
-				<div className="ellipse-72"></div>
-			</div>
-
-			<img
-				className="vector-1"
-				src="/vector-10.svg"
-				alt="bottom indicator"
-				onClick={handleArrowClick}
-				style={{ cursor: "pointer" }}
+		<div className={`orbs-v-1 ${className || ""}`}>
+			<div
+				ref={orbRef}
+				className="ellipse-1 audio-reactive"
+				onClick={handleOrbClick}
+				style={{
+					cursor: "pointer",
+					transition: "all 0.1s ease-out",
+				}}
 			/>
-
-			<div className="orbs-v-1">
-				<div
-					ref={orbRef}
-					className="ellipse-1 audio-reactive"
-					onClick={handleOrbClick}
-					style={{
-						cursor: "pointer",
-						transition: "all 0.1s ease-out",
-					}}
-				/>
-			</div>
-
-			{/* Hidden audio element */}
 			<audio
 				ref={audioRef}
 				onEnded={handleAudioEnded}
@@ -256,4 +174,4 @@ const ChatFlow = ({ onArrowClick }) => {
 	);
 };
 
-export default ChatFlow;
+export default AudioReactiveOrb;

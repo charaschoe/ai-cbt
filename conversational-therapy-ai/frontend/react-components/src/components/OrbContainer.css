@@ -1,0 +1,153 @@
+/* Orb Container Styles */
+
+.orb-container {
+  position: absolute !important;
+  left: 50% !important;
+  translate: -50% !important;
+  top: 25% !important;
+  padding: 10% !important;
+  width: 300px;
+  height: 300px;
+  pointer-events: none;
+}
+
+.standard-orb,
+.emotional-orb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+/* Visibility States */
+.standard-orb.visible {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 2;
+}
+
+.standard-orb.hidden {
+  opacity: 0;
+  transform: scale(0.8);
+  z-index: 1;
+}
+
+.emotional-orb.visible {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 2;
+}
+
+.emotional-orb.hidden {
+  opacity: 0;
+  transform: scale(0.8);
+  z-index: 1;
+}
+
+/* Transition States */
+.standard-orb.transitioning {
+  transition-duration: 0.15s;
+}
+
+.emotional-orb.transitioning {
+  transition-duration: 0.15s;
+}
+
+/* Enhanced Transition Effects */
+.standard-orb.hidden.transitioning {
+  transform: scale(0.9) rotate(-5deg);
+  filter: blur(1px);
+}
+
+.emotional-orb.visible.transitioning {
+  transform: scale(1.1) rotate(2deg);
+  filter: brightness(1.1);
+}
+
+/* Ensure emotional blob positioning matches standard orb exactly */
+.emotional-orb .emotional-urgency-blob-container {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+/* Debug Info Styles */
+.orb-debug-info {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-family: monospace;
+  white-space: nowrap;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.debug-text {
+  margin: 2px 0;
+}
+
+/* Performance Optimizations */
+.orb-container,
+.standard-orb,
+.emotional-orb {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .orb-container {
+    width: 250px;
+    height: 250px;
+  }
+  
+  .orb-debug-info {
+    font-size: 8px;
+    top: -35px;
+  }
+}
+
+@media (max-width: 480px) {
+  .orb-container {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .orb-debug-info {
+    display: none; /* Hide debug info on very small screens */
+  }
+}
+
+/* Accessibility - Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .standard-orb,
+  .emotional-orb {
+    transition: opacity 0.1s ease !important;
+    transform: none !important;
+  }
+  
+  .standard-orb.transitioning,
+  .emotional-orb.transitioning {
+    transition-duration: 0.05s !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .orb-debug-info {
+    background: black;
+    border: 1px solid white;
+  }
+}
+

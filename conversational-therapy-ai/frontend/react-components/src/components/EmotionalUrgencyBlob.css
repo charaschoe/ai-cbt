@@ -1,0 +1,116 @@
+/* Emotional Urgency Blob Styles */
+
+.emotional-urgency-blob-container {
+	pointer-events: none;
+	z-index: 5;
+}
+
+.emotional-urgency-blob {
+	will-change: transform, opacity;
+}
+
+/* Animations */
+@keyframes urgency-pulse {
+	0% {
+		transform: scale(0.95);
+		opacity: 0.1;
+	}
+	100% {
+		transform: scale(1.05);
+		opacity: 0.4;
+	}
+}
+
+@keyframes critical-warning {
+	0% {
+		opacity: 0.2;
+		transform: scale(0.98);
+	}
+	100% {
+		opacity: 0.8;
+		transform: scale(1.02);
+	}
+}
+
+/* Emotionstyp-spezifische Stile */
+.emotional-urgency-blob-container.anxiety {
+	filter: drop-shadow(0 0 20px rgba(74, 144, 226, 0.3));
+}
+
+.emotional-urgency-blob-container.joy {
+	filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.3));
+}
+
+.emotional-urgency-blob-container.sadness {
+	filter: drop-shadow(0 0 20px rgba(100, 149, 237, 0.3));
+}
+
+.emotional-urgency-blob-container.anger {
+	filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.3));
+}
+
+.emotional-urgency-blob-container.fear {
+	filter: drop-shadow(0 0 20px rgba(138, 43, 226, 0.3));
+}
+
+.emotional-urgency-blob-container.emotional_urgency {
+	filter: drop-shadow(0 0 20px rgba(255, 136, 0, 0.3));
+}
+
+/* Dringlichkeitsstufen-spezifische Stile */
+.emotional-urgency-blob-container.critical {
+	filter: drop-shadow(0 0 30px rgba(255, 0, 0, 0.6))
+		drop-shadow(0 0 60px rgba(255, 0, 0, 0.3));
+}
+
+.emotional-urgency-blob-container.high {
+	filter: drop-shadow(0 0 25px rgba(255, 68, 0, 0.5))
+		drop-shadow(0 0 50px rgba(255, 68, 0, 0.2));
+}
+
+.emotional-urgency-blob-container.medium {
+	filter: drop-shadow(0 0 20px rgba(255, 102, 0, 0.4));
+}
+
+.emotional-urgency-blob-container.low {
+	filter: drop-shadow(0 0 15px rgba(255, 136, 0, 0.3));
+}
+
+/* Responsive Anpassungen */
+@media (max-width: 768px) {
+	.emotional-urgency-blob-container {
+		transform: scale(0.8);
+	}
+}
+
+@media (max-width: 480px) {
+	.emotional-urgency-blob-container {
+		transform: scale(0.6);
+	}
+}
+
+/* Performance-Optimierungen */
+.emotional-urgency-blob,
+.emotional-urgency-glow,
+.critical-ring,
+.critical-inner-ring {
+	will-change: transform, opacity;
+	backface-visibility: hidden;
+	transform-style: preserve-3d;
+}
+
+/* Accessibility - Reduzierte Animationen für Benutzer mit entsprechenden Einstellungen */
+@media (prefers-reduced-motion: reduce) {
+	.emotional-urgency-blob-container,
+	.emotional-urgency-blob,
+	.emotional-urgency-glow,
+	.critical-ring,
+	.critical-inner-ring {
+		animation: none !important;
+		transition: none !important;
+	}
+
+	.emotional-urgency-blob {
+		transform: none !important;
+	}
+}

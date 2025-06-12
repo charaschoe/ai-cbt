@@ -5,31 +5,53 @@ const ChatFlow = ({ onArrowClick }) => {
 	const audioRef = useRef(null);
 	const orbRef = useRef(null);
 	const [isPlaying, setIsPlaying] = useState(false);
-	const [audioContext, setAudioContext] = useState(null);
-	const [analyser, setAnalyser] = useState(null);
+	const audioContextRef = useRef(null);
+	const analyserRef = useRef(null);
 	const animationIdRef = useRef(null);
+	const dataArrayRef = useRef(null);
+	const stateIntervalRef = useRef(null);
+	const [currentStateIndex, setCurrentStateIndex] = useState(0);
 
-	// Base size for the orb
+	// Base size for the orb (match the working HTML version exactly)
 	const baseSize = 347.04;
 	const minSize = baseSize * 0.8;
 	const maxSize = baseSize * 1.4;
 
+	// Available states based on provided CSS rules
+	const availableStates = [
+		{
+			name: "default",
+			className: "", // No additional class - original design
+			sizeMultiplier: 1.0
+		},
+		{
+			name: "deeper-trauma-small",
+			className: "small deeper-trauma",
+			sizeMultiplier: 0.8 // Smaller for trauma state
+		},
+		{
+			name: "deeper-trauma-medium",
+			className: "medium deeper-trauma",
+			sizeMultiplier: 1.2 // Medium for trauma state
+		}
+	];
+
 	useEffect(() => {
 		initAudio();
-
-		// Set initial orb size
-		if (orbRef.current) {
-			orbRef.current.style.width = `${baseSize}px`;
-			orbRef.current.style.height = `${baseSize}px`;
-			console.log("Initial orb size set to:", baseSize);
-		}
+		bindEvents();
 
 		return () => {
 			if (animationIdRef.current) {
 				cancelAnimationFrame(animationIdRef.current);
 			}
-			if (audioContext) {
-				audioContext.close();
+			if (stateIntervalRef.current) {
+				clearInterval(stateIntervalRef.current);
+			}
+			if (
+				audioContextRef.current &&
+				audioContextRef.current.state !== "closed"
+			) {
+				audioContextRef.current.close();
 			}
 		};
 	}, []);
@@ -37,22 +59,62 @@ const ChatFlow = ({ onArrowClick }) => {
 	const initAudio = async () => {
 		try {
 			// Create audio context
-			const ctx = new (window.AudioContext ||
+			audioContextRef.current = new (window.AudioContext ||
 				window.webkitAudioContext)();
 
 			// Create analyser
-			const analyserNode = ctx.createAnalyser();
-			analyserNode.fftSize = 256;
-			analyserNode.smoothingTimeConstant = 0.8;
+			analyserRef.current = audioContextRef.current.createAnalyser();
+			analyserRef.current.fftSize = 256;
+			analyserRef.current.smoothingTimeConstant = 0.8;
 
-			setAudioContext(ctx);
-			setAnalyser(analyserNode);
+			// Create data array
+			dataArrayRef.current = new Uint8Array(
+				analyserRef.current.frequencyBinCount
+			);
+
+			console.log("✅ Audio context initialized successfully");
 		} catch (error) {
-			console.error("Audio initialization failed:", error);
+			console.error("❌ Audio initialization failed:", error);
+		}
+	};
+
+	const bindEvents = () => {
+		// Set initial visual state - original design
+		if (orbRef.current) {
+			orbRef.current.style.cursor = "pointer";
+			orbRef.current.style.transition = "none"; // Remove transitions for real-time updates
+			updateOrbSize(baseSize);
+			console.log("✅ Orb events bound and initial size set:", baseSize);
+		}
+	};
+
+	const startEmotionalStateCycling = () => {
+		if (stateIntervalRef.current) {
+			clearInterval(stateIntervalRef.current);
+		}
+
+		stateIntervalRef.current = setInterval(() => {
+			setCurrentStateIndex(prevState => {
+				const nextState = (prevState + 1) % availableStates.length;
+				console.log(`🎭 Transitioning to state: ${availableStates[nextState].name}`);
+				return nextState;
+			});
+		}, 6000); // Change state every 6 seconds
+	};
+
+	const stopEmotionalStateCycling = () => {
+		if (stateIntervalRef.current) {
+			clearInterval(stateIntervalRef.current);
+			stateIntervalRef.current = null;
+			console.log("🎭 Emotional state cycling stopped");
 		}
 	};
 
 	const handleOrbClick = async () => {
+		console.log(
+			"🎯 Orb clicked! Current state:",
+			isPlaying ? "playing" : "stopped"
+		);
 		if (isPlaying) {
 			stopAudio();
 		} else {
@@ -62,30 +124,41 @@ const ChatFlow = ({ onArrowClick }) => {
 
 	const startAudio = async () => {
 		try {
-			if (!audioContext || !analyser || !audioRef.current) return;
-
-			// Resume audio context if suspended
-			if (audioContext.state === "suspended") {
-				await audioContext.resume();
+			if (
+				!audioContextRef.current ||
+				!analyserRef.current ||
+				!audioRef.current
+			) {
+				console.error("❌ Audio components not ready");
+				return;
 			}
 
-			// Connect audio source to analyser only once
+			// Resume audio context if suspended
+			if (audioContextRef.current.state === "suspended") {
+				await audioContextRef.current.resume();
+				console.log("🔄 Audio context resumed");
+			}
+
+			// Connect audio source to analyser (only once)
 			if (!audioRef.current.connectedToAnalyser) {
-				const source = audioContext.createMediaElementSource(
+				const source = audioContextRef.current.createMediaElementSource(
 					audioRef.current
 				);
-				source.connect(analyser);
-				analyser.connect(audioContext.destination);
+				source.connect(analyserRef.current);
+				analyserRef.current.connect(
+					audioContextRef.current.destination
+				);
 				audioRef.current.connectedToAnalyser = true;
-				console.log("Audio connected to analyser");
+				console.log("🔌 Audio source connected to analyser");
 			}
 
 			await audioRef.current.play();
 			setIsPlaying(true);
 			startVisualization();
-			console.log("Audio started and visualization began");
+			startEmotionalStateCycling();
+			console.log("🎵 Audio started successfully");
 		} catch (error) {
-			console.error("Failed to start audio:", error);
+			console.error("❌ Failed to start audio:", error);
 		}
 	};
 
@@ -96,51 +169,62 @@ const ChatFlow = ({ onArrowClick }) => {
 		}
 		setIsPlaying(false);
 		stopVisualization();
+		stopEmotionalStateCycling();
 
-		// Reset to base size
+		// Reset to base size and default state
+		setCurrentStateIndex(0);
+		if (orbRef.current) {
+			orbRef.current.className = "ellipse-1 audio-reactive";
+		}
 		updateOrbSize(baseSize);
-		console.log("Audio stopped and orb reset to base size");
+		console.log("⏹️ Audio stopped and orb reset");
 	};
 
 	const startVisualization = () => {
-		if (!analyser) return;
-
-		const dataArray = new Uint8Array(analyser.frequencyBinCount);
 		console.log(
-			"Starting visualization with frequency bins:",
-			analyser.frequencyBinCount
+			"🎬 Starting visualization with",
+			analyserRef.current.frequencyBinCount,
+			"frequency bins"
 		);
 
 		const animate = () => {
 			if (!isPlaying) return;
 
 			// Get frequency data
-			analyser.getByteFrequencyData(dataArray);
+			analyserRef.current.getByteFrequencyData(dataArrayRef.current);
 
 			// Calculate average volume
 			let sum = 0;
-			for (let i = 0; i < dataArray.length; i++) {
-				sum += dataArray[i];
+			for (let i = 0; i < dataArrayRef.current.length; i++) {
+				sum += dataArrayRef.current[i];
 			}
-			const average = sum / dataArray.length;
+			const average = sum / dataArrayRef.current.length;
 
-			// Map volume to size (0-255 -> minSize-maxSize)
+			// Get current state
+			const currentState = availableStates[currentStateIndex];
+			
+			// Map volume to size with state multiplier
 			const normalizedVolume = average / 255;
-			const targetSize = minSize + normalizedVolume * (maxSize - minSize);
+			const baseTargetSize = minSize + normalizedVolume * (maxSize - minSize);
+			const finalTargetSize = baseTargetSize * currentState.sizeMultiplier;
 
 			// Debug output occasionally
-			if (Math.random() < 0.01) {
+			if (Math.random() < 0.005) {
 				console.log(
-					`Audio data - Average: ${average.toFixed(
-						2
-					)}, Normalized: ${normalizedVolume.toFixed(
-						3
-					)}, Target size: ${targetSize.toFixed(2)}`
+					`📊 Audio: avg=${average.toFixed(1)}, state=${currentState.name}, size=${finalTargetSize.toFixed(1)}px`
 				);
 			}
 
-			// Apply smoothing and update orb
-			updateOrbSize(targetSize);
+			// Update orb size and apply CSS class for current state
+			updateOrbSize(finalTargetSize);
+			
+			// Update CSS class if needed
+			if (orbRef.current) {
+				const newClassName = `ellipse-1 audio-reactive ${currentState.className}`.trim();
+				if (orbRef.current.className !== newClassName) {
+					orbRef.current.className = newClassName;
+				}
+			}
 
 			animationIdRef.current = requestAnimationFrame(animate);
 		};
@@ -152,6 +236,7 @@ const ChatFlow = ({ onArrowClick }) => {
 		if (animationIdRef.current) {
 			cancelAnimationFrame(animationIdRef.current);
 			animationIdRef.current = null;
+			console.log("⏸️ Visualization stopped");
 		}
 	};
 
@@ -160,25 +245,27 @@ const ChatFlow = ({ onArrowClick }) => {
 
 		const roundedSize = Math.round(size * 100) / 100;
 
-		// Apply size and glow effect
+		// Apply size changes directly to DOM
+		orbRef.current.style.width = `${roundedSize}px`;
+		orbRef.current.style.height = `${roundedSize}px`;
+
+		// Add glow effect based on size (original behavior)
 		const glowIntensity = (size - minSize) / (maxSize - minSize);
 		const glowSize = 15 + glowIntensity * 20;
 		const glowOpacity = 0.3 + glowIntensity * 0.5;
 
-		// Debug output
-		if (Math.random() < 0.01) {
-			// Log only occasionally to avoid spam
+		orbRef.current.style.filter = `drop-shadow(0 0 ${glowSize}px rgba(0, 255, 161, ${glowOpacity}))`;
+
+		// Very occasional debug output
+		if (Math.random() < 0.001) {
 			console.log(
-				`Updating orb size: ${roundedSize}px, glow: ${glowSize}px`
+				`🔄 Orb updated: ${roundedSize}px (glow: ${glowSize.toFixed(1)}px)`
 			);
 		}
-
-		orbRef.current.style.width = `${roundedSize}px`;
-		orbRef.current.style.height = `${roundedSize}px`;
-		orbRef.current.style.filter = `drop-shadow(0 0 ${glowSize}px rgba(0, 255, 161, ${glowOpacity}))`;
 	};
 
 	const handleAudioEnded = () => {
+		console.log("🔚 Audio ended");
 		stopAudio();
 	};
 
@@ -187,6 +274,7 @@ const ChatFlow = ({ onArrowClick }) => {
 			onArrowClick();
 		}
 	};
+
 	return (
 		<div className="chat-flow-01">
 			<div className="rectangle-2"></div>
@@ -235,10 +323,32 @@ const ChatFlow = ({ onArrowClick }) => {
 					onClick={handleOrbClick}
 					style={{
 						cursor: "pointer",
-						transition: "all 0.1s ease-out",
+						transition: "all 0.3s ease"
 					}}
 				/>
 			</div>
+
+			{/* State Debug Info (Development only) */}
+			{process.env.NODE_ENV === 'development' && isPlaying && (
+				<div
+					style={{
+						position: "fixed",
+						top: "20px",
+						left: "20px",
+						background: "rgba(0, 0, 0, 0.8)",
+						color: "white",
+						padding: "10px",
+						borderRadius: "8px",
+						fontSize: "12px",
+						fontFamily: "monospace",
+						zIndex: 1000
+					}}
+				>
+					<div>🎭 Current State: {availableStates[currentStateIndex].name}</div>
+					<div>🎨 CSS Class: {availableStates[currentStateIndex].className || "default"}</div>
+					<div>📏 Size Multiplier: {availableStates[currentStateIndex].sizeMultiplier}x</div>
+				</div>
+			)}
 
 			{/* Hidden audio element */}
 			<audio

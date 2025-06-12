@@ -3,10 +3,11 @@ import "./SwipeContainer.css";
 import ChatFlow from "./ChatFlow";
 import WidgetsLeft from "./WidgetsLeft";
 import { ChatFlow07 } from "./ChatFlow07";
+import Screen2V4 from "./Screen2V4";
 import chatService from "../services/chatService";
 
 const SwipeContainer = () => {
-	const [currentScreen, setCurrentScreen] = useState("chat"); // 'widgets', 'chat', or 'chatflow07'
+	const [currentScreen, setCurrentScreen] = useState("chat"); // 'widgets', 'chat', 'emotional-tasks', or 'chatflow07'
 	const [aiResponse, setAiResponse] = useState("");
 
 	// Swipe detection state
@@ -62,11 +63,14 @@ const SwipeContainer = () => {
 			}
 
 			if (isRightSwipe) {
-				// Swipe right: go to chat from widgets
-				if (currentScreen === "widgets") {
+				// Swipe right: go to emotional-tasks from chat
+				if (
+					currentScreen === "chat" ||
+					currentScreen === "chatflow07"
+				) {
 					setIsTransitioning(true);
 					setTimeout(() => {
-						setCurrentScreen("chat");
+						setCurrentScreen("emotional-tasks");
 						setIsTransitioning(false);
 					}, 100);
 				}
@@ -139,9 +143,28 @@ const SwipeContainer = () => {
 						setIsTransitioning(false);
 					}, 100);
 				}
+				// Swipe left: go to chat from emotional-tasks
+				if (currentScreen === "emotional-tasks") {
+					setIsTransitioning(true);
+					setTimeout(() => {
+						setCurrentScreen("chat");
+						setIsTransitioning(false);
+					}, 100);
+				}
 			}
 
 			if (isRightSwipe) {
+				// Swipe right: go to emotional-tasks from chat
+				if (
+					currentScreen === "chat" ||
+					currentScreen === "chatflow07"
+				) {
+					setIsTransitioning(true);
+					setTimeout(() => {
+						setCurrentScreen("emotional-tasks");
+						setIsTransitioning(false);
+					}, 100);
+				}
 				// Swipe right: go to chat from widgets
 				if (currentScreen === "widgets") {
 					setIsTransitioning(true);
@@ -219,7 +242,7 @@ const SwipeContainer = () => {
 					display: window.innerWidth > 768 ? "block" : "none",
 				}}
 			>
-				💡 Drag horizontally to swipe between screens, or swipe up for chat
+				💡 Left: Widgets ← Chat → Emotional Tasks (Right) | Swipe up for ChatFlow
 			</div>
 
 			{/* Debug Chat Button */}
@@ -267,7 +290,7 @@ const SwipeContainer = () => {
 				<span
 					style={{ opacity: currentScreen === "widgets" ? 1 : 0.5 }}
 				>
-					← Widgets
+					Widgets
 				</span>
 				<div
 					style={{
@@ -280,6 +303,8 @@ const SwipeContainer = () => {
 								: currentScreen === "chat" ||
 								  currentScreen === "chatflow07"
 								? "#007AFF"
+								: currentScreen === "emotional-tasks"
+								? "#FF6B35"
 								: "#666",
 						transition: "background 0.3s ease",
 					}}
@@ -293,7 +318,24 @@ const SwipeContainer = () => {
 								: 0.5,
 					}}
 				>
-					Chat →
+					Chat
+				</span>
+				<div
+					style={{
+						width: "8px",
+						height: "8px",
+						borderRadius: "50%",
+						background:
+							currentScreen === "emotional-tasks"
+								? "#FF6B35"
+								: "#666",
+						transition: "background 0.3s ease",
+					}}
+				></div>
+				<span
+					style={{ opacity: currentScreen === "emotional-tasks" ? 1 : 0.5 }}
+				>
+					Emotional Tasks
 				</span>
 			</div>
 
@@ -329,6 +371,12 @@ const SwipeContainer = () => {
 							aiResponse={aiResponse}
 							onSendMessage={handleSendMessage}
 						/>
+					</div>
+				)}
+
+				{currentScreen === "emotional-tasks" && (
+					<div className="screen active">
+						<Screen2V4 />
 					</div>
 				)}
 			</div>

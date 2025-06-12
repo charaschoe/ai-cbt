@@ -16,12 +16,25 @@ const EmotionalUrgencyBlob = ({
 	const [animationPhase, setAnimationPhase] = useState(0);
 
 	useEffect(() => {
-		const interval = setInterval(() => {
-			setAnimationPhase((prev) => (prev + 1) % 360);
-		}, 50 + 100 / animationIntensity); // Schnellere Animation bei höherer Intensität
+		// MEMORY FIX: Optimiertes Interval-Management
+		let interval;
+		
+		// MEMORY FIX: Nur animieren wenn Blob sichtbar ist
+		if (isVisible && size !== BLOB_SIZES.NONE) {
+			// MEMORY FIX: Weniger häufige Updates für bessere Performance
+			const updateInterval = Math.max(100, 100 + 200 / animationIntensity); // Minimum 100ms
+			
+			interval = setInterval(() => {
+				setAnimationPhase((prev) => (prev + 2) % 360); // MEMORY FIX: Größere Schritte
+			}, updateInterval);
+		}
 
-		return () => clearInterval(interval);
-	}, [animationIntensity]);
+		return () => {
+			if (interval) {
+				clearInterval(interval);
+			}
+		};
+	}, [animationIntensity, isVisible, size]); // MEMORY FIX: Abhängigkeiten hinzugefügt
 
 	// Bestimme Blob-Eigenschaften basierend auf Größe und Emotion
 	const getBlobProperties = () => {

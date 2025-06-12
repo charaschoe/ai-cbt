@@ -19,9 +19,16 @@ const AudioReactiveBlob = ({ audioSrc, className = '' }) => {
   const timeDomainDataRef = useRef(null);
   const frequencyDataRef = useRef(null);
 
-  // Audio-Analyse-Loop
+  // Audio-Analyse-Loop mit Memory-optimierter Implementierung
   const runAnalysis = useCallback(() => {
-    if (!analyserRef.current) return;
+    if (!analyserRef.current || !audioRef.current || audioRef.current.paused) {
+      // MEMORY FIX: Stoppe Animation wenn Audio pausiert
+      if (animationIdRef.current) {
+        cancelAnimationFrame(animationIdRef.current);
+        animationIdRef.current = null;
+      }
+      return;
+    }
 
     const analyser = analyserRef.current;
     const timeDomainData = timeDomainDataRef.current;
@@ -33,18 +40,20 @@ const AudioReactiveBlob = ({ audioSrc, className = '' }) => {
     // Frequency-Domain-Daten für Tonhöhenerkennung
     analyser.getByteFrequencyData(frequencyData);
 
-    // Amplitude berechnen (RMS)
+    // Amplitude berechnen (RMS) - Optimiert
     let sum = 0;
-    for (let i = 0; i < timeDomainData.length; i++) {
+    const sampleSize = Math.min(timeDomainData.length, 512); // MEMORY FIX: Limitiere Sample-Größe
+    for (let i = 0; i < sampleSize; i++) {
       const sample = (timeDomainData[i] - 128) / 128;
       sum += sample * sample;
     }
-    const amplitude = Math.sqrt(sum / timeDomainData.length);
+    const amplitude = Math.sqrt(sum / sampleSize);
 
-    // Dominante Frequenz/Tonhöhe finden
+    // Dominante Frequenz/Tonhöhe finden - Optimiert
     let maxIndex = 0;
     let maxValue = 0;
-    for (let i = 0; i < frequencyData.length; i++) {
+    const freqSampleSize = Math.min(frequencyData.length, 256); // MEMORY FIX: Limitiere Frequenz-Analyse
+    for (let i = 0; i < freqSampleSize; i++) {
       if (frequencyData[i] > maxValue) {
         maxValue = frequencyData[i];
         maxIndex = i;
@@ -65,7 +74,10 @@ const AudioReactiveBlob = ({ audioSrc, className = '' }) => {
       isListening
     });
 
-    animationIdRef.current = requestAnimationFrame(runAnalysis);
+    // MEMORY FIX: Verwende throttled animation frames (30 FPS statt 60 FPS)
+    animationIdRef.current = requestAnimationFrame(() => {
+      setTimeout(() => runAnalysis(), 33); // ~30 FPS
+    });
   }, []);
 
   // Web Audio API Setup

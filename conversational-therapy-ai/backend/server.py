@@ -45,12 +45,44 @@ class ChatResponse(BaseModel):
 chat_history = []
 current_language = "de"  # Default zu Deutsch
 
+# MEMORY FIX: Konfigurierbare Limits
+MAX_CHAT_HISTORY = 50  # Maximale Anzahl Chat-Nachrichten
+MAX_EMOTION_SESSIONS = 100  # Maximale Anzahl Emotion-Sessions
+
 # Globaler Emotionstracker für dynamische Bubbles
 emotion_tracker = {
     "sessions": [],  # Speichert Sitzungsdaten (Zeitstempel, Text, Stimmung, Themen)
     "themes": {},    # Speichert Themenhäufigkeiten und Intensitäten
     "thought_patterns": {} # Speichert identifizierte Denkmuster und ihre Häufigkeit
 }
+
+# MEMORY DEBUG: Funktion zum Loggen der Backend-Speichernutzung
+import psutil
+import os
+
+def log_memory_usage():
+    process = psutil.Process(os.getpid())
+    memory_info = process.memory_info()
+    print(f"[MEMORY DEBUG] Backend - RAM: {memory_info.rss / 1024 / 1024:.1f}MB, Chat History: {len(chat_history)} messages, Emotion Sessions: {len(emotion_tracker['sessions'])}")
+
+# MEMORY FIX: Chat-Historie begrenzen
+def trim_chat_history():
+    global chat_history
+    if len(chat_history) > MAX_CHAT_HISTORY:
+        # Behalte System-Prompt und letzten X Nachrichten
+        system_prompt = next((msg for msg in chat_history if msg.get("role") == "system"), None)
+        recent_messages = chat_history[-MAX_CHAT_HISTORY+1:]  # -1 für system prompt
+        chat_history = [system_prompt] if system_prompt else []
+        chat_history.extend(recent_messages)
+        print(f"[MEMORY FIX] Chat history trimmed to {len(chat_history)} messages")
+
+# MEMORY FIX: Emotion-Tracker begrenzen
+def trim_emotion_tracker():
+    global emotion_tracker
+    if len(emotion_tracker['sessions']) > MAX_EMOTION_SESSIONS:
+        # Behalte nur die neuesten Sessions
+        emotion_tracker['sessions'] = emotion_tracker['sessions'][-MAX_EMOTION_SESSIONS:]
+        print(f"[MEMORY FIX] Emotion tracker trimmed to {len(emotion_tracker['sessions'])} sessions")
 
 # Endpunkte
 @app.post("/chat", response_model=ChatResponse)
@@ -69,6 +101,13 @@ async def chat(request: ChatRequest):
             detected_language=current_language
         )
 
+    # MEMORY DEBUG: Log bei jedem Chat-Request
+    log_memory_usage()
+    
+    # MEMORY FIX: Bereinige Speicher vor Verarbeitung
+    trim_chat_history()
+    trim_emotion_tracker()
+    
     # Sprache erkennen
     detected_lang = detect_language(user_input)
     

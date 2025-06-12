@@ -9,46 +9,12 @@
   flex-direction: column;
 }
 
-/* Navigation */
-.app-navigation {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  padding: 15px 20px;
-  display: flex;
-  gap: 15px;
-  justify-content: center;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.app-navigation button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  opacity: 0.7;
-}
-
-.app-navigation button:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-
-.app-navigation button.active {
-  opacity: 1;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-}
-
-/* Main Content */
+/* Main Content - now takes full height */
 .app-content {
   flex: 1;
   overflow: auto;
+  width: 100%;
+  height: 100%;
 }
 
 /* Reset some default styles */

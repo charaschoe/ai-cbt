@@ -1,0 +1,385 @@
+/* Enhanced Message Bubble - Chat Perfect Integration */
+
+.enhanced-message-container {
+  display: flex;
+  margin-bottom: 16px;
+  position: relative;
+  animation: message-appear 0.3s ease-out;
+}
+
+.enhanced-message-container.ai-message {
+  justify-content: flex-start;
+  flex-direction: row;
+}
+
+.enhanced-message-container.user-message {
+  justify-content: flex-end;
+  flex-direction: row-reverse;
+}
+
+/* Thread Indicators */
+.thread-indicator {
+  display: flex;
+  align-items: flex-start;
+  margin: 0 8px;
+  min-width: 24px;
+}
+
+.thread-start {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.thread-icon {
+  font-size: 16px;
+  opacity: 0.7;
+}
+
+.thread-label {
+  font-size: 10px;
+  color: #9a7a7a;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+.thread-continuation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+}
+
+.thread-line {
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(to bottom, #9a7a7a, transparent);
+  border-radius: 1px;
+}
+
+.thread-count {
+  font-size: 10px;
+  color: #9a7a7a;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  padding: 2px 4px;
+  min-width: 16px;
+  text-align: center;
+}
+
+/* Message Content Wrapper */
+.message-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 80%;
+  gap: 4px;
+}
+
+.message-metadata {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.enhanced-message-container:hover .message-metadata {
+  opacity: 1;
+}
+
+/* Enhanced Message Bubble */
+.enhanced-message-bubble {
+  padding: 16px;
+  border-radius: 20px;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 16px;
+  line-height: 22px;
+  word-wrap: break-word;
+  position: relative;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.ai-message .enhanced-message-bubble {
+  background: rgba(229, 214, 214, 0.23);
+  color: #383232;
+  border: 1px solid rgba(207, 170, 170, 0.23);
+  border-radius: 20px 20px 20px 0px;
+}
+
+.user-message .enhanced-message-bubble {
+  background: rgba(240, 240, 245, 0.9);
+  color: #383232;
+  border: 1px solid rgba(200, 200, 210, 0.3);
+  border-radius: 20px 20px 0px 20px;
+}
+
+/* Emotional State Indicators */
+.emotional-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+}
+
+.emotional-indicator.empathetic {
+  background: rgba(33, 150, 243, 0.1);
+  border: 1px solid rgba(33, 150, 243, 0.2);
+}
+
+.emotional-indicator.celebratory {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.2);
+}
+
+.emotional-indicator.calming {
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+.emotional-indicator.understanding {
+  background: rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.2);
+}
+
+.emotional-indicator.contemplative {
+  background: rgba(156, 39, 176, 0.1);
+  border: 1px solid rgba(156, 39, 176, 0.2);
+}
+
+.emotional-indicator.supportive {
+  background: rgba(96, 125, 139, 0.1);
+  border: 1px solid rgba(96, 125, 139, 0.2);
+}
+
+/* Message Actions */
+.message-actions {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.enhanced-message-container:hover .message-actions {
+  opacity: 1;
+}
+
+.action-btn {
+  background: transparent;
+  border: 1px solid rgba(154, 122, 122, 0.3);
+  border-radius: 12px;
+  padding: 4px 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  background: rgba(154, 122, 122, 0.1);
+  transform: scale(1.05);
+}
+
+/* Segment Indicator */
+.segment-indicator {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.segment-badge {
+  background: rgba(154, 122, 122, 0.2);
+  color: #9a7a7a;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+}
+
+/* Timestamp */
+.message-timestamp {
+  font-size: 10px;
+  color: #9a7a7a;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+}
+
+/* Streaming Cursor */
+.streaming-cursor {
+  display: inline-block;
+  animation: blink 1s infinite;
+  margin-left: 2px;
+  font-weight: normal;
+  color: #9a7a7a;
+}
+
+/* Expression-based styles */
+.expression-happy .enhanced-message-bubble {
+  background: linear-gradient(135deg, rgba(255, 243, 205, 0.8), rgba(229, 214, 214, 0.23));
+  border-left: 3px solid #ffc107;
+  animation: happy-glow 2s ease-in-out;
+}
+
+.expression-sad .enhanced-message-bubble {
+  background: linear-gradient(135deg, rgba(227, 242, 253, 0.8), rgba(229, 214, 214, 0.23));
+  border-left: 3px solid #2196f3;
+  animation: sad-fade 2s ease-in-out;
+}
+
+.expression-thoughtful .enhanced-message-bubble {
+  background: linear-gradient(135deg, rgba(243, 229, 245, 0.8), rgba(229, 214, 214, 0.23));
+  border-left: 3px solid #9c27b0;
+  animation: thoughtful-pulse 3s ease-in-out;
+}
+
+.expression-anxious .enhanced-message-bubble {
+  background: linear-gradient(135deg, rgba(255, 235, 238, 0.8), rgba(229, 214, 214, 0.23));
+  border-left: 3px solid #f44336;
+  animation: anxious-tremble 1.5s ease-in-out;
+}
+
+.expression-surprised .enhanced-message-bubble {
+  background: linear-gradient(135deg, rgba(232, 245, 232, 0.8), rgba(229, 214, 214, 0.23));
+  border-left: 3px solid #4caf50;
+  animation: surprised-bounce 1s ease-in-out;
+}
+
+/* Enhanced hover effects */
+.enhanced-message-bubble:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Animations */
+@keyframes message-appear {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+@keyframes happy-glow {
+  0% {
+    box-shadow: 0 0 0 rgba(255, 193, 7, 0);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 193, 7, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(255, 193, 7, 0);
+  }
+}
+
+@keyframes sad-fade {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes thoughtful-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+@keyframes anxious-tremble {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-1px);
+  }
+  75% {
+    transform: translateX(1px);
+  }
+}
+
+@keyframes surprised-bounce {
+  0% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-3px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  70% {
+    transform: translateY(-1px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .enhanced-message-bubble {
+    font-size: 14px;
+    line-height: 20px;
+    padding: 12px;
+  }
+  
+  .message-content-wrapper {
+    max-width: 90%;
+  }
+  
+  .thread-indicator {
+    margin: 0 4px;
+    min-width: 20px;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .enhanced-message-container,
+  .enhanced-message-bubble,
+  .action-btn {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .enhanced-message-bubble {
+    border: 2px solid #000;
+  }
+  
+  .emotional-indicator {
+    border: 1px solid #000;
+  }
+  
+  .action-btn {
+    border: 1px solid #000;
+  }
+}

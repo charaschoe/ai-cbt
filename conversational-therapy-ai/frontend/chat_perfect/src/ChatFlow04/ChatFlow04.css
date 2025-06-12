@@ -1,0 +1,312 @@
+.chat-flow-04,
+.chat-flow-04 * {
+  box-sizing: border-box;
+}
+.chat-flow-04 {
+  background: #fbf4f1;
+  height: 852px;
+  position: relative;
+  overflow: hidden;
+}
+.chat-flow-04 .orbs-v-1-instance {
+  width: 277.96px !important;
+  height: 277.96px !important;
+  position: absolute !important;
+  left: 50% !important;
+  translate: -50% !important;
+  top: calc(50% - 356px) !important;
+}
+.chat-flow-04 .breathing-technique-benefits {
+  color: #9a7a7a;
+  text-align: center;
+  font-family: "PpWriter-Regular", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  position: absolute;
+  left: calc(50% - 102.5px);
+  top: 70px;
+}
+.chat-flow-04 .home {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  left: calc(50% - -122.5px);
+  top: 765px;
+}
+.chat-flow-04 .group-1 {
+  position: absolute;
+  inset: 0;
+}
+.chat-flow-04 .ellipse-4 {
+  background: #9a7a7a;
+  border-radius: 50%;
+  width: 2.67px;
+  height: 2.67px;
+  position: absolute;
+  left: 18.67px;
+  top: 28px;
+}
+.chat-flow-04 .ellipse-5 {
+  background: #9a7a7a;
+  border-radius: 50%;
+  width: 5.33px;
+  height: 5.33px;
+  position: absolute;
+  left: 17.33px;
+  top: 17.33px;
+}
+.chat-flow-04 .ellipse-6 {
+  background: #9a7a7a;
+  border-radius: 50%;
+  width: 2.67px;
+  height: 2.67px;
+  position: absolute;
+  left: 18.67px;
+  top: 9.33px;
+}
+.chat-flow-04 .ellipse-14 {
+  background: #9a7a7a;
+  border-radius: 50%;
+  width: 2.67px;
+  height: 2.67px;
+  position: absolute;
+  left: 18.67px;
+  top: 0px;
+}
+.chat-flow-04 .ellipse-15 {
+  background: #9a7a7a;
+  border-radius: 50%;
+  width: 2.67px;
+  height: 2.67px;
+  position: absolute;
+  left: 18.67px;
+  top: 37.33px;
+}
+.chat-flow-04 .ellipse-16 {
+  background: #9a7a7a;
+  border-radius: 50%;
+  width: 2.67px;
+  height: 2.67px;
+  position: absolute;
+  left: 40px;
+  top: 18.67px;
+  transform-origin: 0 0;
+  transform: rotate(90deg) scale(1, 1);
+}
+.chat-flow-04 .ellipse-17 {
+  background: #9a7a7a;
+  border-radius: 50%;
+  width: 2.67px;
+  height: 2.67px;
+  position: absolute;
+  left: 2.67px;
+  top: 18.67px;
+  transform-origin: 0 0;
+  transform: rotate(90deg) scale(1, 1);
+}
+.chat-flow-04 .ellipse-18 {
+  background: #9a7a7a;
+  border-radius: 50%;
+  width: 2.67px;
+  height: 2.67px;
+  position: absolute;
+  left: 35.08px;
+  top: 33.2px;
+  transform-origin: 0 0;
+  transform: rotate(135deg) scale(1, 1);
+}
+.chat-flow-04 .ellipse-19 {
+  background: #9a7a7a;
+  border-radius: 50%;
+  width: 2.67px;
+  height: 2.67px;
+  position: absolute;
+  left: 8.69px;
+  top: 6.8px;
+  transform-origin: 0 0;
+  transform: rotate(135deg) scale(1, 1);
+}
+.chat-flow-04 .ellipse-20 {
+  background: #9a7a7a;
+  border-radius: 50%;
+  width: 2.67px;
+  height: 2.67px;
+  position: absolute;
+  left: 6.8px;
+  top: 35.08px;
+  transform-origin: 0 0;
+  transform: rotate(-135deg) scale(1, 1);
+}
+.chat-flow-04 .ellipse-21 {
+  background: #9a7a7a;
+  border-radius: 50%;
+  width: 2.67px;
+  height: 2.67px;
+  position: absolute;
+  left: 33.2px;
+  top: 8.69px;
+  transform-origin: 0 0;
+  transform: rotate(-135deg) scale(1, 1);
+}
+.chat-flow-04 .ellipse-7 {
+  background: #9a7a7a;
+  border-radius: 50%;
+  width: 2.67px;
+  height: 2.67px;
+  position: absolute;
+  left: 12px;
+  top: 18.67px;
+  transform-origin: 0 0;
+  transform: rotate(90deg) scale(1, 1);
+}
+.chat-flow-04 .ellipse-8 {
+  background: #9a7a7a;
+  border-radius: 50%;
+  width: 2.67px;
+  height: 2.67px;
+  position: absolute;
+  left: 30.67px;
+  top: 18.67px;
+  transform-origin: 0 0;
+  transform: rotate(90deg) scale(1, 1);
+}
+.chat-flow-04 .ellipse-9 {
+  background: #9a7a7a;
+  border-radius: 50%;
+  width: 2.67px;
+  height: 2.67px;
+  position: absolute;
+  left: 15.29px;
+  top: 13.4px;
+  transform-origin: 0 0;
+  transform: rotate(135deg) scale(1, 1);
+}
+.chat-flow-04 .ellipse-10 {
+  background: #9a7a7a;
+  border-radius: 50%;
+  width: 2.67px;
+  height: 2.67px;
+  position: absolute;
+  left: 28.49px;
+  top: 26.6px;
+  transform-origin: 0 0;
+  transform: rotate(135deg) scale(1, 1);
+}
+.chat-flow-04 .ellipse-11 {
+  background: #9a7a7a;
+  border-radius: 50%;
+  width: 2.67px;
+  height: 2.67px;
+  position: absolute;
+  left: 24.71px;
+  top: 13.4px;
+  transform-origin: 0 0;
+  transform: rotate(-45deg) scale(1, -1);
+}
+.chat-flow-04 .ellipse-12 {
+  background: #9a7a7a;
+  border-radius: 50%;
+  width: 2.67px;
+  height: 2.67px;
+  position: absolute;
+  left: 11.51px;
+  top: 26.6px;
+  transform-origin: 0 0;
+  transform: rotate(-45deg) scale(1, -1);
+}
+.chat-flow-04 .vector-1 {
+  width: 20px;
+  height: 6px;
+  position: absolute;
+  left: 50%;
+  translate: -50%;
+  top: 835px;
+  overflow: visible;
+}
+.chat-flow-04 .frame-1 {
+  width: 46.67px;
+  height: 14px;
+  position: absolute;
+  right: 32.67px;
+  top: 72px;
+}
+.chat-flow-04 .group-2 {
+  position: absolute;
+  inset: 0;
+}
+.chat-flow-04 .ellipse-52 {
+  background: #9a7a7a;
+  border-radius: 50%;
+  width: 3.11px;
+  height: 3.11px;
+  position: absolute;
+  left: calc(50% - -7px);
+  top: 50%;
+  translate: 0 -50%;
+}
+.chat-flow-04 .ellipse-62 {
+  background: #9a7a7a;
+  border-radius: 50%;
+  width: 3.11px;
+  height: 3.11px;
+  position: absolute;
+  left: calc(50% - -13.22px);
+  top: 50%;
+  translate: 0 -50%;
+}
+.chat-flow-04 .ellipse-72 {
+  background: #9a7a7a;
+  border-radius: 50%;
+  width: 3.11px;
+  height: 3.11px;
+  position: absolute;
+  left: calc(50% - -19.44px);
+  top: 50%;
+  translate: 0 -50%;
+}
+.chat-flow-04 .vector-28 {
+  border-radius: 0px;
+  width: 8.2px;
+  height: 16.4px;
+  position: absolute;
+  left: 24.73px;
+  top: 69.94px;
+  overflow: visible;
+}
+.chat-flow-04 .frame-68 {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 353px;
+  position: absolute;
+  left: 21px;
+  top: 325.94px;
+}
+.chat-flow-04 .frame-66 {
+  background: rgba(229, 214, 214, 0.23);
+  border-radius: 20px 20px 20px 0px;
+  border-style: solid;
+  border-color: rgba(207, 170, 170, 0.23);
+  border-width: 1px;
+  padding: 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.chat-flow-04
+  .that-s-a-lot-it-sounds-like-your-system-is-shouting-that-it-s-under-pressure-even-before-the-meetings-begin-would-you-be-open-to-doing-a-short-breathing-pattern-with-me-to-help-your-body-catch-up-with-your-mind {
+  color: #383232;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 400;
+  position: relative;
+  width: 262.43px;
+}

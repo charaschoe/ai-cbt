@@ -18,7 +18,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transform-origin: center;
 }
 
@@ -27,6 +27,7 @@
   opacity: 1;
   transform: scale(1);
   z-index: 2;
+  animation: gentle-float 4s ease-in-out infinite;
 }
 
 .standard-orb.hidden {
@@ -39,6 +40,7 @@
   opacity: 1;
   transform: scale(1);
   z-index: 2;
+  animation: emotional-presence 3s ease-in-out infinite;
 }
 
 .emotional-orb.hidden {
@@ -148,6 +150,27 @@
   .orb-debug-info {
     background: black;
     border: 1px solid white;
+  }
+}
+
+/* Enhanced Animations for Chat Perfect Integration */
+@keyframes gentle-float {
+  0%, 100% {
+    transform: scale(1) translateY(0px) translateZ(0);
+  }
+  50% {
+    transform: scale(1.02) translateY(-3px) translateZ(0);
+  }
+}
+
+@keyframes emotional-presence {
+  0%, 100% {
+    transform: scale(1) translateZ(0);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+  }
+  50% {
+    transform: scale(1.05) translateZ(0);
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.5));
   }
 }
 

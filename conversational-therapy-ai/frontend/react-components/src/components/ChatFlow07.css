@@ -367,24 +367,34 @@
 
 .chat-flow-07 .message-bubble {
 	max-width: 80%;
-	padding: 12px 16px;
-	border-radius: 18px;
+	padding: 16px;
+	border-radius: 20px;
 	font-family: "PpNeueMontreal-Book", sans-serif;
 	font-size: 16px;
-	line-height: 20px;
+	line-height: 22px;
 	word-wrap: break-word;
+	position: relative;
+	transition: all 0.3s ease;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .chat-flow-07 .ai-message .message-bubble {
-	background: #f2f2f4;
+	background: rgba(229, 214, 214, 0.23);
 	color: #383232;
-	border-bottom-left-radius: 6px;
+	border: 1px solid rgba(207, 170, 170, 0.23);
+	border-radius: 20px 20px 20px 0px;
+	margin-right: auto;
+	margin-left: 0;
 }
 
 .chat-flow-07 .user-message .message-bubble {
-	background: #f2f2f4;
+	background: rgba(240, 240, 245, 0.9);
 	color: #383232;
-	border-bottom-right-radius: 6px;
+	border: 1px solid rgba(200, 200, 210, 0.3);
+	border-radius: 20px 20px 0px 20px;
+	margin-left: auto;
+	margin-right: 0;
+	text-align: right;
 }
 
 .chat-flow-07 .message-bubble.loading {

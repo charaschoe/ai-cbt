@@ -4,8 +4,10 @@ import { KeyboardIPhoneTypeDefault } from "./KeyboardIPhoneTypeDefault";
 import { OrbsV3Property1Variant4 } from "./OrbsV3Property1Variant4";
 import OrbContainer from "./OrbContainer";
 import EmotionalUrgencyBlob from "./EmotionalUrgencyBlob";
+import EnhancedMessageBubble from "./EnhancedMessageBubble";
 import chatService from "../services/chatService";
 import blobManager from "../services/blobManager";
+import conversationManager from "../services/conversationManager";
 
 export const ChatFlow07 = ({
 	className,
@@ -20,9 +22,8 @@ export const ChatFlow07 = ({
 	const [currentLanguage, setCurrentLanguage] = React.useState("en");
 	const [mood, setMood] = React.useState("neutral");
 	const [patterns, setPatterns] = React.useState([]);
-	const [messages, setMessages] = React.useState([
-		{ type: "ai", text: "Tell me, what's on your mind?" },
-	]);
+	const [messages, setMessages] = React.useState([]);
+	const [currentThreadId, setCurrentThreadId] = React.useState(null);
 	const [typingMessage, setTypingMessage] = React.useState("");
 	const [isTypingAnimation, setIsTypingAnimation] = React.useState(false);
 	const [showKeyboard, setShowKeyboard] = React.useState(true);
@@ -110,7 +111,7 @@ export const ChatFlow07 = ({
 		}
 	}, [messages]);
 
-	// Initialize chat service language callback
+	// Initialize chat service and conversation management
 	React.useEffect(() => {
 		const initializeChat = async () => {
 			// Set language change callback
@@ -119,9 +120,27 @@ export const ChatFlow07 = ({
 				console.log("🌍 Language changed to:", language);
 			});
 
-			// Set initial welcome message based on current language
+			// Start new conversation session
+			conversationManager.startNewSession();
+
+			// Set initial welcome message and create first thread
 			const welcomeMessage = await chatService.startConversation();
-			setMessages([{ type: "ai", text: welcomeMessage }]);
+			const initialMessage = {
+				type: "ai",
+				text: welcomeMessage,
+				emotionalState: "supportive",
+				facialExpression: "neutral",
+				timestamp: Date.now()
+			};
+
+			// Create initial thread with welcome message
+			const thread = conversationManager.createThread(initialMessage, {
+				topic: "welcome",
+				emotionalTone: "supportive"
+			});
+
+			setCurrentThreadId(thread.id);
+			setMessages(conversationManager.getThreadMessages(thread.id));
 		};
 
 		initializeChat();
@@ -325,21 +344,27 @@ export const ChatFlow07 = ({
 			// Type the current segment with expression-based timing
 			await typeMessage(segments[i], true);
 
-			// Add the completed segment to messages with expression metadata
-			setMessages((prev) => [
-				...prev,
-				{
-					type: "ai",
-					text: segments[i],
-					isSegment: true,
-					segmentIndex: i,
-					expression: segmentExpression,
-					emotionalState: detectEmotionalState(
-						segments[i],
-						segmentExpression
-					),
-				},
-			]);
+			// Add the completed segment to conversation manager
+			const segmentMessage = {
+				type: "ai",
+				text: segments[i],
+				isSegment: true,
+				segmentIndex: i,
+				facialExpression: segmentExpression,
+				emotionalState: detectEmotionalState(
+					segments[i],
+					segmentExpression
+				),
+				timestamp: Date.now()
+			};
+
+			conversationManager.addMessageToThread(
+				currentThreadId,
+				segmentMessage
+			);
+
+			// Update messages from conversation manager
+			setMessages(conversationManager.getThreadMessages(currentThreadId));
 			setTypingMessage("");
 
 			// Dramatic pause between segments with varying duration
@@ -400,11 +425,23 @@ export const ChatFlow07 = ({
 			console.log("🧠 Emotional Analysis:", blobUpdate.analysis);
 			console.log("🎯 Active Blobs:", blobUpdate.activeBlobs);
 
-			// Add user message to chat
-			setMessages((prev) => [
-				...prev,
-				{ type: "user", text: userMessage },
-			]);
+			// Add user message to conversation manager
+			const userMessageObj = {
+				type: "user",
+				text: userMessage,
+				emotionalState: "neutral",
+				facialExpression: "neutral",
+				timestamp: Date.now()
+			};
+
+			const addedUserMessage = conversationManager.addMessageToThread(
+				currentThreadId,
+				userMessageObj,
+				blobUpdate.analysis
+			);
+
+			// Update messages from conversation manager
+			setMessages(conversationManager.getThreadMessages(currentThreadId));
 			setInputText("");
 			setIsLoading(true);
 			setShowKeyboard(false); // Hide keyboard when waiting for AI response
@@ -459,10 +496,23 @@ export const ChatFlow07 = ({
 				// Show thinking before error message too
 				await simulateThinking();
 				await typeMessage(errorMsg);
-				setMessages((prev) => [
-					...prev,
-					{ type: "ai", text: errorMsg },
-				]);
+
+				// Add error message to conversation manager
+				const errorMessage = {
+					type: "ai",
+					text: errorMsg,
+					emotionalState: "supportive",
+					facialExpression: "empathetic",
+					timestamp: Date.now()
+				};
+
+				conversationManager.addMessageToThread(
+					currentThreadId,
+					errorMessage
+				);
+
+				// Update messages from conversation manager
+				setMessages(conversationManager.getThreadMessages(currentThreadId));
 				setTypingMessage("");
 				setShowKeyboard(true); // Show keyboard again when ready for user input
 			}
@@ -537,24 +587,19 @@ export const ChatFlow07 = ({
 				)}
 
 				{messages.map((message, index) => (
-					<div
-						key={index}
-						className={`message ${message.type}-message ${
-							message.expression
-								? `expression-${message.expression}`
-								: ""
-						}`}
-					>
-						<div
-							className={`message-bubble ${
-								message.emotionalState
-									? `emotional-${message.emotionalState}`
-									: ""
-							}`}
-						>
-							{message.text}
-						</div>
-					</div>
+					<EnhancedMessageBubble
+						key={message.id || index}
+						message={message}
+						type={message.type}
+						emotionalState={message.emotionalState}
+						facialExpression={message.facialExpression}
+						threadInfo={{
+							threadId: currentThreadId,
+							threadPosition: message.threadPosition,
+							isFirstInThread: message.isFirstInThread
+						}}
+						showTimestamp={index === messages.length - 1 || index % 5 === 0}
+					/>
 				))}
 
 				{(isLoading || isThinking) && (
@@ -640,42 +685,62 @@ export const ChatFlow07 = ({
 				className="orbs-v-3-instance"
 			/>
 			
-			{/* Debug Panel für Blob Status (nur im Development) */}
-			{process.env.NODE_ENV === "development" && blobAnalysis && (
+			{/* Enhanced Debug Panel für Blob Status und Conversation Analytics */}
+			{process.env.NODE_ENV === "development" && (
 				<div
 					style={{
 						position: "fixed",
 						top: "120px",
 						right: "20px",
-						background: "rgba(0, 0, 0, 0.8)",
+						background: "rgba(0, 0, 0, 0.9)",
 						color: "white",
-						padding: "10px",
+						padding: "12px",
 						borderRadius: "8px",
-						fontSize: "12px",
-						maxWidth: "200px",
+						fontSize: "11px",
+						maxWidth: "250px",
+						maxHeight: "400px",
+						overflowY: "auto",
 						zIndex: 1000,
 						fontFamily: "monospace",
+						border: "1px solid rgba(255, 255, 255, 0.2)"
 					}}
 				>
-					<div>
-						<strong>Emotional Analysis:</strong>
+					<div style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.3)", paddingBottom: "8px", marginBottom: "8px" }}>
+						<strong>💬 Conversation Analytics</strong>
 					</div>
-					<div>Urgency: {blobAnalysis.urgencyLevel}</div>
-					<div>Emotion: {blobAnalysis.emotionType}</div>
-					<div>
-						Confidence: {(blobAnalysis.confidence * 100).toFixed(1)}
-						%
+					
+					<div style={{ marginBottom: "8px" }}>
+						<div>Thread ID: {currentThreadId ? currentThreadId.substr(-8) : 'None'}</div>
+						<div>Messages: {messages.length}</div>
+						<div>Session: {conversationManager.getCurrentSession()?.id?.substr(-8) || 'None'}</div>
 					</div>
-					<div>Active Blobs: {effectiveBlobs.length}</div>
-					<div>Has Emotional: {hasEmotionalBlobs ? 'Yes' : 'No'}</div>
-					{blobAnalysis.detectedKeywords.length > 0 && (
-						<div>
-							Keywords:{" "}
-							{blobAnalysis.detectedKeywords
-								.slice(0, 3)
-								.join(", ")}
+
+					{blobAnalysis && (
+						<div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.2)", paddingTop: "8px" }}>
+							<div><strong>🎯 Emotional Analysis:</strong></div>
+							<div>Urgency: {blobAnalysis.urgencyLevel}</div>
+							<div>Emotion: {blobAnalysis.emotionType}</div>
+							<div>
+								Confidence: {(blobAnalysis.confidence * 100).toFixed(1)}%
+							</div>
+							<div>Active Blobs: {effectiveBlobs.length}</div>
+							<div>Has Emotional: {hasEmotionalBlobs ? 'Yes' : 'No'}</div>
+							{blobAnalysis.detectedKeywords.length > 0 && (
+								<div>
+									Keywords: {blobAnalysis.detectedKeywords.slice(0, 3).join(", ")}
+								</div>
+							)}
 						</div>
 					)}
+
+					<div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.2)", paddingTop: "8px", marginTop: "8px" }}>
+						<div><strong>📊 System Status:</strong></div>
+						<div>Expression: {facialExpression}</div>
+						<div>Emotional State: {emotionalState}</div>
+						<div>Language: {currentLanguage}</div>
+						<div>Thinking: {isThinking ? 'Yes' : 'No'}</div>
+						<div>Typing: {isTypingAnimation ? 'Yes' : 'No'}</div>
+					</div>
 				</div>
 			)}
 			{showKeyboard && (

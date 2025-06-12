@@ -1,0 +1,23 @@
+.orbs-v-1-size-small-state-calmly-tuned-in,
+.orbs-v-1-size-small-state-calmly-tuned-in * {
+  box-sizing: border-box;
+}
+.orbs-v-1-size-small-state-calmly-tuned-in {
+  height: 500px;
+  position: relative;
+}
+.orbs-v-1-size-small-state-calmly-tuned-in .ellipse-1 {
+  background: radial-gradient(
+    closest-side,
+    rgba(0, 255, 161, 1) 11.059201508760452%,
+    rgba(68, 140, 255, 0.5) 61.54123544692993%,
+    rgba(255, 187, 148, 0) 100%
+  );
+  border-radius: 50%;
+  width: 347.04px;
+  height: 347.04px;
+  position: absolute;
+  left: 50%;
+  translate: -50% -50%;
+  top: 50%;
+}

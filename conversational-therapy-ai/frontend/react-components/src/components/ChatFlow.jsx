@@ -1,9 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
+import OrbContainer from "./OrbContainer";
+import ConversationManager from "../services/conversationManager";
 import "./ChatFlow.css";
 
 const ChatFlow = ({ onArrowClick }) => {
 	const audioRef = useRef(null);
 	const orbRef = useRef(null);
+	const messagesEndRef = useRef(null);
 	const [isPlaying, setIsPlaying] = useState(false);
 	const audioContextRef = useRef(null);
 	const analyserRef = useRef(null);
@@ -11,6 +14,20 @@ const ChatFlow = ({ onArrowClick }) => {
 	const dataArrayRef = useRef(null);
 	const stateIntervalRef = useRef(null);
 	const [currentStateIndex, setCurrentStateIndex] = useState(0);
+
+	// Chat_perfect message threading states
+	const [messages, setMessages] = useState([]);
+	const [inputText, setInputText] = useState("");
+	const [isTyping, setIsTyping] = useState(false);
+	const [currentThread, setCurrentThread] = useState(null);
+	const [emotionalContext, setEmotionalContext] = useState({
+		state: "calm",
+		urgency: 0.2,
+		sessionId: null,
+	});
+
+	// Initialize conversation manager instance
+	const conversationManager = new ConversationManager();
 
 	// Base size for the orb (match the working HTML version exactly)
 	const baseSize = 347.04;
@@ -22,23 +39,24 @@ const ChatFlow = ({ onArrowClick }) => {
 		{
 			name: "default",
 			className: "", // No additional class - original design
-			sizeMultiplier: 1.0
+			sizeMultiplier: 1.0,
 		},
 		{
 			name: "deeper-trauma-small",
 			className: "small deeper-trauma",
-			sizeMultiplier: 0.8 // Smaller for trauma state
+			sizeMultiplier: 0.8, // Smaller for trauma state
 		},
 		{
 			name: "deeper-trauma-medium",
 			className: "medium deeper-trauma",
-			sizeMultiplier: 1.2 // Medium for trauma state
-		}
+			sizeMultiplier: 1.2, // Medium for trauma state
+		},
 	];
 
 	useEffect(() => {
 		initAudio();
 		bindEvents();
+		initializeConversation();
 
 		return () => {
 			if (animationIdRef.current) {
@@ -55,6 +73,88 @@ const ChatFlow = ({ onArrowClick }) => {
 			}
 		};
 	}, []);
+
+	// Initialize conversation thread
+	const initializeConversation = async () => {
+		try {
+			const thread = await conversationManager.createThread();
+			setCurrentThread(thread);
+
+			// Load existing messages if any
+			const existingMessages = await conversationManager.getMessages(
+				thread.id
+			);
+			setMessages(existingMessages);
+
+			// Initialize emotional context
+			const context = await conversationManager.getEmotionalContext(
+				thread.id
+			);
+			setEmotionalContext(context);
+		} catch (error) {
+			console.error("❌ Failed to initialize conversation:", error);
+		}
+	};
+
+	// Auto-scroll to latest message
+	useEffect(() => {
+		scrollToBottom();
+	}, [messages]);
+
+	const scrollToBottom = () => {
+		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+	};
+
+	// Handle message sending
+	const handleSendMessage = async () => {
+		if (!inputText.trim() || !currentThread) return;
+
+		const userMessage = {
+			id: Date.now(),
+			content: inputText,
+			sender: "user",
+			timestamp: new Date(),
+			threadId: currentThread.id,
+		};
+
+		// Add user message to UI immediately
+		setMessages((prev) => [...prev, userMessage]);
+		setInputText("");
+		setIsTyping(true);
+
+		try {
+			// Send to conversation manager
+			await conversationManager.addMessage(userMessage);
+
+			// Get AI response
+			const aiResponse = await conversationManager.processMessage(
+				userMessage
+			);
+
+			// Add AI response to UI
+			setMessages((prev) => [...prev, aiResponse]);
+
+			// Update emotional context based on conversation
+			const updatedContext =
+				await conversationManager.updateEmotionalContext(
+					currentThread.id,
+					userMessage.content
+				);
+			setEmotionalContext(updatedContext);
+		} catch (error) {
+			console.error("❌ Failed to process message:", error);
+		} finally {
+			setIsTyping(false);
+		}
+	};
+
+	// Handle input key press
+	const handleKeyPress = (e) => {
+		if (e.key === "Enter" && !e.shiftKey) {
+			e.preventDefault();
+			handleSendMessage();
+		}
+	};
 
 	const initAudio = async () => {
 		try {
@@ -94,9 +194,11 @@ const ChatFlow = ({ onArrowClick }) => {
 		}
 
 		stateIntervalRef.current = setInterval(() => {
-			setCurrentStateIndex(prevState => {
+			setCurrentStateIndex((prevState) => {
 				const nextState = (prevState + 1) % availableStates.length;
-				console.log(`🎭 Transitioning to state: ${availableStates[nextState].name}`);
+				console.log(
+					`🎭 Transitioning to state: ${availableStates[nextState].name}`
+				);
 				return nextState;
 			});
 		}, 6000); // Change state every 6 seconds
@@ -202,25 +304,30 @@ const ChatFlow = ({ onArrowClick }) => {
 
 			// Get current state
 			const currentState = availableStates[currentStateIndex];
-			
+
 			// Map volume to size with state multiplier
 			const normalizedVolume = average / 255;
-			const baseTargetSize = minSize + normalizedVolume * (maxSize - minSize);
-			const finalTargetSize = baseTargetSize * currentState.sizeMultiplier;
+			const baseTargetSize =
+				minSize + normalizedVolume * (maxSize - minSize);
+			const finalTargetSize =
+				baseTargetSize * currentState.sizeMultiplier;
 
 			// Debug output occasionally
 			if (Math.random() < 0.005) {
 				console.log(
-					`📊 Audio: avg=${average.toFixed(1)}, state=${currentState.name}, size=${finalTargetSize.toFixed(1)}px`
+					`📊 Audio: avg=${average.toFixed(1)}, state=${
+						currentState.name
+					}, size=${finalTargetSize.toFixed(1)}px`
 				);
 			}
 
 			// Update orb size and apply CSS class for current state
 			updateOrbSize(finalTargetSize);
-			
+
 			// Update CSS class if needed
 			if (orbRef.current) {
-				const newClassName = `ellipse-1 audio-reactive ${currentState.className}`.trim();
+				const newClassName =
+					`ellipse-1 audio-reactive ${currentState.className}`.trim();
 				if (orbRef.current.className !== newClassName) {
 					orbRef.current.className = newClassName;
 				}
@@ -259,7 +366,9 @@ const ChatFlow = ({ onArrowClick }) => {
 		// Very occasional debug output
 		if (Math.random() < 0.001) {
 			console.log(
-				`🔄 Orb updated: ${roundedSize}px (glow: ${glowSize.toFixed(1)}px)`
+				`🔄 Orb updated: ${roundedSize}px (glow: ${glowSize.toFixed(
+					1
+				)}px)`
 			);
 		}
 	};
@@ -323,13 +432,13 @@ const ChatFlow = ({ onArrowClick }) => {
 					onClick={handleOrbClick}
 					style={{
 						cursor: "pointer",
-						transition: "all 0.3s ease"
+						transition: "all 0.3s ease",
 					}}
 				/>
 			</div>
 
 			{/* State Debug Info (Development only) */}
-			{process.env.NODE_ENV === 'development' && isPlaying && (
+			{process.env.NODE_ENV === "development" && isPlaying && (
 				<div
 					style={{
 						position: "fixed",
@@ -341,12 +450,22 @@ const ChatFlow = ({ onArrowClick }) => {
 						borderRadius: "8px",
 						fontSize: "12px",
 						fontFamily: "monospace",
-						zIndex: 1000
+						zIndex: 1000,
 					}}
 				>
-					<div>🎭 Current State: {availableStates[currentStateIndex].name}</div>
-					<div>🎨 CSS Class: {availableStates[currentStateIndex].className || "default"}</div>
-					<div>📏 Size Multiplier: {availableStates[currentStateIndex].sizeMultiplier}x</div>
+					<div>
+						🎭 Current State:{" "}
+						{availableStates[currentStateIndex].name}
+					</div>
+					<div>
+						🎨 CSS Class:{" "}
+						{availableStates[currentStateIndex].className ||
+							"default"}
+					</div>
+					<div>
+						📏 Size Multiplier:{" "}
+						{availableStates[currentStateIndex].sizeMultiplier}x
+					</div>
 				</div>
 			)}
 

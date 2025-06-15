@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import OrbContainer from "./OrbContainer";
-import ConversationManager from "../services/conversationManager";
+import conversationManager from "../services/conversationManager";
 import "./ChatFlow.css";
 
 const ChatFlow = ({ onArrowClick }) => {
@@ -26,8 +26,8 @@ const ChatFlow = ({ onArrowClick }) => {
 		sessionId: null,
 	});
 
-	// Initialize conversation manager instance
-	const conversationManager = new ConversationManager();
+	// Use the singleton conversation manager instance
+	// const conversationManager is already imported as a singleton
 
 	// Base size for the orb (match the working HTML version exactly)
 	const baseSize = 347.04;

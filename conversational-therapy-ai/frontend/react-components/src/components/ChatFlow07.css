@@ -276,19 +276,19 @@
 	position: absolute !important;
 	left: 50% !important;
 	translate: -50% !important;
-	top: 130px !important; /* Weitere 10px nach unten für mehr Abstand */
-	padding: 2% !important; /* Kleineres Padding */
+	top: 150px !important; /* Weiter nach unten verschoben, um Überlappung mit Check In Text zu vermeiden */
+	padding: 1% !important; /* Noch kleineres Padding für kompaktere Darstellung */
 	z-index: 5;
 }
 
 .chat-flow-07.enhanced .chat-messages-container {
-	top: 270px; /* Angepasst an neue Orb-Position bei 130px + Orb-Größe */
-	height: calc(100vh - 490px); /* More space available */
+	top: 250px; /* Angepasst an neue Orb-Position bei 150px + kleinere Orb-Größe */
+	height: calc(100vh - 470px); /* Angepasste Höhe für kleineren Orb */
 }
 
 .chat-flow-07.enhanced.keyboard-hidden .chat-messages-container {
-	height: calc(100vh - 260px); /* More space when keyboard is hidden */
-	top: 260px;
+	height: calc(100vh - 240px); /* Angepasste Höhe wenn Keyboard versteckt ist */
+	top: 240px;
 }
 
 /* Enhanced chat messages container with better scrolling */
@@ -797,8 +797,8 @@
 	position: absolute !important;
 	left: 50% !important;
 	translate: -50% !important;
-	top: 130px !important; /* Weitere 10px nach unten für mehr Abstand */
-	padding: 2% !important; /* Noch kleineres Padding für kompaktere Darstellung */
+	top: 150px !important; /* Weiter nach unten verschoben, um Überlappung mit Check In Text zu vermeiden */
+	padding: 1% !important; /* Noch kleineres Padding für kompaktere Darstellung */
 	z-index: 5;
 }
 .chat-flow-07 .group-6 {

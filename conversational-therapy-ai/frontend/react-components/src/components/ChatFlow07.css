@@ -271,30 +271,74 @@
 	top: 50%;
 	translate: 0 -50%;
 }
+/* Enhanced Mode Specific Styling */
+.chat-flow-07.enhanced .orbs-v-3-instance {
+	position: absolute !important;
+	left: 50% !important;
+	translate: -50% !important;
+	top: 130px !important; /* Weitere 10px nach unten für mehr Abstand */
+	padding: 2% !important; /* Kleineres Padding */
+	z-index: 5;
+}
+
+.chat-flow-07.enhanced .chat-messages-container {
+	top: 270px; /* Angepasst an neue Orb-Position bei 130px + Orb-Größe */
+	height: calc(100vh - 490px); /* More space available */
+}
+
+.chat-flow-07.enhanced.keyboard-hidden .chat-messages-container {
+	height: calc(100vh - 260px); /* More space when keyboard is hidden */
+	top: 260px;
+}
+
 /* Enhanced chat messages container with better scrolling */
 .chat-flow-07 .chat-messages-container {
 	position: absolute;
 	left: calc(50% - 176.5px);
-	top: 110px; /* 20px Abstand von "Check In" (70px + 20px + ca. 20px für Texthöhe) */
+	top: 260px; /* Positioned below orb at 120px + orb size */
 	width: 353px;
-	height: calc(
-		100% - 200px
-	); /* Dynamische Höhe basierend auf verfügbarem Platz */
+	height: calc(100vh - 490px); /* More space available due to smaller orb */
 	overflow-y: auto;
 	overflow-x: hidden;
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
 	padding: 10px 0;
-	padding-bottom: 30px; /* More bottom padding */
+	padding-bottom: 15px; /* Reduced bottom padding to save space */
 	transition: all 0.3s ease;
 	scroll-behavior: smooth;
 	-webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
 }
 
 .chat-flow-07.keyboard-hidden .chat-messages-container {
-	height: calc(100% - 150px); /* Mehr Platz wenn Keyboard versteckt */
-	top: 110px; /* Gleiche Position, nur mehr Höhe */
+	height: calc(100vh - 260px); /* Much more space when keyboard is hidden */
+	top: 260px; /* Same position as above */
+	padding-bottom: 40px; /* More padding when keyboard is hidden */
+}
+
+/* Mobile-specific adjustments for chat messages */
+@media (max-height: 800px) {
+	.chat-flow-07 .chat-messages-container {
+		top: 240px; /* Below orb on smaller screens */
+		height: calc(100vh - 420px); /* Less space reserved */
+	}
+	
+	.chat-flow-07.enhanced .chat-messages-container {
+		top: 240px;
+		height: calc(100vh - 420px);
+	}
+}
+
+@media (max-height: 700px) {
+	.chat-flow-07 .chat-messages-container {
+		top: 220px; /* Still below orb on very small screens */
+		height: calc(100vh - 360px);
+	}
+
+	.chat-flow-07.enhanced .chat-messages-container {
+		top: 220px;
+		height: calc(100vh - 360px);
+	}
 }
 
 /* Old messages indicator at the top */
@@ -753,8 +797,9 @@
 	position: absolute !important;
 	left: 50% !important;
 	translate: -50% !important;
-	top: 25% !important; /* Orb weiter unten positioniert */
-	padding: 10% !important; /* 10% Padding ringsum */
+	top: 130px !important; /* Weitere 10px nach unten für mehr Abstand */
+	padding: 2% !important; /* Noch kleineres Padding für kompaktere Darstellung */
+	z-index: 5;
 }
 .chat-flow-07 .group-6 {
 	position: absolute;

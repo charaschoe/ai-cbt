@@ -17,6 +17,7 @@ export const ChatFlow07Enhanced = ({
 	onArrowClick,
 	aiResponse,
 	onSendMessage,
+	onDebugUpdate, // Neue Prop für Debug-Daten
 	...props
 }) => {
 	const [inputText, setInputText] = React.useState("");
@@ -30,25 +31,28 @@ export const ChatFlow07Enhanced = ({
 	const [typingMessage, setTypingMessage] = React.useState("");
 	const [isTypingAnimation, setIsTypingAnimation] = React.useState(false);
 	const [showKeyboard, setShowKeyboard] = React.useState(true);
-	const [currentResponseSegment, setCurrentResponseSegment] = React.useState(0);
+	const [currentResponseSegment, setCurrentResponseSegment] =
+		React.useState(0);
 	const [responseSegments, setResponseSegments] = React.useState([]);
 	const [facialExpression, setFacialExpression] = React.useState("neutral");
 	const [emotionalState, setEmotionalState] = React.useState("calm");
-	const [showOldMessagesIndicator, setShowOldMessagesIndicator] = React.useState(false);
+	const [showOldMessagesIndicator, setShowOldMessagesIndicator] =
+		React.useState(false);
 
 	// Enhanced: UniversalOrbAnimation State anstelle von Blob-System
-	const [orbEmotionalState, setOrbEmotionalState] = React.useState('neutral');
+	const [orbEmotionalState, setOrbEmotionalState] = React.useState("neutral");
 	const [orbUrgencyLevel, setOrbUrgencyLevel] = React.useState(0.2);
 	const [orbIntensity, setOrbIntensity] = React.useState(1.0);
 	const [orbSentimentScore, setOrbSentimentScore] = React.useState(0);
-	const [currentTextForAnalysis, setCurrentTextForAnalysis] = React.useState('');
-	
+	const [currentTextForAnalysis, setCurrentTextForAnalysis] =
+		React.useState("");
+
 	// Legacy: Blob-Analyse für Vergleich/Debug (Optional)
 	const [activeBlobs, setActiveBlobs] = React.useState([]);
 	const [blobAnalysis, setBlobAnalysis] = React.useState(null);
 
-	// Basis-Größe für den Enhanced Orb (etwas kleiner als ChatFlow)
-	const baseSize = 277.96;
+	// Basis-Größe für den Enhanced Orb (50% kleiner für bessere Chat-Integration)
+	const baseSize = 139; // 50% von 277.96
 
 	const messagesEndRef = React.useRef(null);
 	const chatContainerRef = React.useRef(null);
@@ -58,86 +62,103 @@ export const ChatFlow07Enhanced = ({
 	/**
 	 * Text-basierte emotionale Analyse für UniversalOrbAnimation
 	 */
-	const analyzeTextForOrb = React.useCallback((text, isUserMessage = false) => {
-		if (!text || text.trim().length === 0) return;
+	const analyzeTextForOrb = React.useCallback(
+		(text, isUserMessage = false) => {
+			if (!text || text.trim().length === 0) return;
 
-		// Sentiment-Analyse (vereinfacht)
-		const positiveWords = /\b(happy|joy|excited|great|wonderful|amazing|love|fantastic|brilliant|thrilled|good|better|best|awesome)\b/gi;
-		const negativeWords = /\b(sad|depressed|down|low|unhappy|miserable|terrible|awful|horrible|bad|worse|worst|hate|angry|frustrated)\b/gi;
-		const anxiousWords = /\b(anxious|worry|worried|stress|nervous|panic|fear|scared|overwhelmed|tension|afraid)\b/gi;
-		const traumaWords = /\b(trauma|abuse|violence|death|suicide|self-harm|ptsd|flashback|nightmare)\b/gi;
+			// Erweiterte Sentiment-Analyse mit mehr Wörtern
+			const positiveWords =
+				/\b(happy|joy|excited|great|wonderful|amazing|love|fantastic|brilliant|thrilled|good|better|best|awesome|excellent|perfect|beautiful|incredible|outstanding|superb|magnificent|delighted|ecstatic|blissful|cheerful|optimistic|grateful|blessed)\b/gi;
+			const negativeWords =
+				/\b(sad|depressed|down|low|unhappy|miserable|terrible|awful|horrible|bad|worse|worst|hate|angry|frustrated|devastated|heartbroken|disappointed|discouraged|hopeless|despair|anguish|torment|agony|suffering|pain|hurt)\b/gi;
+			const anxiousWords =
+				/\b(anxious|worry|worried|stress|nervous|panic|fear|scared|overwhelmed|tension|afraid|terrified|frantic|restless|uneasy|troubled|disturbed|apprehensive|jittery|fidgety|stressed out|on edge)\b/gi;
+			const traumaWords =
+				/\b(trauma|abuse|violence|death|suicide|self-harm|ptsd|flashback|nightmare|assault|attack|victim|survivor|therapy|counseling|recovery|healing|trigger|episode)\b/gi;
 
-		const positiveMatches = text.match(positiveWords) || [];
-		const negativeMatches = text.match(negativeWords) || [];
-		const anxiousMatches = text.match(anxiousWords) || [];
-		const traumaMatches = text.match(traumaWords) || [];
+			const positiveMatches = text.match(positiveWords) || [];
+			const negativeMatches = text.match(negativeWords) || [];
+			const anxiousMatches = text.match(anxiousWords) || [];
+			const traumaMatches = text.match(traumaWords) || [];
 
-		// Sentiment Score berechnen (-1 bis +1)
-		const totalWords = text.split(/\s+/).length;
-		const sentiment = (positiveMatches.length - negativeMatches.length) / Math.max(totalWords, 1);
-		const normalizedSentiment = Math.max(-1, Math.min(1, sentiment * 2));
+			// Sentiment Score berechnen (-1 bis +1)
+			const totalWords = text.split(/\s+/).length;
+			const sentiment =
+				(positiveMatches.length - negativeMatches.length) /
+				Math.max(totalWords, 1);
+			const normalizedSentiment = Math.max(
+				-1,
+				Math.min(1, sentiment * 3)
+			); // Verstärkte Reaktion
 
-		// Emotionaler Zustand bestimmen
-		let newEmotionalState = 'neutral';
-		let newUrgencyLevel = 0.2;
-		let newIntensity = 1.0;
+			// Emotionaler Zustand bestimmen
+			let newEmotionalState = "neutral";
+			let newUrgencyLevel = 0.2;
+			let newIntensity = 1.0;
 
-		if (traumaMatches.length > 0) {
-			newEmotionalState = 'trauma';
-			newUrgencyLevel = 0.9;
-			newIntensity = 2.0;
-		} else if (anxiousMatches.length >= 2) {
-			newEmotionalState = 'wut'; // Angst als hohe Erregung
-			newUrgencyLevel = 0.7;
-			newIntensity = 1.6;
-		} else if (negativeMatches.length > positiveMatches.length) {
-			newEmotionalState = 'trauer';
-			newUrgencyLevel = 0.5;
-			newIntensity = 1.2;
-		} else if (positiveMatches.length > 0) {
-			newEmotionalState = 'freude';
-			newUrgencyLevel = 0.3;
-			newIntensity = 1.4;
-		}
+			if (traumaMatches.length > 0) {
+				newEmotionalState = "trauma";
+				newUrgencyLevel = 0.95; // Sehr hoch
+				newIntensity = 2.5; // Sehr intensiv
+			} else if (anxiousMatches.length >= 2) {
+				newEmotionalState = "wut"; // Angst als hohe Erregung
+				newUrgencyLevel = 0.8; // Hoch
+				newIntensity = 1.8;
+			} else if (anxiousMatches.length >= 1) {
+				newEmotionalState = "wut";
+				newUrgencyLevel = 0.6;
+				newIntensity = 1.4;
+			} else if (negativeMatches.length > positiveMatches.length) {
+				newEmotionalState = "trauer";
+				newUrgencyLevel = 0.6; // Höher als vorher
+				newIntensity = 1.3;
+			} else if (positiveMatches.length > 0) {
+				newEmotionalState = "freude";
+				newUrgencyLevel = 0.4; // Höher für mehr Sichtbarkeit
+				newIntensity = 1.6; // Verstärkt
+			}
 
-		// Dringlichkeit basierend auf Textlänge und Wiederholungen anpassen
-		const hasExclamation = text.includes('!');
-		const hasCaps = /[A-Z]{3,}/.test(text);
-		const hasRepeatedPunctuation = /[!?]{2,}/.test(text);
+			// Dringlichkeit basierend auf Textlänge und Wiederholungen anpassen
+			const hasExclamation = text.includes("!");
+			const hasCaps = /[A-Z]{3,}/.test(text);
+			const hasRepeatedPunctuation = /[!?]{2,}/.test(text);
 
-		if (hasExclamation || hasCaps || hasRepeatedPunctuation) {
-			newUrgencyLevel = Math.min(1.0, newUrgencyLevel + 0.2);
-			newIntensity = Math.min(2.5, newIntensity + 0.3);
-		}
+			if (hasExclamation || hasCaps || hasRepeatedPunctuation) {
+				newUrgencyLevel = Math.min(1.0, newUrgencyLevel + 0.2);
+				newIntensity = Math.min(2.5, newIntensity + 0.3);
+			}
 
-		// States aktualisieren
-		setOrbEmotionalState(newEmotionalState);
-		setOrbUrgencyLevel(newUrgencyLevel);
-		setOrbIntensity(newIntensity);
-		setOrbSentimentScore(normalizedSentiment);
-		setCurrentTextForAnalysis(text);
+			// States aktualisieren
+			setOrbEmotionalState(newEmotionalState);
+			setOrbUrgencyLevel(newUrgencyLevel);
+			setOrbIntensity(newIntensity);
+			setOrbSentimentScore(normalizedSentiment);
+			setCurrentTextForAnalysis(text);
 
-		console.log('🎭 Text Analysis for Orb:', {
-			text: text.substring(0, 50) + '...',
-			emotionalState: newEmotionalState,
-			sentiment: normalizedSentiment,
-			urgency: newUrgencyLevel,
-			intensity: newIntensity,
-			isUserMessage
-		});
+			console.log("🎭 Text Analysis for Orb:", {
+				text: text.substring(0, 50) + "...",
+				emotionalState: newEmotionalState,
+				sentiment: normalizedSentiment,
+				urgency: newUrgencyLevel,
+				intensity: newIntensity,
+				isUserMessage,
+			});
 
-		return {
-			emotionalState: newEmotionalState,
-			urgencyLevel: newUrgencyLevel,
-			intensity: newIntensity,
-			sentimentScore: normalizedSentiment
-		};
-	}, []);
+			return {
+				emotionalState: newEmotionalState,
+				urgencyLevel: newUrgencyLevel,
+				intensity: newIntensity,
+				sentimentScore: normalizedSentiment,
+			};
+		},
+		[]
+	);
 
 	// Enhanced scroll function with better reliability
 	const scrollToBottom = () => {
 		if (messagesEndRef.current && chatContainerRef.current) {
-			chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+			chatContainerRef.current.scrollTop =
+				chatContainerRef.current.scrollHeight;
 			messagesEndRef.current.scrollIntoView({
 				behavior: "smooth",
 				block: "end",
@@ -149,7 +170,8 @@ export const ChatFlow07Enhanced = ({
 	// Enhanced scroll with old messages detection
 	const handleScroll = () => {
 		if (chatContainerRef.current) {
-			const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+			const { scrollTop, scrollHeight, clientHeight } =
+				chatContainerRef.current;
 			const isAtTop = scrollTop < 30;
 			const hasOldMessages = messages.length > 3;
 			setShowOldMessagesIndicator(isAtTop && hasOldMessages);
@@ -169,7 +191,9 @@ export const ChatFlow07Enhanced = ({
 	React.useEffect(() => {
 		const container = chatContainerRef.current;
 		if (container) {
-			container.addEventListener("scroll", handleScroll, { passive: true });
+			container.addEventListener("scroll", handleScroll, {
+				passive: true,
+			});
 			return () => container.removeEventListener("scroll", handleScroll);
 		}
 	}, [messages]);
@@ -216,7 +240,11 @@ export const ChatFlow07Enhanced = ({
 			setActiveBlobs(updatedBlobs);
 
 			if (updatedBlobs.length > 0 && Math.random() < 0.1) {
-				console.log("🔄 Legacy Blob update:", updatedBlobs.length, "active blobs");
+				console.log(
+					"🔄 Legacy Blob update:",
+					updatedBlobs.length,
+					"active blobs"
+				);
 			}
 		}, 1000);
 
@@ -225,7 +253,9 @@ export const ChatFlow07Enhanced = ({
 
 	// Helper function to split response into semantic segments
 	const splitIntoSemanticSegments = (text) => {
-		const sentences = text.split(/[.!?]+/).filter((sentence) => sentence.trim().length > 0);
+		const sentences = text
+			.split(/[.!?]+/)
+			.filter((sentence) => sentence.trim().length > 0);
 		const segments = [];
 		let currentSegment = "";
 		let questionCount = 0;
@@ -262,19 +292,30 @@ export const ChatFlow07Enhanced = ({
 
 	// Enhanced facial expression detection and emotional state management
 	const detectFacialExpression = (text, userMessage = "") => {
-		const sadWords = /\b(sad|depressed|down|low|unhappy|miserable|grief|sorrow|despair|heartbreak|devastated)\b/i;
-		const happyWords = /\b(happy|joy|excited|great|wonderful|amazing|fantastic|love|excellent|brilliant|thrilled)\b/i;
-		const anxiousWords = /\b(anxious|worry|worried|stress|nervous|panic|fear|scared|overwhelmed|tension)\b/i;
-		const angryWords = /\b(angry|mad|furious|annoyed|frustrated|irritated|rage|upset|pissed)\b/i;
-		const surprisedWords = /\b(surprised|shocked|amazed|wow|incredible|unbelievable|astonishing)\b/i;
-		const thoughtfulWords = /\b(think|consider|wonder|contemplate|reflect|ponder|question|curious)\b/i;
+		const sadWords =
+			/\b(sad|depressed|down|low|unhappy|miserable|grief|sorrow|despair|heartbreak|devastated)\b/i;
+		const happyWords =
+			/\b(happy|joy|excited|great|wonderful|amazing|fantastic|love|excellent|brilliant|thrilled)\b/i;
+		const anxiousWords =
+			/\b(anxious|worry|worried|stress|nervous|panic|fear|scared|overwhelmed|tension)\b/i;
+		const angryWords =
+			/\b(angry|mad|furious|annoyed|frustrated|irritated|rage|upset|pissed)\b/i;
+		const surprisedWords =
+			/\b(surprised|shocked|amazed|wow|incredible|unbelievable|astonishing)\b/i;
+		const thoughtfulWords =
+			/\b(think|consider|wonder|contemplate|reflect|ponder|question|curious)\b/i;
 
 		if (sadWords.test(text) || sadWords.test(userMessage)) return "sad";
-		if (happyWords.test(text) || happyWords.test(userMessage)) return "happy";
-		if (anxiousWords.test(text) || anxiousWords.test(userMessage)) return "anxious";
-		if (angryWords.test(text) || angryWords.test(userMessage)) return "angry";
-		if (surprisedWords.test(text) || surprisedWords.test(userMessage)) return "surprised";
-		if (thoughtfulWords.test(text) || thoughtfulWords.test(userMessage)) return "thoughtful";
+		if (happyWords.test(text) || happyWords.test(userMessage))
+			return "happy";
+		if (anxiousWords.test(text) || anxiousWords.test(userMessage))
+			return "anxious";
+		if (angryWords.test(text) || angryWords.test(userMessage))
+			return "angry";
+		if (surprisedWords.test(text) || surprisedWords.test(userMessage))
+			return "surprised";
+		if (thoughtfulWords.test(text) || thoughtfulWords.test(userMessage))
+			return "thoughtful";
 
 		return "neutral";
 	};
@@ -294,14 +335,21 @@ export const ChatFlow07Enhanced = ({
 		return new Promise((resolve) => {
 			setIsThinking(true);
 
-			const expression = detectFacialExpression(expectedResponse, userMessage);
-			const emotional = detectEmotionalState(expectedResponse, expression);
+			const expression = detectFacialExpression(
+				expectedResponse,
+				userMessage
+			);
+			const emotional = detectEmotionalState(
+				expectedResponse,
+				expression
+			);
 			setFacialExpression(expression);
 			setEmotionalState(emotional);
 
 			let baseDuration = 1500;
 			if (expression === "thoughtful") baseDuration = 2500;
-			if (expression === "sad" || expression === "anxious") baseDuration = 2000;
+			if (expression === "sad" || expression === "anxious")
+				baseDuration = 2000;
 			if (expression === "happy") baseDuration = 1000;
 
 			const thinkingDuration = Math.random() * 1000 + baseDuration;
@@ -320,12 +368,17 @@ export const ChatFlow07Enhanced = ({
 
 			const typeChar = () => {
 				if (currentIndex < fullMessage.length) {
-					setTypingMessage(fullMessage.substring(0, currentIndex + 1));
+					setTypingMessage(
+						fullMessage.substring(0, currentIndex + 1)
+					);
 					currentIndex++;
 					setTimeout(() => {
 						scrollToBottom();
 					}, 20);
-					typingIntervalRef.current = setTimeout(typeChar, isSegment ? 40 : 35);
+					typingIntervalRef.current = setTimeout(
+						typeChar,
+						isSegment ? 40 : 35
+					);
 				} else {
 					setIsTypingAnimation(false);
 					setTimeout(() => {
@@ -340,7 +393,10 @@ export const ChatFlow07Enhanced = ({
 	};
 
 	// Enhanced response processing with dramatic pauses and expressions
-	const processResponseWithPauses = async (fullResponse, userMessage = "") => {
+	const processResponseWithPauses = async (
+		fullResponse,
+		userMessage = ""
+	) => {
 		const segments = splitIntoSemanticSegments(fullResponse);
 		setResponseSegments(segments);
 
@@ -351,7 +407,10 @@ export const ChatFlow07Enhanced = ({
 				await simulateThinking(userMessage, segments[i]);
 			}
 
-			const segmentExpression = detectFacialExpression(segments[i], userMessage);
+			const segmentExpression = detectFacialExpression(
+				segments[i],
+				userMessage
+			);
 			setFacialExpression(segmentExpression);
 
 			// Analyse des aktuellen Segments für Orb-Animation
@@ -365,11 +424,17 @@ export const ChatFlow07Enhanced = ({
 				isSegment: true,
 				segmentIndex: i,
 				facialExpression: segmentExpression,
-				emotionalState: detectEmotionalState(segments[i], segmentExpression),
+				emotionalState: detectEmotionalState(
+					segments[i],
+					segmentExpression
+				),
 				timestamp: Date.now(),
 			};
 
-			conversationManager.addMessageToThread(currentThreadId, segmentMessage);
+			conversationManager.addMessageToThread(
+				currentThreadId,
+				segmentMessage
+			);
 			setMessages(conversationManager.getThreadMessages(currentThreadId));
 			setTypingMessage("");
 
@@ -378,7 +443,9 @@ export const ChatFlow07Enhanced = ({
 				if (segmentExpression === "thoughtful") pauseDuration = 1200;
 				if (segmentExpression === "sad") pauseDuration = 1000;
 				if (segmentExpression === "surprised") pauseDuration = 600;
-				await new Promise((resolve) => setTimeout(resolve, pauseDuration));
+				await new Promise((resolve) =>
+					setTimeout(resolve, pauseDuration)
+				);
 			}
 		}
 
@@ -386,10 +453,10 @@ export const ChatFlow07Enhanced = ({
 		setCurrentResponseSegment(0);
 		setFacialExpression("neutral");
 		setEmotionalState("supportive");
-		
+
 		// Nach vollständiger Antwort zu Neutral zurückkehren (mit Verzögerung)
 		setTimeout(() => {
-			setOrbEmotionalState('neutral');
+			setOrbEmotionalState("neutral");
 			setOrbUrgencyLevel(0.2);
 			setOrbIntensity(1.0);
 		}, 3000);
@@ -413,14 +480,23 @@ export const ChatFlow07Enhanced = ({
 	};
 
 	const handleSendClick = async () => {
-		if (inputText.trim() && onSendMessage && !isLoading && !isTypingAnimation && !isThinking) {
+		if (
+			inputText.trim() &&
+			onSendMessage &&
+			!isLoading &&
+			!isTypingAnimation &&
+			!isThinking
+		) {
 			const userMessage = inputText.trim();
 
 			// Analyse der User-Message für Orb
 			analyzeTextForOrb(userMessage, true);
 
 			// Legacy Blob processing für Vergleich
-			const blobUpdate = blobManager.processChatInput(userMessage, "user");
+			const blobUpdate = blobManager.processChatInput(
+				userMessage,
+				"user"
+			);
 			setActiveBlobs(blobUpdate.activeBlobs);
 			setBlobAnalysis(blobUpdate.analysis);
 
@@ -463,7 +539,10 @@ export const ChatFlow07Enhanced = ({
 				const response = responseData.response || responseData;
 
 				// Process AI response with legacy blob manager
-				const aiBlobUpdate = blobManager.processChatInput(response, "ai");
+				const aiBlobUpdate = blobManager.processChatInput(
+					response,
+					"ai"
+				);
 				setActiveBlobs(aiBlobUpdate.activeBlobs);
 
 				await simulateThinking(userMessage, response);
@@ -481,7 +560,8 @@ export const ChatFlow07Enhanced = ({
 					it: "Mi dispiace, ho problemi di connessione ora. Per favore riprova.",
 				};
 
-				const errorMsg = errorMessages[currentLanguage] || errorMessages.en;
+				const errorMsg =
+					errorMessages[currentLanguage] || errorMessages.en;
 
 				await simulateThinking();
 				await typeMessage(errorMsg);
@@ -494,8 +574,13 @@ export const ChatFlow07Enhanced = ({
 					timestamp: Date.now(),
 				};
 
-				conversationManager.addMessageToThread(currentThreadId, errorMessage);
-				setMessages(conversationManager.getThreadMessages(currentThreadId));
+				conversationManager.addMessageToThread(
+					currentThreadId,
+					errorMessage
+				);
+				setMessages(
+					conversationManager.getThreadMessages(currentThreadId)
+				);
 				setTypingMessage("");
 				setShowKeyboard(true);
 			}
@@ -503,7 +588,20 @@ export const ChatFlow07Enhanced = ({
 	};
 
 	const handleInputChange = (e) => {
-		setInputText(e.target.value);
+		const newValue = e.target.value;
+		setInputText(newValue);
+
+		// Live-Analyse während des Tippens für sofortige Orb-Reaktion
+		if (newValue.trim().length > 3) {
+			// Analyse erst ab 4 Zeichen
+			analyzeTextForOrb(newValue.trim(), true);
+		} else if (newValue.trim().length === 0) {
+			// Reset zu neutral wenn Text gelöscht wird
+			setOrbEmotionalState("neutral");
+			setOrbUrgencyLevel(0.2);
+			setOrbIntensity(1.0);
+			setOrbSentimentScore(0);
+		}
 	};
 
 	const handleKeyPress = (e) => {
@@ -515,16 +613,18 @@ export const ChatFlow07Enhanced = ({
 
 	// Orb Click Handler
 	const handleOrbClick = React.useCallback(() => {
-		console.log('🎯 Enhanced Orb clicked! Current state:', {
+		console.log("🎯 Enhanced Orb clicked! Current state:", {
 			emotionalState: orbEmotionalState,
 			urgency: orbUrgencyLevel,
-			intensity: orbIntensity
+			intensity: orbIntensity,
 		});
 	}, [orbEmotionalState, orbUrgencyLevel, orbIntensity]);
 
 	return (
 		<div
-			className={`chat-flow-07 enhanced ${!showKeyboard ? "keyboard-hidden" : ""} ${className || ""}`}
+			className={`chat-flow-07 enhanced ${
+				!showKeyboard ? "keyboard-hidden" : ""
+			} ${className || ""}`}
 		>
 			<div className="check-in">Check In</div>
 			<div className="home">
@@ -588,7 +688,9 @@ export const ChatFlow07Enhanced = ({
 							threadPosition: message.threadPosition,
 							isFirstInThread: message.isFirstInThread,
 						}}
-						showTimestamp={index === messages.length - 1 || index % 5 === 0}
+						showTimestamp={
+							index === messages.length - 1 || index % 5 === 0
+						}
 					/>
 				))}
 
@@ -631,7 +733,9 @@ export const ChatFlow07Enhanced = ({
 												? "Sto pensando..."
 												: "Thinking...")}
 									</div>
-									<div className={`thinking-dots expression-${facialExpression}`}>
+									<div
+										className={`thinking-dots expression-${facialExpression}`}
+									>
 										<div className="thought-dot"></div>
 										<div className="thought-dot"></div>
 										<div className="thought-dot"></div>
@@ -678,19 +782,25 @@ export const ChatFlow07Enhanced = ({
 					sentimentScore={orbSentimentScore}
 					intensity={orbIntensity}
 					onClick={handleOrbClick}
-					enableDebug={process.env.NODE_ENV === "development"}
+					enableDebug={true} // Debug für externe Übertragung aktivieren
+					onDebugUpdate={onDebugUpdate} // Debug-Daten weiterleiten
 					onStateChange={(newState, oldState) => {
-						console.log("🎭 Enhanced Orb state changed:", { newState, oldState });
+						console.log("🎭 Enhanced Orb state changed:", {
+							newState,
+							oldState,
+						});
 					}}
 					onPerformanceUpdate={(metrics) => {
 						if (Math.random() < 0.1) {
-							console.log("📊 Enhanced Orb performance:", metrics);
+							console.log(
+								"📊 Enhanced Orb performance:",
+								metrics
+							);
 						}
 					}}
 					className="text-reactive-orb"
 				/>
 			</div>
-
 
 			{/* Keyboard */}
 			{showKeyboard && (
@@ -706,7 +816,10 @@ export const ChatFlow07Enhanced = ({
 						<div className="frame-14">
 							<div className="frame-12">
 								<div className="iconset-full-screen">
-									<img className="iconset-add" src="iconset-add0.svg" />
+									<img
+										className="iconset-add"
+										src="iconset-add0.svg"
+									/>
 								</div>
 							</div>
 							<div className="frame-10">
@@ -742,8 +855,18 @@ export const ChatFlow07Enhanced = ({
 									src="iconset-arrow-up0.svg"
 									onClick={handleSendClick}
 									style={{
-										cursor: inputText.trim() && !isLoading && !isThinking ? "pointer" : "default",
-										opacity: inputText.trim() && !isLoading && !isThinking ? 1 : 0.5,
+										cursor:
+											inputText.trim() &&
+											!isLoading &&
+											!isThinking
+												? "pointer"
+												: "default",
+										opacity:
+											inputText.trim() &&
+											!isLoading &&
+											!isThinking
+												? 1
+												: 0.5,
 									}}
 								/>
 							</div>

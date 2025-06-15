@@ -8,24 +8,21 @@ import { ChatFlow07 } from "./ChatFlow07";
 import Screen2V4 from "./Screen2V4";
 import chatService from "../services/chatService";
 
-const SwipeContainer = () => {
+const SwipeContainer = ({ onDebugUpdate }) => {
 	// Check for enhanced modes
 	const urlParams = new URLSearchParams(window.location.search);
-	const useEnhanced = urlParams.get('enhanced') === 'true';
-	const useTextEnhanced = urlParams.get('text-enhanced') === 'true';
-	
+	const useEnhanced = urlParams.get("enhanced") === "true";
+	const useTextEnhanced = urlParams.get("text-enhanced") === "true";
+
 	const [currentScreen, setCurrentScreen] = useState("chat"); // 'widgets', 'chat', 'emotional-tasks', or 'chatflow07'
 	const [aiResponse, setAiResponse] = useState("");
-	
-	// Debug data from child components
-	const [debugData, setDebugData] = useState({});
-	
+
+	// Debug data from child components - removed local state, using external handler
 	// Debug callback function for child components
 	const handleDebugUpdate = (componentName, data) => {
-		setDebugData(prev => ({
-			...prev,
-			[componentName]: data
-		}));
+		if (onDebugUpdate) {
+			onDebugUpdate(componentName, data);
+		}
 	};
 
 	// Swipe detection state
@@ -42,14 +39,14 @@ const SwipeContainer = () => {
 		setTouchEnd(null); // Otherwise the swipe is fired even with usual touch events
 		setTouchStart({
 			x: e.targetTouches[0].clientX,
-			y: e.targetTouches[0].clientY
+			y: e.targetTouches[0].clientY,
 		});
 	};
 
 	const onTouchMove = (e) => {
 		setTouchEnd({
 			x: e.targetTouches[0].clientX,
-			y: e.targetTouches[0].clientY
+			y: e.targetTouches[0].clientY,
 		});
 	};
 
@@ -58,7 +55,7 @@ const SwipeContainer = () => {
 
 		const distanceX = touchStart.x - touchEnd.x;
 		const distanceY = touchStart.y - touchEnd.y;
-		
+
 		const isLeftSwipe = distanceX > minSwipeDistance;
 		const isRightSwipe = distanceX < -minSwipeDistance;
 		const isUpSwipe = distanceY > minSwipeDistance;
@@ -121,7 +118,7 @@ const SwipeContainer = () => {
 		setMouseEnd(null);
 		setMouseStart({
 			x: e.clientX,
-			y: e.clientY
+			y: e.clientY,
 		});
 	};
 
@@ -129,7 +126,7 @@ const SwipeContainer = () => {
 		if (!isDragging) return;
 		setMouseEnd({
 			x: e.clientX,
-			y: e.clientY
+			y: e.clientY,
 		});
 	};
 
@@ -141,7 +138,7 @@ const SwipeContainer = () => {
 
 		const distanceX = mouseStart.x - mouseEnd.x;
 		const distanceY = mouseStart.y - mouseEnd.y;
-		
+
 		const isLeftSwipe = distanceX > minSwipeDistance;
 		const isRightSwipe = distanceX < -minSwipeDistance;
 		const isUpSwipe = distanceY > minSwipeDistance;
@@ -245,166 +242,31 @@ const SwipeContainer = () => {
 
 	return (
 		<div className="swipe-container-wrapper">
-			{/* Global Debug Panel - außerhalb aller Container */}
-			{process.env.NODE_ENV === "development" && (
-				<div
-					style={{
-						position: "fixed",
-						top: "80px",
-						right: "20px",
-						background: "rgba(0, 0, 0, 0.95)",
-						color: "white",
-						padding: "12px",
-						borderRadius: "8px",
-						fontSize: "11px",
-						maxWidth: "300px",
-						maxHeight: "600px",
-						overflowY: "auto",
-						zIndex: 9999, // Höchste Z-Index Priorität
-						fontFamily: "monospace",
-						border: "1px solid rgba(255, 255, 255, 0.3)",
-						backdropFilter: "blur(10px)",
-					}}
-				>
-					<div
-						style={{
-							borderBottom: "1px solid rgba(255, 255, 255, 0.3)",
-							paddingBottom: "8px",
-							marginBottom: "8px",
-							textAlign: "center"
-						}}
-					>
-						<strong>🔍 Global Debug Panel</strong>
-					</div>
-
-					{/* Current Screen Info */}
-					<div style={{ marginBottom: "8px" }}>
-						<div><strong>📱 Current Screen:</strong></div>
-						<div>Active: {currentScreen}</div>
-						<div>Enhanced Audio: {useEnhanced ? "Yes" : "No"}</div>
-						<div>Enhanced Text: {useTextEnhanced ? "Yes" : "No"}</div>
-						<div>Transitioning: {isTransitioning ? "Yes" : "No"}</div>
-					</div>
-
-					{/* Enhanced Mode Specific Debug */}
-					{useTextEnhanced && currentScreen === "chatflow07" && (
-						<div style={{
-							borderTop: "1px solid rgba(255, 255, 255, 0.2)",
-							paddingTop: "8px",
-							marginBottom: "8px"
-						}}>
-							<div><strong>💬 Text Enhanced Mode:</strong></div>
-							<div>Component: ChatFlow07Enhanced</div>
-							<div>Text Analysis: Active</div>
-							<div>UniversalOrbAnimation: text mode</div>
-							{debugData.textEnhanced && (
-								<>
-									<div style={{ fontSize: "10px", color: "#888", marginTop: "4px" }}>
-										Orb State: {debugData.textEnhanced.emotionalState}
-									</div>
-									<div style={{ fontSize: "10px", color: "#888" }}>
-										Urgency: {(debugData.textEnhanced.urgencyLevel * 100).toFixed(0)}%
-									</div>
-									<div style={{ fontSize: "10px", color: "#888" }}>
-										Sentiment: {(debugData.textEnhanced.sentimentScore * 100).toFixed(0)}%
-									</div>
-								</>
-							)}
-						</div>
-					)}
-
-					{useEnhanced && currentScreen === "chat" && (
-						<div style={{
-							borderTop: "1px solid rgba(255, 255, 255, 0.2)",
-							paddingTop: "8px",
-							marginBottom: "8px"
-						}}>
-							<div><strong>🎵 Audio Enhanced Mode:</strong></div>
-							<div>Component: ChatFlowEnhanced</div>
-							<div>Audio Analysis: Active</div>
-							<div>UniversalOrbAnimation: audio mode</div>
-							{debugData.audioEnhanced && (
-								<>
-									<div style={{ fontSize: "10px", color: "#888", marginTop: "4px" }}>
-										Playing: {debugData.audioEnhanced.isPlaying ? "Yes" : "No"}
-									</div>
-									<div style={{ fontSize: "10px", color: "#888" }}>
-										Emotional State: {debugData.audioEnhanced.emotionalState}
-									</div>
-									<div style={{ fontSize: "10px", color: "#888" }}>
-										Intensity: {(debugData.audioEnhanced.intensity * 100).toFixed(0)}%
-									</div>
-								</>
-							)}
-						</div>
-					)}
-
-					{/* Navigation Info */}
-					<div style={{
-						borderTop: "1px solid rgba(255, 255, 255, 0.2)",
-						paddingTop: "8px",
-						marginBottom: "8px"
-					}}>
-						<div><strong>🧭 Navigation:</strong></div>
-						<div>Touch: {touchStart ? "Active" : "Idle"}</div>
-						<div>Mouse: {isDragging ? "Dragging" : "Idle"}</div>
-						<div style={{ fontSize: "10px", color: "#888" }}>
-							Swipe: Left=Widgets, Right=Emotional, Up=ChatFlow07
-						</div>
-					</div>
-
-					{/* System Info */}
-					<div style={{
-						borderTop: "1px solid rgba(255, 255, 255, 0.2)",
-						paddingTop: "8px"
-					}}>
-						<div><strong>⚙️ System:</strong></div>
-						<div>Viewport: {window.innerWidth}x{window.innerHeight}</div>
-						<div>User Agent: {navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop'}</div>
-						<div style={{ fontSize: "10px", color: "#666" }}>
-							Phase 3: Text Integration Complete
-						</div>
-					</div>
-				</div>
-			)}
-			{/* Desktop help text */}
-			<div
-				style={{
-					position: "fixed",
-					top: "20px",
-					left: "20px",
-					background: "rgba(0, 0, 0, 0.7)",
-					color: "white",
-					padding: "8px 12px",
-					borderRadius: "12px",
-					fontSize: "12px",
-					zIndex: 1000,
-					display: window.innerWidth > 768 ? "block" : "none",
-				}}
-			>
-				💡 Left: Widgets ← Chat → Emotional Tasks (Right) | Swipe up for ChatFlow
-			</div>
-
-			{/* Debug Chat Button */}
+			{/* Minimal Debug Chat Button - positioned to not interfere */}
 			<button
 				onClick={handleNavigateToChat}
 				style={{
 					position: "fixed",
-					top: "20px",
+					top: "10px",
 					right: "20px",
-					background: "#007AFF",
+					background: "rgba(0, 122, 255, 0.8)",
 					color: "white",
 					border: "none",
-					borderRadius: "8px",
-					padding: "10px 16px",
-					fontSize: "14px",
-					fontWeight: "600",
+					borderRadius: "20px",
+					padding: "6px 12px",
+					fontSize: "12px",
+					fontWeight: "500",
 					cursor: "pointer",
-					zIndex: 1000,
-					boxShadow: "0 4px 12px rgba(0, 122, 255, 0.3)",
+					zIndex: 999,
+					boxShadow: "0 2px 8px rgba(0, 122, 255, 0.2)",
+					backdropFilter: "blur(10px)",
+					opacity: 0.7,
+					transition: "opacity 0.3s ease",
 				}}
+				onMouseEnter={(e) => e.target.style.opacity = "1"}
+				onMouseLeave={(e) => e.target.style.opacity = "0.7"}
 			>
-				💬 Start Chat
+				💬
 			</button>
 
 			{/* Swipe indicator */}
@@ -473,7 +335,9 @@ const SwipeContainer = () => {
 					}}
 				></div>
 				<span
-					style={{ opacity: currentScreen === "emotional-tasks" ? 1 : 0.5 }}
+					style={{
+						opacity: currentScreen === "emotional-tasks" ? 1 : 0.5,
+					}}
 				>
 					Emotional Tasks
 				</span>
@@ -507,7 +371,6 @@ const SwipeContainer = () => {
 					</div>
 				)}
 
-
 				{currentScreen === "chatflow07" && (
 					<div className="screen active">
 						{useTextEnhanced ? (
@@ -515,6 +378,7 @@ const SwipeContainer = () => {
 								onArrowClick={toggleChatFlow}
 								aiResponse={aiResponse}
 								onSendMessage={handleSendMessage}
+								onDebugUpdate={handleDebugUpdate}
 							/>
 						) : (
 							<ChatFlow07
@@ -536,4 +400,121 @@ const SwipeContainer = () => {
 	);
 };
 
-export default SwipeContainer;
+// Global Debug Panel - Außerhalb des Swipe Containers
+const SwipeContainerWithDebug = () => {
+	const [debugData, setDebugData] = useState({});
+	const [showDebugPanel, setShowDebugPanel] = useState(false);
+	
+	const handleDebugUpdate = (componentName, data) => {
+		setDebugData((prev) => ({
+			...prev,
+			[componentName]: data,
+		}));
+	};
+
+	return (
+		<>
+			{/* Debug Toggle Button */}
+			{process.env.NODE_ENV === "development" && (
+				<button
+					onClick={() => setShowDebugPanel(!showDebugPanel)}
+					style={{
+						position: "fixed",
+						left: "10px",
+						top: "10px",
+						width: "30px",
+						height: "30px",
+						background: showDebugPanel ? "rgba(255, 0, 0, 0.8)" : "rgba(0, 255, 0, 0.5)",
+						border: "1px solid rgba(255, 255, 255, 0.3)",
+						borderRadius: "50%",
+						zIndex: 10001,
+						cursor: "pointer",
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center",
+						fontSize: "12px",
+						color: "white",
+						backdropFilter: "blur(5px)",
+						transition: "all 0.3s ease",
+					}}
+					title={showDebugPanel ? "Debug Panel ausblenden" : "Debug Panel anzeigen"}
+				>
+					🔍
+				</button>
+			)}
+
+			{/* Externes Debug Panel */}
+			{process.env.NODE_ENV === "development" && showDebugPanel && (
+				<div
+					style={{
+						position: "fixed",
+						left: "10px",
+						top: "50px",
+						width: "300px",
+						maxHeight: "70vh",
+						background: "rgba(0, 0, 0, 0.9)",
+						color: "white",
+						padding: "10px",
+						borderRadius: "8px",
+						fontSize: "10px",
+						fontFamily: "monospace",
+						overflowY: "auto",
+						zIndex: 10000,
+						border: "1px solid rgba(255, 255, 255, 0.3)",
+						backdropFilter: "blur(10px)",
+						boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
+					}}
+				>
+					<div style={{ fontSize: "12px", fontWeight: "bold", marginBottom: "10px", textAlign: "center" }}>
+						🔬 Zentrale Debug-Konsole
+					</div>
+					
+					{Object.keys(debugData).length === 0 ? (
+						<div style={{ color: "#666", textAlign: "center", padding: "20px" }}>
+							Keine Debug-Daten verfügbar
+						</div>
+					) : (
+						Object.entries(debugData).map(([componentName, data]) => (
+							<div key={componentName} style={{ marginBottom: "15px", borderBottom: "1px solid #333", paddingBottom: "10px" }}>
+								<div style={{ color: "#00FF88", fontWeight: "bold", marginBottom: "5px" }}>
+									{componentName}
+								</div>
+								
+								{data.performanceMetrics && (
+									<div style={{ marginBottom: "8px" }}>
+										<div style={{ color: "#FFD700", fontSize: "9px" }}>📊 Performance</div>
+										<div>FPS: {data.performanceMetrics.fps || 'N/A'}</div>
+										<div>Frame: {data.performanceMetrics.averageFrameTime?.toFixed(1)}ms</div>
+										<div>Memory: {data.performanceMetrics.memoryUsage?.used || 'N/A'}MB</div>
+									</div>
+								)}
+								
+								{data.debugInfo && (
+									<div style={{ marginBottom: "8px" }}>
+										<div style={{ color: "#FF6B35", fontSize: "9px" }}>🎭 Animation</div>
+										<div>Modus: {data.debugInfo.currentState?.mode}</div>
+										<div>Emotion: {data.debugInfo.currentState?.emotionalState}</div>
+										<div>Intensität: {(data.debugInfo.currentState?.intensity * 100)?.toFixed(0)}%</div>
+									</div>
+								)}
+								
+								{data.currentColors && (
+									<div style={{ marginBottom: "8px" }}>
+										<div style={{ color: "#00BFFF", fontSize: "9px" }}>🎨 Colors</div>
+										<div>State: {data.currentColors.state}</div>
+										<div>Therapy: {data.currentColors.therapeutic}</div>
+										<div>Emotion: {data.currentColors.emotion}</div>
+									</div>
+								)}
+							</div>
+						))
+					)}
+				</div>
+			)}
+			
+			<SwipeContainer onDebugUpdate={handleDebugUpdate} />
+		</>
+	);
+};
+
+export default SwipeContainerWithDebug;

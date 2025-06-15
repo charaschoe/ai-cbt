@@ -45,6 +45,7 @@ const UniversalOrbAnimation = ({
   onAnimationFrame = null,
   onStateChange = null,
   onPerformanceUpdate = null,
+  onDebugUpdate = null,                   // Neue Callback für Debug-Daten
   
   // Event Handlers
   onClick = null,
@@ -166,14 +167,25 @@ const UniversalOrbAnimation = ({
     
     // Debug-Info aktualisieren
     if (enableDebug) {
-      setDebugInfo(animationStateManager.getDebugInfo());
+      const debugData = animationStateManager.getDebugInfo();
+      setDebugInfo(debugData);
+      
+      // Debug-Daten nach außen übertragen
+      if (onDebugUpdate) {
+        onDebugUpdate('UniversalOrbAnimation', {
+          debugInfo: debugData,
+          performanceMetrics: metrics,
+          animationState,
+          currentColors
+        });
+      }
     }
     
     // External Callback
     if (onPerformanceUpdate) {
       onPerformanceUpdate(metrics);
     }
-  }, [onPerformanceUpdate, enableDebug]);
+  }, [onPerformanceUpdate, enableDebug, onDebugUpdate, animationState, currentColors]);
   
   /**
    * Animation auf DOM anwenden
@@ -317,60 +329,7 @@ const UniversalOrbAnimation = ({
         onMouseLeave={handleMouseLeave}
       />
       
-      {/* Debug Panel */}
-      {enableDebug && debugInfo && (
-        <div className="debug-panel universal-orb-debug">
-          <h4>🔬 UniversalOrbAnimation Debug</h4>
-          
-          <div className="debug-section">
-            <h5>📊 Performance</h5>
-            <div>FPS: {performanceMetrics?.fps || 'N/A'}</div>
-            <div>Frame Time: {performanceMetrics?.averageFrameTime?.toFixed(1)}ms</div>
-            <div>Memory: {performanceMetrics?.memoryUsage?.used || 'N/A'}MB</div>
-          </div>
-          
-          <div className="debug-section">
-            <h5>🎭 Animation State</h5>
-            <div>Modus: {debugInfo.currentState?.mode}</div>
-            <div>Emotion: {debugInfo.currentState?.emotionalState}</div>
-            <div>Intensität: {(debugInfo.currentState?.intensity * 100)?.toFixed(0)}%</div>
-            <div>Aktiv: {debugInfo.isRunning ? 'Ja' : 'Nein'}</div>
-          </div>
-          
-          {animationState && (
-            <div className="debug-section">
-              <h5>🎬 Frame State</h5>
-              <div>Breathing: {(animationState.breathing?.phase * 100)?.toFixed(1)}%</div>
-              <div>Morphing: {(animationState.morphing?.phase * 100)?.toFixed(1)}%</div>
-              <div>Glow: {(animationState.glowing?.intensity * 100)?.toFixed(1)}%</div>
-              <div>Scale: {animationState.breathing?.scale?.toFixed(3)}</div>
-            </div>
-          )}
-          
-          {currentColors && (
-            <div className="debug-section">
-              <h5>🎨 Colors</h5>
-              <div>State: {currentColors.state}</div>
-              <div>Therapy: {currentColors.therapeutic}</div>
-              <div>Emotion: {currentColors.emotion}</div>
-              <div style={{ 
-                fontSize: '10px', 
-                color: '#666',
-                wordBreak: 'break-all'
-              }}>
-                Primary: {currentColors.css?.['--orb-primary']}
-              </div>
-            </div>
-          )}
-          
-          <div className="debug-section">
-            <h5>⚙️ Device</h5>
-            <div>Tier: {performanceMetrics?.deviceCapabilities?.tier || 'N/A'}</div>
-            <div>Memory: {performanceMetrics?.deviceCapabilities?.deviceMemory || 'N/A'}GB</div>
-            <div>Cores: {performanceMetrics?.deviceCapabilities?.hardwareConcurrency || 'N/A'}</div>
-          </div>
-        </div>
-      )}
+      {/* Debug Panel wurde entfernt - Debug-Daten werden über Props übertragen */}
     </div>
   );
 };

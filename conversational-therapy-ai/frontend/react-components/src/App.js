@@ -181,6 +181,22 @@ function App() {
           >
             🎵 Audio Enhanced
           </button>
+          <button
+            onClick={() => window.location.search = '?text-enhanced=true'}
+            style={{
+              padding: '6px 12px',
+              background: '#9c27b0',
+              color: 'white',
+              border: 'none',
+              borderRadius: '14px',
+              cursor: 'pointer',
+              fontSize: '10px',
+              fontWeight: '600',
+              boxShadow: '0 2px 8px rgba(156, 39, 176, 0.3)'
+            }}
+          >
+            💬 Text Enhanced
+          </button>
         </div>
       </main>
     </div>

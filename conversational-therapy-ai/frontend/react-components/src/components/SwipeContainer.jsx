@@ -2,18 +2,31 @@ import React, { useState, useRef, useEffect } from "react";
 import "./SwipeContainer.css";
 import ChatFlow from "./ChatFlow";
 import ChatFlowEnhanced from "./ChatFlowEnhanced";
+import ChatFlow07Enhanced from "./ChatFlow07Enhanced";
 import WidgetsLeft from "./WidgetsLeft";
 import { ChatFlow07 } from "./ChatFlow07";
 import Screen2V4 from "./Screen2V4";
 import chatService from "../services/chatService";
 
 const SwipeContainer = () => {
-	// Check for enhanced mode
+	// Check for enhanced modes
 	const urlParams = new URLSearchParams(window.location.search);
 	const useEnhanced = urlParams.get('enhanced') === 'true';
+	const useTextEnhanced = urlParams.get('text-enhanced') === 'true';
 	
 	const [currentScreen, setCurrentScreen] = useState("chat"); // 'widgets', 'chat', 'emotional-tasks', or 'chatflow07'
 	const [aiResponse, setAiResponse] = useState("");
+	
+	// Debug data from child components
+	const [debugData, setDebugData] = useState({});
+	
+	// Debug callback function for child components
+	const handleDebugUpdate = (componentName, data) => {
+		setDebugData(prev => ({
+			...prev,
+			[componentName]: data
+		}));
+	};
 
 	// Swipe detection state
 	const [touchStart, setTouchStart] = useState(null);
@@ -232,6 +245,128 @@ const SwipeContainer = () => {
 
 	return (
 		<div className="swipe-container-wrapper">
+			{/* Global Debug Panel - außerhalb aller Container */}
+			{process.env.NODE_ENV === "development" && (
+				<div
+					style={{
+						position: "fixed",
+						top: "80px",
+						right: "20px",
+						background: "rgba(0, 0, 0, 0.95)",
+						color: "white",
+						padding: "12px",
+						borderRadius: "8px",
+						fontSize: "11px",
+						maxWidth: "300px",
+						maxHeight: "600px",
+						overflowY: "auto",
+						zIndex: 9999, // Höchste Z-Index Priorität
+						fontFamily: "monospace",
+						border: "1px solid rgba(255, 255, 255, 0.3)",
+						backdropFilter: "blur(10px)",
+					}}
+				>
+					<div
+						style={{
+							borderBottom: "1px solid rgba(255, 255, 255, 0.3)",
+							paddingBottom: "8px",
+							marginBottom: "8px",
+							textAlign: "center"
+						}}
+					>
+						<strong>🔍 Global Debug Panel</strong>
+					</div>
+
+					{/* Current Screen Info */}
+					<div style={{ marginBottom: "8px" }}>
+						<div><strong>📱 Current Screen:</strong></div>
+						<div>Active: {currentScreen}</div>
+						<div>Enhanced Audio: {useEnhanced ? "Yes" : "No"}</div>
+						<div>Enhanced Text: {useTextEnhanced ? "Yes" : "No"}</div>
+						<div>Transitioning: {isTransitioning ? "Yes" : "No"}</div>
+					</div>
+
+					{/* Enhanced Mode Specific Debug */}
+					{useTextEnhanced && currentScreen === "chatflow07" && (
+						<div style={{
+							borderTop: "1px solid rgba(255, 255, 255, 0.2)",
+							paddingTop: "8px",
+							marginBottom: "8px"
+						}}>
+							<div><strong>💬 Text Enhanced Mode:</strong></div>
+							<div>Component: ChatFlow07Enhanced</div>
+							<div>Text Analysis: Active</div>
+							<div>UniversalOrbAnimation: text mode</div>
+							{debugData.textEnhanced && (
+								<>
+									<div style={{ fontSize: "10px", color: "#888", marginTop: "4px" }}>
+										Orb State: {debugData.textEnhanced.emotionalState}
+									</div>
+									<div style={{ fontSize: "10px", color: "#888" }}>
+										Urgency: {(debugData.textEnhanced.urgencyLevel * 100).toFixed(0)}%
+									</div>
+									<div style={{ fontSize: "10px", color: "#888" }}>
+										Sentiment: {(debugData.textEnhanced.sentimentScore * 100).toFixed(0)}%
+									</div>
+								</>
+							)}
+						</div>
+					)}
+
+					{useEnhanced && currentScreen === "chat" && (
+						<div style={{
+							borderTop: "1px solid rgba(255, 255, 255, 0.2)",
+							paddingTop: "8px",
+							marginBottom: "8px"
+						}}>
+							<div><strong>🎵 Audio Enhanced Mode:</strong></div>
+							<div>Component: ChatFlowEnhanced</div>
+							<div>Audio Analysis: Active</div>
+							<div>UniversalOrbAnimation: audio mode</div>
+							{debugData.audioEnhanced && (
+								<>
+									<div style={{ fontSize: "10px", color: "#888", marginTop: "4px" }}>
+										Playing: {debugData.audioEnhanced.isPlaying ? "Yes" : "No"}
+									</div>
+									<div style={{ fontSize: "10px", color: "#888" }}>
+										Emotional State: {debugData.audioEnhanced.emotionalState}
+									</div>
+									<div style={{ fontSize: "10px", color: "#888" }}>
+										Intensity: {(debugData.audioEnhanced.intensity * 100).toFixed(0)}%
+									</div>
+								</>
+							)}
+						</div>
+					)}
+
+					{/* Navigation Info */}
+					<div style={{
+						borderTop: "1px solid rgba(255, 255, 255, 0.2)",
+						paddingTop: "8px",
+						marginBottom: "8px"
+					}}>
+						<div><strong>🧭 Navigation:</strong></div>
+						<div>Touch: {touchStart ? "Active" : "Idle"}</div>
+						<div>Mouse: {isDragging ? "Dragging" : "Idle"}</div>
+						<div style={{ fontSize: "10px", color: "#888" }}>
+							Swipe: Left=Widgets, Right=Emotional, Up=ChatFlow07
+						</div>
+					</div>
+
+					{/* System Info */}
+					<div style={{
+						borderTop: "1px solid rgba(255, 255, 255, 0.2)",
+						paddingTop: "8px"
+					}}>
+						<div><strong>⚙️ System:</strong></div>
+						<div>Viewport: {window.innerWidth}x{window.innerHeight}</div>
+						<div>User Agent: {navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop'}</div>
+						<div style={{ fontSize: "10px", color: "#666" }}>
+							Phase 3: Text Integration Complete
+						</div>
+					</div>
+				</div>
+			)}
 			{/* Desktop help text */}
 			<div
 				style={{
@@ -375,11 +510,19 @@ const SwipeContainer = () => {
 
 				{currentScreen === "chatflow07" && (
 					<div className="screen active">
-						<ChatFlow07
-							onArrowClick={toggleChatFlow}
-							aiResponse={aiResponse}
-							onSendMessage={handleSendMessage}
-						/>
+						{useTextEnhanced ? (
+							<ChatFlow07Enhanced
+								onArrowClick={toggleChatFlow}
+								aiResponse={aiResponse}
+								onSendMessage={handleSendMessage}
+							/>
+						) : (
+							<ChatFlow07
+								onArrowClick={toggleChatFlow}
+								aiResponse={aiResponse}
+								onSendMessage={handleSendMessage}
+							/>
+						)}
 					</div>
 				)}
 

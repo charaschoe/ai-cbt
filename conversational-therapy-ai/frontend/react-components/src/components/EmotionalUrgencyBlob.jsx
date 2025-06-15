@@ -18,12 +18,15 @@ const EmotionalUrgencyBlob = ({
 	useEffect(() => {
 		// MEMORY FIX: Optimiertes Interval-Management
 		let interval;
-		
+
 		// MEMORY FIX: Nur animieren wenn Blob sichtbar ist
 		if (isVisible && size !== BLOB_SIZES.NONE) {
 			// MEMORY FIX: Weniger häufige Updates für bessere Performance
-			const updateInterval = Math.max(100, 100 + 200 / animationIntensity); // Minimum 100ms
-			
+			const updateInterval = Math.max(
+				100,
+				100 + 200 / animationIntensity
+			); // Minimum 100ms
+
 			interval = setInterval(() => {
 				setAnimationPhase((prev) => (prev + 2) % 360); // MEMORY FIX: Größere Schritte
 			}, updateInterval);
@@ -63,7 +66,8 @@ const EmotionalUrgencyBlob = ({
 			// Neutral state - mimics the original orb appearance
 			neutral: {
 				[EMOTIONAL_URGENCY_LEVELS.NONE]: {
-					primary: "radial-gradient(100% 100% at 50% 0%, #FFF89D 0%, rgba(150, 208, 255, 0.5) 36.5%, rgba(219, 233, 255, 0.5) 69.5%, rgba(255, 220, 181, 0.5) 85.5%, rgba(255, 187, 148, 0) 100%)",
+					primary:
+						"radial-gradient(100% 100% at 50% 0%, #FFF89D 0%, rgba(150, 208, 255, 0.5) 36.5%, rgba(219, 233, 255, 0.5) 69.5%, rgba(255, 220, 181, 0.5) 85.5%, rgba(255, 187, 148, 0) 100%)",
 					secondary: "rgba(150, 208, 255, 0.3)",
 					tertiary: "rgba(219, 233, 255, 0.2)",
 				},
@@ -165,7 +169,7 @@ const EmotionalUrgencyBlob = ({
 
 		const scheme =
 			colorSchemes[emotionType]?.[urgencyLevel] ||
-			colorSchemes['neutral']?.[EMOTIONAL_URGENCY_LEVELS.NONE] ||
+			colorSchemes["neutral"]?.[EMOTIONAL_URGENCY_LEVELS.NONE] ||
 			colorSchemes[BLOB_TYPES.EMOTIONAL_URGENCY][
 				EMOTIONAL_URGENCY_LEVELS.LOW
 			];
@@ -183,10 +187,10 @@ const EmotionalUrgencyBlob = ({
 	// Animationsintensität basierend auf Dringlichkeit
 	const getAnimationIntensity = () => {
 		// Neutral state has very low animation intensity
-		if (emotionType === 'neutral') {
+		if (emotionType === "neutral") {
 			return 0.2;
 		}
-		
+
 		const intensityMap = {
 			[EMOTIONAL_URGENCY_LEVELS.NONE]: 0.2,
 			[EMOTIONAL_URGENCY_LEVELS.LOW]: 1,
@@ -210,7 +214,7 @@ const EmotionalUrgencyBlob = ({
 	// Spezielle Gradient-Behandlung für seeking insights (Rudolf Steiner Farbtheorie)
 	const getGradientBackground = () => {
 		// Neutral state uses the original orb gradient
-		if (emotionType === 'neutral') {
+		if (emotionType === "neutral") {
 			return colors.primary; // This already contains the radial-gradient
 		} else if (emotionType === BLOB_TYPES.SEEKING_INSIGHTS) {
 			return `radial-gradient(50% 50% at 50% 50%, ${colors.primary} 17.31%, ${colors.secondary} 53.85%, ${colors.tertiary} 64.91%, ${colors.quaternary} 71.16%, ${colors.quinary} 100%)`;

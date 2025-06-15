@@ -480,40 +480,6 @@ const ChatFlowEnhanced = ({ onArrowClick }) => {
 				/>
 			</div>
 
-			{/* Enhanced Debug Panel */}
-			{process.env.NODE_ENV === "development" && isPlaying && (
-				<div
-					style={{
-						position: "fixed",
-						top: "20px",
-						left: "20px",
-						background: "rgba(0, 0, 0, 0.9)",
-						color: "white",
-						padding: "12px",
-						borderRadius: "8px",
-						fontSize: "11px",
-						fontFamily: "monospace",
-						zIndex: 999, // Unter UniversalOrbAnimation Debug Panel
-						maxWidth: "200px"
-					}}
-				>
-					<div style={{ borderBottom: "1px solid #333", paddingBottom: "6px", marginBottom: "6px" }}>
-						<strong>🎵 ChatFlow Enhanced</strong>
-					</div>
-					<div>Mode: Audio-reaktiv</div>
-					<div>Playing: {isPlaying ? 'Yes' : 'No'}</div>
-					<div>Emotional State: {currentEmotionalState}</div>
-					<div>Intensity: {(audioIntensity * 100).toFixed(0)}%</div>
-					{audioData.spectrum && (
-						<>
-							<div>BPM: {audioData.spectrum.bpm}</div>
-							<div>Amplitude: {(audioData.amplitude * 100).toFixed(0)}%</div>
-							<div>Frequency: {(audioData.frequency * 100).toFixed(0)}%</div>
-							<div>Rhythm: {(audioData.rhythm * 100).toFixed(0)}%</div>
-						</>
-					)}
-				</div>
-			)}
 
 			{/* Audio Element */}
 			<audio

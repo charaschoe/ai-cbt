@@ -1,0 +1,328 @@
+/* UniversalOrbAnimation CSS */
+
+.universal-orb-animation {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hauptorb Styling */
+.universal-orb {
+  /* Hardware-beschleunigte Eigenschaften */
+  will-change: transform, filter, border-radius, background;
+  
+  /* Basis-Styling */
+  border: none;
+  outline: none;
+  
+  /* Position-Lock: Immer exakt zentriert */
+  position: absolute;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  
+  /* Übergangs-Animationen für Farbwechsel */
+  transition: background 0.8s cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+/* Modus-spezifische Anpassungen */
+.universal-orb.mode-audio {
+  /* Audio-Modus: Keine Übergänge für Echtzeit-Updates */
+  transition: background 0.3s cubic-bezier(0.4, 0, 0.6, 1) !important;
+}
+
+.universal-orb.mode-text {
+  /* Text-Modus: Sanfte Übergänge für emotionale Zustände */
+  transition: 
+    background 0.8s cubic-bezier(0.4, 0, 0.6, 1),
+    filter 0.5s ease-in-out;
+}
+
+.universal-orb.mode-emotional,
+.universal-orb.mode-ambient {
+  /* Emotional/Ambient: Sehr sanfte Übergänge */
+  transition: 
+    background 1.2s cubic-bezier(0.4, 0, 0.6, 1),
+    filter 0.8s ease-in-out;
+}
+
+.universal-orb.mode-base {
+  /* Basis-Modus: Standard-Übergänge */
+  transition: background 0.8s cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+/* Emotionale Zustände Klassen */
+.universal-orb.state-neutral {
+  /* Neutrale Basis-Eigenschaften */
+}
+
+.universal-orb.state-freude {
+  /* Zusätzliche Eigenschaften für Freude */
+  box-shadow: 0 0 30px rgba(255, 220, 100, 0.3);
+}
+
+.universal-orb.state-trauer {
+  /* Zusätzliche Eigenschaften für Trauer */
+  box-shadow: 0 0 25px rgba(100, 150, 255, 0.2);
+}
+
+.universal-orb.state-wut {
+  /* Zusätzliche Eigenschaften für Wut */
+  box-shadow: 0 0 35px rgba(255, 120, 120, 0.4);
+}
+
+.universal-orb.state-trauma {
+  /* Zusätzliche Eigenschaften für Trauma */
+  box-shadow: 0 0 40px rgba(180, 80, 80, 0.5);
+}
+
+/* Hover-Effekte */
+.universal-orb:hover {
+  transform: translate(-50%, -50%) scale(1.02) !important;
+  transition: 
+    background 0.8s cubic-bezier(0.4, 0, 0.6, 1),
+    transform 0.2s ease-out !important;
+}
+
+.universal-orb:active {
+  transform: translate(-50%, -50%) scale(0.98) !important;
+  transition: transform 0.1s ease-out !important;
+}
+
+/* Focus für Barrierefreiheit */
+.universal-orb:focus {
+  outline: 2px solid rgba(0, 255, 161, 0.8);
+  outline-offset: 4px;
+}
+
+/* Debug Panel */
+.universal-orb-debug {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.95);
+  color: white;
+  padding: 16px;
+  border-radius: 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  max-width: 280px;
+  max-height: 80vh;
+  overflow-y: auto;
+  z-index: 10000;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.universal-orb-debug h4 {
+  margin: 0 0 12px 0;
+  font-size: 13px;
+  color: #00FFA1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 6px;
+}
+
+.universal-orb-debug h5 {
+  margin: 12px 0 6px 0;
+  font-size: 11px;
+  color: #4A9EFF;
+  font-weight: bold;
+}
+
+.debug-section {
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.debug-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.debug-section div {
+  margin: 3px 0;
+  line-height: 1.3;
+  color: #ccc;
+}
+
+/* CSS Custom Properties für erweiterte Anpassungen */
+.universal-orb {
+  --orb-primary: rgba(0, 255, 161, 0.8);
+  --orb-secondary: rgba(68, 140, 255, 0.6);
+  --orb-tertiary: rgba(255, 187, 148, 0.4);
+  --orb-glow: rgba(0, 255, 161, 0.6);
+  --orb-intensity: 1.0;
+  --orb-transition-duration: 800ms;
+}
+
+/* Performance-Optimierungen */
+@media (prefers-reduced-motion: reduce) {
+  .universal-orb {
+    transition: none !important;
+  }
+  
+  .universal-orb:hover {
+    transform: translate(-50%, -50%) !important;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .universal-orb {
+    outline: 2px solid white;
+  }
+  
+  .universal-orb-debug {
+    background: black;
+    border: 2px solid white;
+    color: white;
+  }
+}
+
+/* Mobile-Optimierungen */
+@media (max-width: 768px) {
+  .universal-orb-debug {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+    font-size: 10px;
+    padding: 12px;
+    max-height: 50vh;
+  }
+  
+  .universal-orb:hover {
+    /* Reduzierte Hover-Effekte auf Mobile */
+    transform: translate(-50%, -50%) scale(1.01) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .universal-orb-debug {
+    font-size: 9px;
+    padding: 10px;
+  }
+  
+  .universal-orb-debug h4 {
+    font-size: 11px;
+  }
+  
+  .universal-orb-debug h5 {
+    font-size: 10px;
+  }
+}
+
+/* Touch-Optimierungen */
+@media (hover: none) and (pointer: coarse) {
+  .universal-orb:hover {
+    transform: translate(-50%, -50%) !important;
+  }
+  
+  .universal-orb:active {
+    transform: translate(-50%, -50%) scale(0.95) !important;
+  }
+}
+
+/* Low-end device optimizations */
+@media (max-resolution: 150dpi) {
+  .universal-orb {
+    will-change: transform; /* Reduzierte will-change für schwächere Geräte */
+  }
+}
+
+/* Print styles */
+@media print {
+  .universal-orb-animation {
+    display: none;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .universal-orb-debug {
+    background: rgba(0, 0, 0, 0.98);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* Scrollbar für Debug Panel */
+.universal-orb-debug::-webkit-scrollbar {
+  width: 6px;
+}
+
+.universal-orb-debug::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.universal-orb-debug::-webkit-scrollbar-thumb {
+  background: rgba(0, 255, 161, 0.5);
+  border-radius: 3px;
+}
+
+.universal-orb-debug::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 255, 161, 0.7);
+}
+
+/* Animation für Debug Panel erscheinen */
+.universal-orb-debug {
+  animation: debugPanelSlideIn 0.3s ease-out;
+}
+
+@keyframes debugPanelSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Utility-Klassen für verschiedene Größen */
+.universal-orb-animation.size-small .universal-orb {
+  /* Für kleine Orbs, z.B. in Listen */
+}
+
+.universal-orb-animation.size-medium .universal-orb {
+  /* Standard-Größe */
+}
+
+.universal-orb-animation.size-large .universal-orb {
+  /* Für große Orbs, z.B. Hauptscreen */
+}
+
+/* Themes für verschiedene Contexts */
+.universal-orb-animation.theme-therapy .universal-orb {
+  /* Therapie-Kontext spezifische Anpassungen */
+}
+
+.universal-orb-animation.theme-health .universal-orb {
+  /* Gesundheits-Kontext spezifische Anpassungen */
+}
+
+.universal-orb-animation.theme-education .universal-orb {
+  /* Bildungs-Kontext spezifische Anpassungen */
+}
+
+/* Spezielle Effekte für verschiedene Performance-Tiers */
+.universal-orb.performance-high {
+  /* Erweiterte Effekte für High-Performance Geräte */
+  filter: brightness(1.02) contrast(1.05);
+}
+
+.universal-orb.performance-medium {
+  /* Standard-Effekte */
+}
+
+.universal-orb.performance-low {
+  /* Reduzierte Effekte für Low-Performance Geräte */
+  will-change: transform;
+  transition: background 0.5s ease !important;
+}

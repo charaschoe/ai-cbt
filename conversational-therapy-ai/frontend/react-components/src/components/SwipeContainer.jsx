@@ -1,12 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./SwipeContainer.css";
 import ChatFlow from "./ChatFlow";
+import ChatFlowEnhanced from "./ChatFlowEnhanced";
 import WidgetsLeft from "./WidgetsLeft";
 import { ChatFlow07 } from "./ChatFlow07";
 import Screen2V4 from "./Screen2V4";
 import chatService from "../services/chatService";
 
 const SwipeContainer = () => {
+	// Check for enhanced mode
+	const urlParams = new URLSearchParams(window.location.search);
+	const useEnhanced = urlParams.get('enhanced') === 'true';
+	
 	const [currentScreen, setCurrentScreen] = useState("chat"); // 'widgets', 'chat', 'emotional-tasks', or 'chatflow07'
 	const [aiResponse, setAiResponse] = useState("");
 
@@ -359,7 +364,11 @@ const SwipeContainer = () => {
 
 				{currentScreen === "chat" && (
 					<div className="screen active">
-						<ChatFlow onArrowClick={toggleChatFlow} />
+						{useEnhanced ? (
+							<ChatFlowEnhanced onArrowClick={toggleChatFlow} />
+						) : (
+							<ChatFlow onArrowClick={toggleChatFlow} />
+						)}
 					</div>
 				)}
 

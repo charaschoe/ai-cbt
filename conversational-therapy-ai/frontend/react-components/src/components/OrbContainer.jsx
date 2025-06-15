@@ -58,9 +58,10 @@ const OrbContainer = ({
   // Update visual state based on emotional context
   useEffect(() => {
     if (dominantBlob) {
+      const urgency = typeof dominantBlob.urgencyLevel === 'number' ? dominantBlob.urgencyLevel : 0;
       const newState = dominantBlob.type === 'trauma' ? 'deeper-trauma' :
-                      dominantBlob.urgencyLevel > 0.7 ? 'emotional' :
-                      dominantBlob.urgencyLevel > 0.4 ? 'tuned-in' : 'calm';
+                      urgency > 0.7 ? 'emotional' :
+                      urgency > 0.4 ? 'tuned-in' : 'calm';
       setCurrentVisualState(newState);
     } else {
       setCurrentVisualState(visualState);
@@ -123,10 +124,10 @@ const OrbContainer = ({
           {dominantBlob && (
             <>
               <div className="debug-text">
-                {dominantBlob.type} ({dominantBlob.urgencyLevel?.toFixed(2)})
+                {dominantBlob.type} ({typeof dominantBlob.urgencyLevel === 'number' ? dominantBlob.urgencyLevel.toFixed(2) : dominantBlob.urgencyLevel || 'N/A'})
               </div>
               <div className="debug-text">
-                Intensity: {dominantBlob.animationIntensity?.toFixed(2)}
+                Intensity: {typeof dominantBlob.animationIntensity === 'number' ? dominantBlob.animationIntensity.toFixed(2) : dominantBlob.animationIntensity || 'N/A'}
               </div>
             </>
           )}

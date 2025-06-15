@@ -31,32 +31,49 @@ const ChatFlow = ({ onArrowClick }) => {
 
 	// Base size for the orb (match the working HTML version exactly)
 	const baseSize = 347.04;
-	const minSize = baseSize * 0.8;
-	const maxSize = baseSize * 1.4;
+	const minSize = baseSize * 0.85;
+	const maxSize = baseSize * 1.25;
 
-	// Available states based on provided CSS rules
-	const availableStates = [
-		{
-			name: "default",
-			className: "", // No additional class - original design
-			sizeMultiplier: 1.0,
-		},
-		{
-			name: "deeper-trauma-small",
-			className: "small deeper-trauma",
-			sizeMultiplier: 0.8, // Smaller for trauma state
-		},
-		{
-			name: "deeper-trauma-medium",
-			className: "medium deeper-trauma",
-			sizeMultiplier: 1.2, // Medium for trauma state
-		},
+	// Organic animation state
+	const [organicAnimation, setOrganicAnimation] = useState({
+		breathing: 0,
+		morphing: 0,
+		colorPhase: 0,
+		currentColor: { h: 160, s: 100, l: 50 }, // Starting green-blue
+	});
+
+	// Audio analysis state for pitch detection
+	const [audioAnalysis, setAudioAnalysis] = useState({
+		pitch: 0, // 0-1, higher values = higher pitch
+		amplitude: 0, // 0-1, volume level
+		clarity: 0, // 0-1, how clear the pitch is
+	});
+
+	// Organic shapes for morphing
+	const organicShapes = [
+		"50%", // Perfect circle
+		"47% 53% 52% 48%",
+		"52% 48% 47% 53%",
+		"48% 52% 53% 47%",
+		"51% 49% 48% 52%",
+		"49% 51% 52% 48%",
+	];
+
+	// Color palettes for organic transitions
+	const colorPalettes = [
+		{ h: 160, s: 100, l: 50 }, // Green-blue (default)
+		{ h: 200, s: 80, l: 60 }, // Light blue
+		{ h: 180, s: 90, l: 45 }, // Teal
+		{ h: 140, s: 95, l: 55 }, // Green
+		{ h: 220, s: 75, l: 50 }, // Blue
+		{ h: 170, s: 85, l: 48 }, // Blue-green
 	];
 
 	useEffect(() => {
 		initAudio();
 		bindEvents();
 		initializeConversation();
+		startContinuousOrganicAnimation();
 
 		return () => {
 			if (animationIdRef.current) {
@@ -162,54 +179,97 @@ const ChatFlow = ({ onArrowClick }) => {
 			audioContextRef.current = new (window.AudioContext ||
 				window.webkitAudioContext)();
 
-			// Create analyser
+			// Create analyser for pitch detection
 			analyserRef.current = audioContextRef.current.createAnalyser();
-			analyserRef.current.fftSize = 256;
-			analyserRef.current.smoothingTimeConstant = 0.8;
+			analyserRef.current.fftSize = 2048; // Higher resolution for pitch detection
+			analyserRef.current.smoothingTimeConstant = 0.6; // Less smoothing for responsiveness
+			analyserRef.current.minDecibels = -90;
+			analyserRef.current.maxDecibels = -10;
 
-			// Create data array
+			// Create data arrays for frequency and time domain
 			dataArrayRef.current = new Uint8Array(
 				analyserRef.current.frequencyBinCount
 			);
 
-			console.log("✅ Audio context initialized successfully");
+			console.log(
+				"✅ Enhanced audio context initialized for pitch detection"
+			);
 		} catch (error) {
 			console.error("❌ Audio initialization failed:", error);
 		}
 	};
 
 	const bindEvents = () => {
-		// Set initial visual state - original design
+		// Set initial visual state with organic animation
 		if (orbRef.current) {
 			orbRef.current.style.cursor = "pointer";
-			orbRef.current.style.transition = "none"; // Remove transitions for real-time updates
-			updateOrbSize(baseSize);
-			console.log("✅ Orb events bound and initial size set:", baseSize);
+			// Initialize with organic styling
+			updateOrganicOrb(0, 0, organicAnimation.currentColor, baseSize);
+			console.log("✅ Orb events bound with organic animation:", baseSize);
 		}
 	};
 
-	const startEmotionalStateCycling = () => {
-		if (stateIntervalRef.current) {
-			clearInterval(stateIntervalRef.current);
-		}
+	// Continuous organic animation that runs even without audio
+	const startContinuousOrganicAnimation = () => {
+		const startTime = Date.now();
 
-		stateIntervalRef.current = setInterval(() => {
-			setCurrentStateIndex((prevState) => {
-				const nextState = (prevState + 1) % availableStates.length;
-				console.log(
-					`🎭 Transitioning to state: ${availableStates[nextState].name}`
-				);
-				return nextState;
+		const organicLoop = () => {
+			const elapsed = Date.now() - startTime;
+
+			// Breathing cycle (4 seconds)
+			const breathingPhase = (elapsed % 4000) / 4000;
+			const breathing = Math.sin(breathingPhase * Math.PI * 2) * 0.02; // ±2% subtle breathing
+
+			// Morphing cycle (8 seconds)
+			const morphingPhase = (elapsed % 8000) / 8000;
+			const morphingIndex = Math.floor(
+				morphingPhase * organicShapes.length
+			);
+
+			// Color transition cycle (12 seconds)
+			const colorPhase = (elapsed % 12000) / 12000;
+			const colorIndex = Math.floor(colorPhase * colorPalettes.length);
+			const nextColorIndex = (colorIndex + 1) % colorPalettes.length;
+			const colorLerp = (colorPhase * colorPalettes.length) % 1;
+
+			// Lerp between colors for smooth transitions
+			const currentColor = lerpColor(
+				colorPalettes[colorIndex],
+				colorPalettes[nextColorIndex],
+				colorLerp
+			);
+
+			setOrganicAnimation({
+				breathing,
+				morphing: morphingIndex,
+				colorPhase: colorPhase,
+				currentColor,
 			});
-		}, 6000); // Change state every 6 seconds
+
+			// Update orb if not playing audio (base organic animation)
+			if (!isPlaying) {
+				updateOrganicOrb(
+					breathing,
+					morphingIndex,
+					currentColor,
+					baseSize
+				);
+			}
+
+			// Continue animation loop
+			requestAnimationFrame(organicLoop);
+		};
+
+		organicLoop();
 	};
 
-	const stopEmotionalStateCycling = () => {
-		if (stateIntervalRef.current) {
-			clearInterval(stateIntervalRef.current);
-			stateIntervalRef.current = null;
-			console.log("🎭 Emotional state cycling stopped");
-		}
+	// Helper function to interpolate between colors
+	const lerpColor = (color1, color2, t) => {
+		return {
+			h: color1.h + (color2.h - color1.h) * t,
+			s: color1.s + (color2.s - color1.s) * t,
+			l: color1.l + (color2.l - color1.l) * t,
+		};
 	};
 
 	const handleOrbClick = async () => {
@@ -256,9 +316,8 @@ const ChatFlow = ({ onArrowClick }) => {
 
 			await audioRef.current.play();
 			setIsPlaying(true);
-			startVisualization();
-			startEmotionalStateCycling();
-			console.log("🎵 Audio started successfully");
+			startEnhancedAudioVisualization();
+			console.log("🎵 Audio started with organic animation");
 		} catch (error) {
 			console.error("❌ Failed to start audio:", error);
 		}
@@ -271,23 +330,15 @@ const ChatFlow = ({ onArrowClick }) => {
 		}
 		setIsPlaying(false);
 		stopVisualization();
-		stopEmotionalStateCycling();
 
-		// Reset to base size and default state
-		setCurrentStateIndex(0);
-		if (orbRef.current) {
-			orbRef.current.className = "ellipse-1 audio-reactive";
-		}
-		updateOrbSize(baseSize);
-		console.log("⏹️ Audio stopped and orb reset");
+		// Reset audio analysis
+		setAudioAnalysis({ pitch: 0, amplitude: 0, clarity: 0 });
+		
+		console.log("⏹️ Audio stopped and orb reset to organic animation");
 	};
 
-	const startVisualization = () => {
-		console.log(
-			"🎬 Starting visualization with",
-			analyserRef.current.frequencyBinCount,
-			"frequency bins"
-		);
+	const startEnhancedAudioVisualization = () => {
+		console.log("🎬 Starting enhanced organic audio visualization");
 
 		const animate = () => {
 			if (!isPlaying) return;
@@ -295,48 +346,150 @@ const ChatFlow = ({ onArrowClick }) => {
 			// Get frequency data
 			analyserRef.current.getByteFrequencyData(dataArrayRef.current);
 
-			// Calculate average volume
-			let sum = 0;
-			for (let i = 0; i < dataArrayRef.current.length; i++) {
-				sum += dataArrayRef.current[i];
-			}
-			const average = sum / dataArrayRef.current.length;
+			// Enhanced speech detection
+			const speechData = detectPitch(dataArrayRef.current);
+			const amplitude = calculateAmplitude(dataArrayRef.current);
+			const speechClarity = calculateSpeechClarity(dataArrayRef.current);
 
-			// Get current state
-			const currentState = availableStates[currentStateIndex];
+			// Update audio analysis state
+			setAudioAnalysis({
+				pitch: speechData.pitch,
+				amplitude,
+				clarity: speechClarity,
+				speechFrequency: speechData.frequency,
+				speechIntensity: speechData.intensity
+			});
 
-			// Map volume to size with state multiplier
-			const normalizedVolume = average / 255;
-			const baseTargetSize =
-				minSize + normalizedVolume * (maxSize - minSize);
-			const finalTargetSize =
-				baseTargetSize * currentState.sizeMultiplier;
+			// Speech-reactive size calculation - more dramatic for speech
+			const speechMultiplier = speechData.intensity > 0.3 ? 1.0 + (speechData.intensity * 0.8) : 0.9; // 90% to 180%
+			const pitchMultiplier = 0.9 + (speechData.pitch * 0.3); // 90% to 120%
+			const amplitudeBoost = amplitude > 0.4 ? 1.0 + (amplitude * 0.4) : 1.0; // Speech boost
+			
+			const finalSize = baseSize * speechMultiplier * pitchMultiplier * amplitudeBoost;
+
+			// Get current organic animation state with speech enhancement
+			const currentMorphingIndex = Math.floor(organicAnimation.morphing);
+			
+			// Speech-reactive color enhancement
+			const speechBoost = speechData.intensity > 0.3 ? speechData.intensity : 0;
+			const enhancedColor = {
+				...organicAnimation.currentColor,
+				s: Math.min(100, organicAnimation.currentColor.s + (speechBoost * 30)), // Higher saturation for speech
+				l: Math.max(30, Math.min(70, organicAnimation.currentColor.l + (speechData.pitch * 15))) // More dramatic lightness
+			};
+
+			// Speech-reactive breathing with "pulse" effect
+			const speechPulse = speechBoost > 0 ? Math.sin(Date.now() * 0.02) * speechBoost * 0.08 : 0; // Fast pulse during speech
+			const enhancedBreathing = organicAnimation.breathing + (amplitude * 0.04) + speechPulse;
+
+			// Update orb with speech-enhanced organic animation
+			updateOrganicOrb(
+				enhancedBreathing,
+				currentMorphingIndex,
+				enhancedColor,
+				finalSize
+			);
 
 			// Debug output occasionally
-			if (Math.random() < 0.005) {
-				console.log(
-					`📊 Audio: avg=${average.toFixed(1)}, state=${
-						currentState.name
-					}, size=${finalTargetSize.toFixed(1)}px`
-				);
-			}
-
-			// Update orb size and apply CSS class for current state
-			updateOrbSize(finalTargetSize);
-
-			// Update CSS class if needed
-			if (orbRef.current) {
-				const newClassName =
-					`ellipse-1 audio-reactive ${currentState.className}`.trim();
-				if (orbRef.current.className !== newClassName) {
-					orbRef.current.className = newClassName;
-				}
+			if (Math.random() < 0.01) {
+				console.log(`🎵 Speech-Enhanced Audio: speech=${speechData.intensity.toFixed(2)}, freq=${speechData.frequency.toFixed(0)}Hz, amp=${amplitude.toFixed(2)}, size=${finalSize.toFixed(1)}px`);
 			}
 
 			animationIdRef.current = requestAnimationFrame(animate);
 		};
 
 		animate();
+	};
+
+	// Enhanced pitch detection focused on human speech (80Hz-1kHz)
+	const detectPitch = (frequencyData) => {
+		const sampleRate = audioContextRef.current.sampleRate;
+		const binSize = sampleRate / analyserRef.current.fftSize;
+		
+		// Human speech range: 80Hz - 1kHz (fundamental frequencies)
+		const speechStartBin = Math.floor(80 / binSize);
+		const speechEndBin = Math.floor(1000 / binSize);
+		
+		let maxIndex = speechStartBin;
+		let maxValue = 0;
+		
+		// Find dominant frequency in speech range
+		for (let i = speechStartBin; i < speechEndBin && i < frequencyData.length; i++) {
+			if (frequencyData[i] > maxValue) {
+				maxValue = frequencyData[i];
+				maxIndex = i;
+			}
+		}
+		
+		// Convert to frequency and normalize for speech
+		const frequency = maxIndex * binSize;
+		const normalizedPitch = Math.min((frequency - 80) / (1000 - 80), 1);
+		
+		return { pitch: normalizedPitch, intensity: maxValue / 255, frequency: frequency };
+	};
+
+	// Calculate average amplitude
+	const calculateAmplitude = (frequencyData) => {
+		let sum = 0;
+		for (let i = 0; i < frequencyData.length; i++) {
+			sum += frequencyData[i];
+		}
+		return Math.min(sum / (frequencyData.length * 255), 1);
+	};
+
+	// Calculate speech clarity (focused on speech frequencies)
+	const calculateSpeechClarity = (frequencyData) => {
+		const sampleRate = audioContextRef.current.sampleRate;
+		const binSize = sampleRate / analyserRef.current.fftSize;
+		
+		// Speech formant ranges (vowel clarity indicators)
+		const f1Range = [Math.floor(200 / binSize), Math.floor(800 / binSize)]; // First formant
+		const f2Range = [Math.floor(800 / binSize), Math.floor(2500 / binSize)]; // Second formant
+		
+		let f1Energy = 0, f2Energy = 0, totalEnergy = 0;
+		
+		// Calculate energy in formant ranges
+		for (let i = f1Range[0]; i < f1Range[1] && i < frequencyData.length; i++) {
+			f1Energy += frequencyData[i];
+		}
+		for (let i = f2Range[0]; i < f2Range[1] && i < frequencyData.length; i++) {
+			f2Energy += frequencyData[i];
+		}
+		for (let i = 0; i < frequencyData.length; i++) {
+			totalEnergy += frequencyData[i];
+		}
+		
+		// Speech clarity based on formant energy distribution
+		const speechRatio = totalEnergy > 0 ? (f1Energy + f2Energy) / totalEnergy : 0;
+		return Math.min(speechRatio * 2, 1); // Boost speech detection
+	};
+
+	// Update orb with organic animation
+	const updateOrganicOrb = (breathing, morphingIndex, color, size) => {
+		if (!orbRef.current) return;
+
+		// Apply size with breathing effect
+		const breathingSize = size * (1 + breathing);
+		orbRef.current.style.width = `${breathingSize}px`;
+		orbRef.current.style.height = `${breathingSize}px`;
+
+		// Apply organic morphing
+		const shape = organicShapes[morphingIndex % organicShapes.length];
+		orbRef.current.style.borderRadius = shape;
+
+		// Apply color with gradient
+		const hslColor = `hsl(${color.h}, ${color.s}%, ${color.l}%)`;
+		const lighterColor = `hsl(${color.h}, ${Math.max(0, color.s - 20)}%, ${Math.min(100, color.l + 15)}%)`;
+		
+		orbRef.current.style.background = `radial-gradient(50% 50% at 50% 50%, ${hslColor} 11%, ${lighterColor} 62%, rgba(${Math.round(color.h)}, ${Math.round(color.s)}, ${Math.round(color.l)}, 0.4) 100%)`;
+
+		// Enhanced glow effect
+		const glowIntensity = 15 + (breathing * 100) + 10;
+		const glowOpacity = 0.4 + (breathing * 0.3);
+		orbRef.current.style.filter = `drop-shadow(0 0 ${glowIntensity}px hsla(${color.h}, ${color.s}%, ${color.l}%, ${glowOpacity}))`;
+
+		// Smooth transitions for CSS properties
+		orbRef.current.style.transition = 'border-radius 0.3s ease, background 0.5s ease';
 	};
 
 	const stopVisualization = () => {
@@ -347,31 +500,7 @@ const ChatFlow = ({ onArrowClick }) => {
 		}
 	};
 
-	const updateOrbSize = (size) => {
-		if (!orbRef.current) return;
-
-		const roundedSize = Math.round(size * 100) / 100;
-
-		// Apply size changes directly to DOM
-		orbRef.current.style.width = `${roundedSize}px`;
-		orbRef.current.style.height = `${roundedSize}px`;
-
-		// Add glow effect based on size (original behavior)
-		const glowIntensity = (size - minSize) / (maxSize - minSize);
-		const glowSize = 15 + glowIntensity * 20;
-		const glowOpacity = 0.3 + glowIntensity * 0.5;
-
-		orbRef.current.style.filter = `drop-shadow(0 0 ${glowSize}px rgba(0, 255, 161, ${glowOpacity}))`;
-
-		// Very occasional debug output
-		if (Math.random() < 0.001) {
-			console.log(
-				`🔄 Orb updated: ${roundedSize}px (glow: ${glowSize.toFixed(
-					1
-				)}px)`
-			);
-		}
-	};
+	// Removed old updateOrbSize - now using updateOrganicOrb for all updates
 
 	const handleAudioEnded = () => {
 		console.log("🔚 Audio ended");
@@ -437,34 +566,48 @@ const ChatFlow = ({ onArrowClick }) => {
 				/>
 			</div>
 
-			{/* State Debug Info (Development only) */}
-			{process.env.NODE_ENV === "development" && isPlaying && (
+			{/* Organic Audio Debug Info (Development only) */}
+			{process.env.NODE_ENV === "development" && (
 				<div
 					style={{
 						position: "fixed",
 						top: "20px",
 						left: "20px",
-						background: "rgba(0, 0, 0, 0.8)",
+						background: "rgba(0, 0, 0, 0.9)",
 						color: "white",
-						padding: "10px",
+						padding: "12px",
 						borderRadius: "8px",
-						fontSize: "12px",
+						fontSize: "11px",
 						fontFamily: "monospace",
 						zIndex: 1000,
+						maxWidth: "200px",
 					}}
 				>
-					<div>
-						🎭 Current State:{" "}
-						{availableStates[currentStateIndex].name}
+					<div style={{ borderBottom: "1px solid #333", paddingBottom: "6px", marginBottom: "6px" }}>
+						<strong>🎵 Organic Audio Orb</strong>
 					</div>
-					<div>
-						🎨 CSS Class:{" "}
-						{availableStates[currentStateIndex].className ||
-							"default"}
+					<div>Status: {isPlaying ? 'Playing' : 'Organic Only'}</div>
+					<div>Mode: {isPlaying ? 'Audio-Reactive' : 'Base Organic'}</div>
+					
+					{isPlaying && (
+						<>
+							<div style={{ margin: "6px 0", borderTop: "1px solid #333", paddingTop: "6px" }}>
+								<strong>Audio Analysis:</strong>
+							</div>
+							<div>Pitch: {(audioAnalysis.pitch * 100).toFixed(0)}%</div>
+							<div>Amplitude: {(audioAnalysis.amplitude * 100).toFixed(0)}%</div>
+							<div>Clarity: {(audioAnalysis.clarity * 100).toFixed(0)}%</div>
+						</>
+					)}
+					
+					<div style={{ margin: "6px 0", borderTop: "1px solid #333", paddingTop: "6px" }}>
+						<strong>Organic Animation:</strong>
 					</div>
-					<div>
-						📏 Size Multiplier:{" "}
-						{availableStates[currentStateIndex].sizeMultiplier}x
+					<div>Breathing: {(organicAnimation.breathing * 100).toFixed(1)}%</div>
+					<div>Morphing: {organicAnimation.morphing}</div>
+					<div>Color Phase: {(organicAnimation.colorPhase * 100).toFixed(0)}%</div>
+					<div style={{ fontSize: "10px", color: "#aaa" }}>
+						HSL: {Math.round(organicAnimation.currentColor.h)}, {Math.round(organicAnimation.currentColor.s)}%, {Math.round(organicAnimation.currentColor.l)}%
 					</div>
 				</div>
 			)}

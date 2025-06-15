@@ -1,0 +1,133 @@
+.organic-orb-prototype {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: #fbf4f1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.orb-container {
+  position: relative;
+  width: 600px;
+  height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.organic-orb {
+  /* Hardware-beschleunigte Animationen */
+  will-change: transform, filter, border-radius, background;
+  
+  /* Sanfte Übergänge für Farbänderungen */
+  transition: background 0.8s cubic-bezier(0.4, 0, 0.6, 1);
+  
+  /* Basis-Styling */
+  border: none;
+  cursor: pointer;
+  
+  /* Sicherstellen dass der Orb immer zentriert ist */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.organic-orb:hover {
+  filter: brightness(1.1) !important;
+}
+
+/* Debug Panel Styling */
+.debug-panel {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  max-width: 300px;
+  z-index: 1000;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.debug-panel h3 {
+  margin: 0 0 15px 0;
+  font-size: 14px;
+  color: #00FFA1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 8px;
+}
+
+.debug-panel h4 {
+  margin: 15px 0 8px 0;
+  font-size: 12px;
+  color: #4A9EFF;
+}
+
+.debug-section {
+  margin-bottom: 12px;
+}
+
+.debug-section div {
+  margin: 4px 0;
+  padding: 2px 0;
+  line-height: 1.4;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .debug-panel {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+    font-size: 11px;
+    padding: 15px;
+  }
+  
+  .orb-container {
+    width: 400px;
+    height: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .orb-container {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .debug-panel {
+    font-size: 10px;
+    padding: 12px;
+  }
+}
+
+/* Accessibility */
+.organic-orb:focus {
+  outline: 2px solid #00FFA1;
+  outline-offset: 4px;
+}
+
+/* Performance optimierung für schwächere Geräte */
+@media (prefers-reduced-motion: reduce) {
+  .organic-orb {
+    animation: none !important;
+    transition: background 0.3s ease !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .debug-panel {
+    background: black;
+    border: 2px solid white;
+  }
+}

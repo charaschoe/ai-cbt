@@ -743,8 +743,19 @@ export const ChatFlow07Enhanced = ({
 			);
 			setFacialExpression(segmentExpression);
 
-			// Analyse des aktuellen Segments für Orb-Animation
-			analyzeTextForOrb(segments[i], false);
+			// Analyse des aktuellen Segments für Orb-Animation - ABER NUR WENN KEIN STARKER USER-EMOTION ZUSTAND VORHANDEN
+			const timeSinceLastUserEmotion = Date.now() - lastEmotionChange;
+			const shouldAnalyzeAIResponse = timeSinceLastUserEmotion > 10000; // Erst nach 10 Sekunden AI-Response analysieren
+			
+			if (shouldAnalyzeAIResponse) {
+				console.log("📝 AI-Response wird analysiert (genug Zeit seit User-Emotion vergangen)");
+				analyzeTextForOrb(segments[i], false);
+			} else {
+				console.log("🚫 AI-Response Analyse übersprungen - User-Emotion noch aktiv", {
+					timeSinceLastUserEmotion,
+					currentState: persistentEmotionalState
+				});
+			}
 
 			await typeMessage(segments[i], true);
 

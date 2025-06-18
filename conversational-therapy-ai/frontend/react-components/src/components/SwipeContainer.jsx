@@ -9,10 +9,11 @@ import Screen2V4 from "./Screen2V4";
 import chatService from "../services/chatService";
 
 const SwipeContainer = ({ onDebugUpdate }) => {
-	// Check for enhanced modes
+	// Check for enhanced modes - TEXT ENHANCED NOW DEFAULT
 	const urlParams = new URLSearchParams(window.location.search);
 	const useEnhanced = urlParams.get("enhanced") === "true";
-	const useTextEnhanced = urlParams.get("text-enhanced") === "true";
+	// Text-Enhanced ist jetzt standardmäßig aktiv, außer explizit deaktiviert
+	const useTextEnhanced = urlParams.get("text-enhanced") !== "false";
 
 	const [currentScreen, setCurrentScreen] = useState("chat"); // 'widgets', 'chat', 'emotional-tasks', or 'chatflow07'
 	const [aiResponse, setAiResponse] = useState("");
@@ -98,6 +99,17 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 					setIsTransitioning(true);
 					setTimeout(() => {
 						setCurrentScreen("chatflow07");
+						setIsTransitioning(false);
+					}, 100);
+				}
+			}
+
+			if (isDownSwipe) {
+				// Swipe down: go back to chat from chatflow07
+				if (currentScreen === "chatflow07") {
+					setIsTransitioning(true);
+					setTimeout(() => {
+						setCurrentScreen("chat");
 						setIsTransitioning(false);
 					}, 100);
 				}
@@ -201,6 +213,17 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 					}, 100);
 				}
 			}
+
+			if (isDownSwipe) {
+				// Swipe down: go back to chat from chatflow07
+				if (currentScreen === "chatflow07") {
+					setIsTransitioning(true);
+					setTimeout(() => {
+						setCurrentScreen("chat");
+						setIsTransitioning(false);
+					}, 100);
+				}
+			}
 		}
 
 		setIsDragging(false);
@@ -263,8 +286,8 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 					opacity: 0.7,
 					transition: "opacity 0.3s ease",
 				}}
-				onMouseEnter={(e) => e.target.style.opacity = "1"}
-				onMouseLeave={(e) => e.target.style.opacity = "0.7"}
+				onMouseEnter={(e) => (e.target.style.opacity = "1")}
+				onMouseLeave={(e) => (e.target.style.opacity = "0.7")}
 			>
 				💬
 			</button>
@@ -404,7 +427,7 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 const SwipeContainerWithDebug = () => {
 	const [debugData, setDebugData] = useState({});
 	const [showDebugPanel, setShowDebugPanel] = useState(false);
-	
+
 	const handleDebugUpdate = (componentName, data) => {
 		setDebugData((prev) => ({
 			...prev,
@@ -424,7 +447,9 @@ const SwipeContainerWithDebug = () => {
 						top: "10px",
 						width: "30px",
 						height: "30px",
-						background: showDebugPanel ? "rgba(255, 0, 0, 0.8)" : "rgba(0, 255, 0, 0.5)",
+						background: showDebugPanel
+							? "rgba(255, 0, 0, 0.8)"
+							: "rgba(0, 255, 0, 0.5)",
 						border: "1px solid rgba(255, 255, 255, 0.3)",
 						borderRadius: "50%",
 						zIndex: 10001,
@@ -437,7 +462,11 @@ const SwipeContainerWithDebug = () => {
 						backdropFilter: "blur(5px)",
 						transition: "all 0.3s ease",
 					}}
-					title={showDebugPanel ? "Debug Panel ausblenden" : "Debug Panel anzeigen"}
+					title={
+						showDebugPanel
+							? "Debug Panel ausblenden"
+							: "Debug Panel anzeigen"
+					}
 				>
 					🔍
 				</button>
@@ -465,53 +494,145 @@ const SwipeContainerWithDebug = () => {
 						boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
 					}}
 				>
-					<div style={{ fontSize: "12px", fontWeight: "bold", marginBottom: "10px", textAlign: "center" }}>
+					<div
+						style={{
+							fontSize: "12px",
+							fontWeight: "bold",
+							marginBottom: "10px",
+							textAlign: "center",
+						}}
+					>
 						🔬 Zentrale Debug-Konsole
 					</div>
-					
+
 					{Object.keys(debugData).length === 0 ? (
-						<div style={{ color: "#666", textAlign: "center", padding: "20px" }}>
+						<div
+							style={{
+								color: "#666",
+								textAlign: "center",
+								padding: "20px",
+							}}
+						>
 							Keine Debug-Daten verfügbar
 						</div>
 					) : (
-						Object.entries(debugData).map(([componentName, data]) => (
-							<div key={componentName} style={{ marginBottom: "15px", borderBottom: "1px solid #333", paddingBottom: "10px" }}>
-								<div style={{ color: "#00FF88", fontWeight: "bold", marginBottom: "5px" }}>
-									{componentName}
+						Object.entries(debugData).map(
+							([componentName, data]) => (
+								<div
+									key={componentName}
+									style={{
+										marginBottom: "15px",
+										borderBottom: "1px solid #333",
+										paddingBottom: "10px",
+									}}
+								>
+									<div
+										style={{
+											color: "#00FF88",
+											fontWeight: "bold",
+											marginBottom: "5px",
+										}}
+									>
+										{componentName}
+									</div>
+
+									{data.performanceMetrics && (
+										<div style={{ marginBottom: "8px" }}>
+											<div
+												style={{
+													color: "#FFD700",
+													fontSize: "9px",
+												}}
+											>
+												📊 Performance
+											</div>
+											<div>
+												FPS:{" "}
+												{data.performanceMetrics.fps ||
+													"N/A"}
+											</div>
+											<div>
+												Frame:{" "}
+												{data.performanceMetrics.averageFrameTime?.toFixed(
+													1
+												)}
+												ms
+											</div>
+											<div>
+												Memory:{" "}
+												{data.performanceMetrics
+													.memoryUsage?.used || "N/A"}
+												MB
+											</div>
+										</div>
+									)}
+
+									{data.debugInfo && (
+										<div style={{ marginBottom: "8px" }}>
+											<div
+												style={{
+													color: "#FF6B35",
+													fontSize: "9px",
+												}}
+											>
+												🎭 Animation
+											</div>
+											<div>
+												Modus:{" "}
+												{
+													data.debugInfo.currentState
+														?.mode
+												}
+											</div>
+											<div>
+												Emotion:{" "}
+												{
+													data.debugInfo.currentState
+														?.emotionalState
+												}
+											</div>
+											<div>
+												Intensität:{" "}
+												{(
+													data.debugInfo.currentState
+														?.intensity * 100
+												)?.toFixed(0)}
+												%
+											</div>
+										</div>
+									)}
+
+									{data.currentColors && (
+										<div style={{ marginBottom: "8px" }}>
+											<div
+												style={{
+													color: "#00BFFF",
+													fontSize: "9px",
+												}}
+											>
+												🎨 Colors
+											</div>
+											<div>
+												State:{" "}
+												{data.currentColors.state}
+											</div>
+											<div>
+												Therapy:{" "}
+												{data.currentColors.therapeutic}
+											</div>
+											<div>
+												Emotion:{" "}
+												{data.currentColors.emotion}
+											</div>
+										</div>
+									)}
 								</div>
-								
-								{data.performanceMetrics && (
-									<div style={{ marginBottom: "8px" }}>
-										<div style={{ color: "#FFD700", fontSize: "9px" }}>📊 Performance</div>
-										<div>FPS: {data.performanceMetrics.fps || 'N/A'}</div>
-										<div>Frame: {data.performanceMetrics.averageFrameTime?.toFixed(1)}ms</div>
-										<div>Memory: {data.performanceMetrics.memoryUsage?.used || 'N/A'}MB</div>
-									</div>
-								)}
-								
-								{data.debugInfo && (
-									<div style={{ marginBottom: "8px" }}>
-										<div style={{ color: "#FF6B35", fontSize: "9px" }}>🎭 Animation</div>
-										<div>Modus: {data.debugInfo.currentState?.mode}</div>
-										<div>Emotion: {data.debugInfo.currentState?.emotionalState}</div>
-										<div>Intensität: {(data.debugInfo.currentState?.intensity * 100)?.toFixed(0)}%</div>
-									</div>
-								)}
-								
-								{data.currentColors && (
-									<div style={{ marginBottom: "8px" }}>
-										<div style={{ color: "#00BFFF", fontSize: "9px" }}>🎨 Colors</div>
-										<div>State: {data.currentColors.state}</div>
-										<div>Therapy: {data.currentColors.therapeutic}</div>
-										<div>Emotion: {data.currentColors.emotion}</div>
-									</div>
-								)}
-							</div>
-						))
+							)
+						)
 					)}
 				</div>
 			)}
-			
+
 			<SwipeContainer onDebugUpdate={handleDebugUpdate} />
 		</>
 	);

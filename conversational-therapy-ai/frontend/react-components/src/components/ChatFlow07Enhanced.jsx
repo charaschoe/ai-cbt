@@ -51,6 +51,7 @@ export const ChatFlow07Enhanced = ({
 	const [persistentEmotionalState, setPersistentEmotionalState] = React.useState("neutral");
 	const [emotionalHistory, setEmotionalHistory] = React.useState([]);
 	const [isTransitioning, setIsTransitioning] = React.useState(false);
+	const [lastEmotionChange, setLastEmotionChange] = React.useState(Date.now());
 
 	// Legacy: Blob-Analyse für Vergleich/Debug (Optional)
 	const [activeBlobs, setActiveBlobs] = React.useState([]);
@@ -73,6 +74,99 @@ export const ChatFlow07Enhanced = ({
 
 			// Normalisierung für bessere Analyse
 			const normalizedText = text.toLowerCase().trim();
+
+			// DIREKTE EMOTIONSERKENNUNG (Priorität für häufige Ausdrücke)
+			const directEmotionTests = {
+				sadness: /\b(i'?m sad|i feel sad|feeling sad|so sad|very sad|im sad)\b/gi,
+				happiness: /\b(i'?m happy|i feel happy|feeling happy|so happy|very happy|im happy)\b/gi,
+				anger: /\b(i'?m angry|i feel angry|feeling angry|so angry|very angry|im angry)\b/gi,
+				anxiety: /\b(i'?m anxious|i feel anxious|feeling anxious|so anxious|very anxious|im anxious)\b/gi
+			};
+
+			// Test für direkte Emotionserkennung
+			if (directEmotionTests.sadness.test(normalizedText)) {
+				console.log("🎯 DIREKTE ERKENNUNG: Traurigkeit erkannt für:", text);
+				console.log("🔄 Setze Orb-Zustand auf 'trauer' mit blauen Farben");
+				
+				// Sofort den Orb-Zustand aktualisieren
+				setOrbEmotionalState("trauer");
+				setPersistentEmotionalState("trauer");
+				setOrbUrgencyLevel(0.8);
+				setOrbIntensity(1.5);
+				setOrbSentimentScore(-0.8);
+				setCurrentTextForAnalysis(text);
+				
+				// Zusätzlich die sanfte Transition
+				smoothTransitionToState("trauer", 0.8, 1.5, -0.8);
+				
+				return {
+					emotionalState: "trauer",
+					urgencyLevel: 0.8,
+					intensity: 1.5,
+					sentimentScore: -0.8,
+				};
+			}
+
+			if (directEmotionTests.happiness.test(normalizedText)) {
+				console.log("🎯 DIREKTE ERKENNUNG: Freude erkannt für:", text);
+				console.log("🔄 Setze Orb-Zustand auf 'freude' mit gelben/grünen Farben");
+				
+				setOrbEmotionalState("freude");
+				setPersistentEmotionalState("freude");
+				setOrbUrgencyLevel(0.5);
+				setOrbIntensity(1.5);
+				setOrbSentimentScore(0.8);
+				setCurrentTextForAnalysis(text);
+				
+				smoothTransitionToState("freude", 0.5, 1.5, 0.8);
+				return {
+					emotionalState: "freude",
+					urgencyLevel: 0.5,
+					intensity: 1.5,
+					sentimentScore: 0.8,
+				};
+			}
+
+			if (directEmotionTests.anger.test(normalizedText)) {
+				console.log("🎯 DIREKTE ERKENNUNG: Wut/Ärger erkannt für:", text);
+				console.log("🔄 Setze Orb-Zustand auf 'wut' mit roten Farben");
+				
+				setOrbEmotionalState("wut");
+				setPersistentEmotionalState("wut");
+				setOrbUrgencyLevel(0.9);
+				setOrbIntensity(1.6);
+				setOrbSentimentScore(-0.7);
+				setCurrentTextForAnalysis(text);
+				
+				smoothTransitionToState("wut", 0.9, 1.6, -0.7);
+				return {
+					emotionalState: "wut",
+					urgencyLevel: 0.9,
+					intensity: 1.6,
+					sentimentScore: -0.7,
+				};
+			}
+
+			if (directEmotionTests.anxiety.test(normalizedText)) {
+				console.log("🎯 DIREKTE ERKENNUNG: Angst erkannt für:", text);
+				console.log("🔄 Setze Orb-Zustand auf 'neutral' (Angst nicht im Farbsystem)");
+				
+				// Angst wird als neutral dargestellt, da es nicht im Steiner Farbsystem ist
+				setOrbEmotionalState("neutral");
+				setPersistentEmotionalState("neutral");
+				setOrbUrgencyLevel(0.7);
+				setOrbIntensity(1.4);
+				setOrbSentimentScore(-0.6);
+				setCurrentTextForAnalysis(text);
+				
+				smoothTransitionToState("neutral", 0.7, 1.4, -0.6);
+				return {
+					emotionalState: "neutral",
+					urgencyLevel: 0.7,
+					intensity: 1.4,
+					sentimentScore: -0.6,
+				};
+			}
 
 			// Negations-Muster für Kontext-Erkennung (mehrsprachig)
 			const negationPatterns = new RegExp([
@@ -256,16 +350,37 @@ export const ChatFlow07Enhanced = ({
 	};
 
 	/**
-	 * Sanfte Transition zwischen emotionalen Zuständen
+	 * Sanfte Transition zwischen emotionalen Zuständen mit Persistenz-Check
 	 */
 	const smoothTransitionToState = React.useCallback((targetState, targetUrgency, targetIntensity, targetSentiment) => {
 		if (isTransitioning) return;
 
+		const now = Date.now();
+		const timeSinceLastChange = now - lastEmotionChange;
+		const EMOTION_MIN_DURATION = 5000; // 5 Sekunden Mindestdauer
+		
+		// Verhindere zu schnelle Zustandswechsel, außer bei starken Emotionen
+		if (timeSinceLastChange < EMOTION_MIN_DURATION &&
+			targetState !== 'neutral' &&
+			persistentEmotionalState !== 'neutral' &&
+			Math.abs(targetSentiment) < 0.7) {
+			console.log("🚫 Emotionswechsel zu schnell, wird übersprungen:", targetState);
+			return;
+		}
+
+		console.log("🎭 Emotionsübergang:", {
+			from: persistentEmotionalState,
+			to: targetState,
+			timeSinceLastChange,
+			targetSentiment
+		});
+
+		setLastEmotionChange(now);
 		setIsTransitioning(true);
 		
-		// Sanfte Animation über 2 Sekunden
-		const transitionDuration = 2000;
-		const steps = 20;
+		// Längere Animation für emotionale Übergänge (3 Sekunden für bessere Sichtbarkeit)
+		const transitionDuration = 3000;
+		const steps = 30;
 		const stepDuration = transitionDuration / steps;
 		
 		const startUrgency = orbUrgencyLevel;
@@ -293,9 +408,16 @@ export const ChatFlow07Enhanced = ({
 				setPersistentEmotionalState(targetState);
 				setCurrentTextForAnalysis("");
 				setIsTransitioning(false);
+				
+				console.log("✅ Emotionsübergang abgeschlossen:", {
+					state: targetState,
+					urgency: newUrgency,
+					intensity: newIntensity,
+					sentiment: newSentiment
+				});
 			}
 		}, stepDuration);
-	}, [isTransitioning, orbUrgencyLevel, orbIntensity, orbSentimentScore]);
+	}, [isTransitioning, orbUrgencyLevel, orbIntensity, orbSentimentScore, lastEmotionChange, persistentEmotionalState]);
 
 	// Enhanced scroll function with better reliability
 	const scrollToBottom = () => {
@@ -796,11 +918,14 @@ export const ChatFlow07Enhanced = ({
 		setInputText(newValue);
 
 		// Live-Analyse während des Tippens für sofortige Orb-Reaktion
-		if (newValue.trim().length > 3) {
-			// Analyse erst ab 4 Zeichen
-			analyzeTextForOrb(newValue.trim(), true);
+		if (newValue.trim().length > 2) {
+			// Analyse ab 3 Zeichen für frühere Erkennung von "I'm sad"
+			const result = analyzeTextForOrb(newValue.trim(), true);
+			if (result) {
+				console.log("🎯 Live-Analyse Ergebnis:", result);
+			}
 		}
-		// Kein Reset mehr wenn Text gelöscht wird - emotionaler Zustand bleibt persistent
+		// Emotionaler Zustand bleibt persistent - kein automatischer Reset
 	};
 
 	const handleKeyPress = (e) => {

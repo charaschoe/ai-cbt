@@ -6,6 +6,7 @@ import ChatFlow07Enhanced from "./ChatFlow07Enhanced";
 import WidgetsLeft from "./WidgetsLeft";
 import { ChatFlow07 } from "./ChatFlow07";
 import Screen2V4 from "./Screen2V4";
+import BodySubpage from "./BodySubpage";
 import chatService from "../services/chatService";
 
 const SwipeContainer = ({ onDebugUpdate }) => {
@@ -15,7 +16,7 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 	// Text-Enhanced ist jetzt standardmäßig aktiv, außer explizit deaktiviert
 	const useTextEnhanced = urlParams.get("text-enhanced") !== "false";
 
-	const [currentScreen, setCurrentScreen] = useState("chat"); // 'widgets', 'chat', 'emotional-tasks', or 'chatflow07'
+	const [currentScreen, setCurrentScreen] = useState("chat"); // 'widgets', 'chat', 'emotional-tasks', 'chatflow07', or 'body'
 	const [aiResponse, setAiResponse] = useState("");
 
 	// Debug data from child components - removed local state, using external handler
@@ -62,51 +63,57 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 		const isUpSwipe = distanceY > minSwipeDistance;
 		const isDownSwipe = distanceY < -minSwipeDistance;
 
-		// Prioritize horizontal swipes over vertical ones
-		if (Math.abs(distanceX) > Math.abs(distanceY)) {
-			if (isLeftSwipe) {
-				// Swipe left: go to widgets from chat
-				if (
-					currentScreen === "chat" ||
-					currentScreen === "chatflow07"
-				) {
+		// DISABLED: No swipe navigation on body page (only Back-Button works)
+		if (currentScreen === "body") {
+			return;
+		}
+
+		// INSIGHTS PAGE: Only horizontal swipe back to main page
+		if (currentScreen === "emotional-tasks") {
+			if (Math.abs(distanceX) > Math.abs(distanceY) && isLeftSwipe) {
+				setIsTransitioning(true);
+				setTimeout(() => {
+					setCurrentScreen("chat");
+					setIsTransitioning(false);
+				}, 100);
+			}
+			return;
+		}
+
+		// MAIN PAGES (chat/chatflow07): All swipe directions enabled
+		if (currentScreen === "chat" || currentScreen === "chatflow07") {
+			// Prioritize horizontal swipes over vertical ones
+			if (Math.abs(distanceX) > Math.abs(distanceY)) {
+				if (isLeftSwipe) {
+					// Swipe left: go to widgets from main page
 					setIsTransitioning(true);
 					setTimeout(() => {
 						setCurrentScreen("widgets");
 						setIsTransitioning(false);
 					}, 100);
 				}
-			}
 
-			if (isRightSwipe) {
-				// Swipe right: go to emotional-tasks from chat
-				if (
-					currentScreen === "chat" ||
-					currentScreen === "chatflow07"
-				) {
+				if (isRightSwipe) {
+					// Swipe right: go to emotional-tasks from main page
 					setIsTransitioning(true);
 					setTimeout(() => {
 						setCurrentScreen("emotional-tasks");
 						setIsTransitioning(false);
 					}, 100);
 				}
-			}
-		} else {
-			// Handle vertical swipes
-			if (isUpSwipe) {
-				// Swipe up: go to chatflow07 from any screen
-				if (currentScreen !== "chatflow07") {
+			} else {
+				// Handle vertical swipes on main page
+				if (isUpSwipe && currentScreen === "chat") {
+					// Swipe up: go to chatflow07 from chat
 					setIsTransitioning(true);
 					setTimeout(() => {
 						setCurrentScreen("chatflow07");
 						setIsTransitioning(false);
 					}, 100);
 				}
-			}
 
-			if (isDownSwipe) {
-				// Swipe down: go back to chat from chatflow07
-				if (currentScreen === "chatflow07") {
+				if (isDownSwipe && currentScreen === "chatflow07") {
+					// Swipe down: go back to chat from chatflow07
 					setIsTransitioning(true);
 					setTimeout(() => {
 						setCurrentScreen("chat");
@@ -114,11 +121,26 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 					}, 100);
 				}
 			}
+			return;
+		}
+
+		// WIDGETS PAGE: Only horizontal swipe back to main page
+		if (currentScreen === "widgets") {
+			if (Math.abs(distanceX) > Math.abs(distanceY) && isRightSwipe) {
+				setIsTransitioning(true);
+				setTimeout(() => {
+					setCurrentScreen("chat");
+					setIsTransitioning(false);
+				}, 100);
+			}
+			return;
 		}
 	};
 
 	const showWidgets = () => setCurrentScreen("widgets");
 	const showChat = () => setCurrentScreen("chat");
+	const showBodySubpage = () => setCurrentScreen("body");
+	const backToInsights = () => setCurrentScreen("emotional-tasks");
 
 	// Mouse event handlers for desktop testing
 	const [mouseStart, setMouseStart] = useState(null);
@@ -156,67 +178,59 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 		const isUpSwipe = distanceY > minSwipeDistance;
 		const isDownSwipe = distanceY < -minSwipeDistance;
 
-		// Prioritize horizontal swipes over vertical ones
-		if (Math.abs(distanceX) > Math.abs(distanceY)) {
-			if (isLeftSwipe) {
-				// Swipe left: go to widgets from chat
-				if (
-					currentScreen === "chat" ||
-					currentScreen === "chatflow07"
-				) {
+		// DISABLED: No swipe navigation on body page (only Back-Button works)
+		if (currentScreen === "body") {
+			setIsDragging(false);
+			return;
+		}
+
+		// INSIGHTS PAGE: Only horizontal swipe back to main page
+		if (currentScreen === "emotional-tasks") {
+			if (Math.abs(distanceX) > Math.abs(distanceY) && isLeftSwipe) {
+				setIsTransitioning(true);
+				setTimeout(() => {
+					setCurrentScreen("chat");
+					setIsTransitioning(false);
+				}, 100);
+			}
+			setIsDragging(false);
+			return;
+		}
+
+		// MAIN PAGES (chat/chatflow07): All swipe directions enabled
+		if (currentScreen === "chat" || currentScreen === "chatflow07") {
+			// Prioritize horizontal swipes over vertical ones
+			if (Math.abs(distanceX) > Math.abs(distanceY)) {
+				if (isLeftSwipe) {
+					// Swipe left: go to widgets from main page
 					setIsTransitioning(true);
 					setTimeout(() => {
 						setCurrentScreen("widgets");
 						setIsTransitioning(false);
 					}, 100);
 				}
-				// Swipe left: go to chat from emotional-tasks
-				if (currentScreen === "emotional-tasks") {
-					setIsTransitioning(true);
-					setTimeout(() => {
-						setCurrentScreen("chat");
-						setIsTransitioning(false);
-					}, 100);
-				}
-			}
 
-			if (isRightSwipe) {
-				// Swipe right: go to emotional-tasks from chat
-				if (
-					currentScreen === "chat" ||
-					currentScreen === "chatflow07"
-				) {
+				if (isRightSwipe) {
+					// Swipe right: go to emotional-tasks from main page
 					setIsTransitioning(true);
 					setTimeout(() => {
 						setCurrentScreen("emotional-tasks");
 						setIsTransitioning(false);
 					}, 100);
 				}
-				// Swipe right: go to chat from widgets
-				if (currentScreen === "widgets") {
-					setIsTransitioning(true);
-					setTimeout(() => {
-						setCurrentScreen("chat");
-						setIsTransitioning(false);
-					}, 100);
-				}
-			}
-		} else {
-			// Handle vertical swipes
-			if (isUpSwipe) {
-				// Swipe up: go to chatflow07 from any screen
-				if (currentScreen !== "chatflow07") {
+			} else {
+				// Handle vertical swipes on main page
+				if (isUpSwipe && currentScreen === "chat") {
+					// Swipe up: go to chatflow07 from chat
 					setIsTransitioning(true);
 					setTimeout(() => {
 						setCurrentScreen("chatflow07");
 						setIsTransitioning(false);
 					}, 100);
 				}
-			}
 
-			if (isDownSwipe) {
-				// Swipe down: go back to chat from chatflow07
-				if (currentScreen === "chatflow07") {
+				if (isDownSwipe && currentScreen === "chatflow07") {
+					// Swipe down: go back to chat from chatflow07
 					setIsTransitioning(true);
 					setTimeout(() => {
 						setCurrentScreen("chat");
@@ -224,6 +238,21 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 					}, 100);
 				}
 			}
+			setIsDragging(false);
+			return;
+		}
+
+		// WIDGETS PAGE: Only horizontal swipe back to main page
+		if (currentScreen === "widgets") {
+			if (Math.abs(distanceX) > Math.abs(distanceY) && isRightSwipe) {
+				setIsTransitioning(true);
+				setTimeout(() => {
+					setCurrentScreen("chat");
+					setIsTransitioning(false);
+				}, 100);
+			}
+			setIsDragging(false);
+			return;
 		}
 
 		setIsDragging(false);
@@ -369,14 +398,16 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 			<div
 				className="simple-container"
 				ref={containerRef}
-				onTouchStart={onTouchStart}
-				onTouchMove={onTouchMove}
-				onTouchEnd={onTouchEnd}
-				onMouseDown={onMouseDown}
-				onMouseMove={onMouseMove}
-				onMouseUp={onMouseUp}
-				onMouseLeave={onMouseUp}
-				style={{ cursor: isDragging ? "grabbing" : "grab" }}
+				onTouchStart={currentScreen === "body" ? undefined : onTouchStart}
+				onTouchMove={currentScreen === "body" ? undefined : onTouchMove}
+				onTouchEnd={currentScreen === "body" ? undefined : onTouchEnd}
+				onMouseDown={currentScreen === "body" ? undefined : onMouseDown}
+				onMouseMove={currentScreen === "body" ? undefined : onMouseMove}
+				onMouseUp={currentScreen === "body" ? undefined : onMouseUp}
+				onMouseLeave={currentScreen === "body" ? undefined : onMouseUp}
+				style={{
+					cursor: currentScreen === "body" ? "default" : (isDragging ? "grabbing" : "grab")
+				}}
 			>
 				{currentScreen === "widgets" && (
 					<div className="screen active">
@@ -415,7 +446,13 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 
 				{currentScreen === "emotional-tasks" && (
 					<div className="screen active">
-						<Screen2V4 />
+						<Screen2V4 onLowEnergyClick={showBodySubpage} />
+					</div>
+				)}
+
+				{currentScreen === "body" && (
+					<div className="screen active">
+						<BodySubpage onBackClick={backToInsights} />
 					</div>
 				)}
 			</div>

@@ -1,0 +1,951 @@
+.body-subpage,
+.body-subpage * {
+  box-sizing: border-box;
+}
+.body-subpage {
+  background: #fbf4f1;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+  z-index: 10;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+.body-subpage .vector-2138 {
+  width: 445.11px;
+  height: 909.64px;
+  position: absolute;
+  left: -14.91px;
+  top: 495.87px;
+  transform: translate(32.75px, -300.04px);
+  overflow: visible;
+}
+.body-subpage .vector-2139 {
+  width: 445.11px;
+  height: 909.64px;
+  position: absolute;
+  left: 432.85px;
+  top: 232.35px;
+  transform: translate(-432.85px, -232.35px);
+  overflow: visible;
+}
+.body-subpage .blob-4 {
+  opacity: 0.5;
+  height: auto;
+  position: absolute;
+  left: 443.09px;
+  top: 1490.22px;
+  transform: translate(-443.09px, -599.25px);
+  overflow: visible;
+}
+.body-subpage .ellipse-40 {
+  background: radial-gradient(
+    closest-side,
+    rgba(190, 30, 30, 0.24) 0%,
+    rgba(255, 74, 128, 0.09) 35.09576916694641%,
+    rgba(255, 114, 114, 0) 76.44295692443848%
+  );
+  border-radius: 50%;
+  width: 435.13px;
+  height: 497.04px;
+  position: absolute;
+  left: 370.52px;
+  top: -125.69px;
+  transform-origin: 0 0;
+  transform: rotate(43.65deg) scale(1, 1);
+}
+.body-subpage .frame-91 {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: calc(100% - 40px);
+  max-width: 354px;
+  position: relative;
+  margin: 140px 20px 120px 20px;
+  padding-bottom: 60px;
+}
+.body-subpage .physiological-readiness {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+  box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.1),
+    0px 4px 16px 0px rgba(0, 0, 0, 0.1), 0px 2px 12px 0px rgba(0, 0, 0, 0.1);
+}
+.body-subpage .card-energy-block {
+  background: rgba(255, 255, 255, 0.33);
+  border-radius: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-image: linear-gradient(
+    176.74deg,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-image-slice: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+  backdrop-filter: blur(30px);
+}
+.body-subpage .title-physiological-readiness {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.body-subpage .icon-link {
+  color: #000000;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .title {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  width: 315.51px;
+  position: relative;
+}
+.body-subpage .energy {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage ._76-moderate {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .energy-bar {
+  flex-shrink: 0;
+  width: 314.55px;
+  height: 25.32px;
+  position: relative;
+}
+.body-subpage .bar-empty {
+  background: #ffffff;
+  border-radius: 10000px;
+  width: 314.55px;
+  height: 25.32px;
+  position: relative;
+}
+.body-subpage .bar-fill {
+  background: linear-gradient(
+    90deg,
+    rgba(248, 138, 132, 1) 0%,
+    rgba(241, 213, 142, 1) 100%
+  );
+  border-radius: 10000px;
+  width: 243.77px;
+  height: 25.32px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.body-subpage .divider-line {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: auto;
+  position: relative;
+  overflow: visible;
+}
+.body-subpage .body-copy {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.body-subpage
+  .today-you-mentioned-low-motivation-and-fogginess-your-body-is-under-resourced-today {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .t-imestamp {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-end;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: 14px;
+  position: relative;
+}
+.body-subpage .last-update-9-44 {
+  color: rgba(83, 76, 73, 0.6);
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .your-regulation-moment {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.12),
+    0px 0px 20px 0px rgba(0, 0, 0, 0.1);
+}
+.body-subpage .card-regulation-moment {
+  background: rgba(255, 255, 255, 0.13);
+  border-radius: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-image-slice: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+  backdrop-filter: blur(30px);
+}
+.body-subpage .title2 {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.body-subpage .icon {
+  color: #000000;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 19.999998092651367px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .your-regulation-moment2 {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .exercise-header {
+  display: flex;
+  flex-direction: row;
+  gap: 88px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.body-subpage ._4-6-8-breathing {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .frame-86 {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.body-subpage .completed-11-32-am {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .ai-suggested-exercise {
+  color: rgba(111, 111, 111, 0.7);
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .breath-graph {
+  flex-shrink: 0;
+  width: 320px;
+  height: 87.15px;
+  position: relative;
+}
+.body-subpage .timing-guidelines {
+  width: 319.67px;
+  height: 70.06px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+}
+.body-subpage .waveform-graph {
+  width: 319px;
+  height: 82px;
+  position: absolute;
+  left: 1px;
+  top: 4.67px;
+  overflow: visible;
+}
+.body-subpage .label-inhale {
+  color: #9b9595;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  position: absolute;
+  left: 1.67px;
+  top: 73.15px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .label-hold {
+  color: #9b9595;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  position: absolute;
+  left: 107px;
+  top: 73.15px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .label-exhale {
+  color: #9b9595;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  position: absolute;
+  left: 213.67px;
+  top: 73.15px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .reflection-copy {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.body-subpage
+  .your-breath-slowed-and-tension-dropped-your-body-remembered-how-to-feel-safe {
+  color: #6f6662;
+  text-align: left;
+  font-family: "-", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.your-breath-slowed-and-tension-dropped-your-body-remembered-how-to-feel-safe-span {
+  font-family: "PpNeueMontreal-Book", sans-serif;
+}
+.your-breath-slowed-and-tension-dropped-your-body-remembered-how-to-feel-safe-span2 {
+  font-family: "PpWriter-RegularItalic", sans-serif;
+  font-style: italic;
+}
+.body-subpage .card-ambient-insight {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.12),
+    0px 0px 20px 0px rgba(0, 0, 0, 0.1);
+}
+.body-subpage .card-insight {
+  background: rgba(255, 255, 255, 0.13);
+  border-radius: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-image-slice: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+  backdrop-filter: blur(30px);
+}
+.body-subpage .icon-title {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.body-subpage .div {
+  color: #000000;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .ambient-insight {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .insight-title {
+  border-radius: 1000px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.body-subpage .div2 {
+  color: #000000;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .increased-libido {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .cycle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  width: 156px;
+  position: relative;
+}
+.body-subpage .day-18-follicular-phase {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .ovulation-in-2-days {
+  color: #534c49;
+  text-align: left;
+  font-family: "-", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.ovulation-in-2-days-span {
+  font-family: "PpNeueMontreal-Book", sans-serif;
+}
+.ovulation-in-2-days-span2 {
+  font-family: "PpWriter-RegularItalic", sans-serif;
+  font-style: italic;
+}
+.body-subpage .divider-line2 {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: auto;
+  position: relative;
+  overflow: visible;
+}
+.body-subpage .suggestion-block {
+  background: rgba(238, 142, 185, 0.23);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 319px;
+  position: relative;
+  backdrop-filter: blur(15px);
+}
+.body-subpage .pill-label-ai {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.body-subpage .bard-line-streamline-remix-line {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  overflow: visible;
+}
+.body-subpage .ai-suggestion {
+  color: #bf5e89;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .suggestion-text {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.body-subpage
+  .this-evening-is-free-and-your-mood-and-desire-is-elevated-this-could-be-a-wonderful-night-for-something-sweet-with-johnny {
+  color: #bf5e89;
+  text-align: left;
+  font-family: "-", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.this-evening-is-free-and-your-mood-and-desire-is-elevated-this-could-be-a-wonderful-night-for-something-sweet-with-johnny-span {
+  font-family: "PpNeueMontreal-Book", sans-serif;
+}
+.this-evening-is-free-and-your-mood-and-desire-is-elevated-this-could-be-a-wonderful-night-for-something-sweet-with-johnny-span2 {
+  font-family: "PpWriter-RegularItalic", sans-serif;
+  font-style: italic;
+}
+.body-subpage .card-reflect {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.12),
+    0px 0px 20px 0px rgba(0, 0, 0, 0.1);
+}
+.body-subpage .card-reflect2 {
+  background: rgba(255, 255, 255, 0.13);
+  border-radius: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-image-slice: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+  backdrop-filter: blur(30px);
+}
+.body-subpage .section-title {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.body-subpage .div3 {
+  color: #000000;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .leave-a-note-for-later {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .insight-label {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.body-subpage .you-re-in-a-new-place-how-s-your-body-responding-to-the-shift {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  position: relative;
+  width: 305.27px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .memroy-label-ai {
+  display: flex;
+  flex-direction: row;
+  gap: 7px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.body-subpage .notebook-fill-streamline-outlined-fill-material-pro {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.body-subpage .notebook-fill {
+  width: 79.17%;
+  height: 83.33%;
+  position: absolute;
+  right: 4.17%;
+  left: 16.67%;
+  bottom: 8.33%;
+  top: 8.33%;
+  overflow: visible;
+}
+.body-subpage
+  .blob-will-keep-your-response-in-mind-it-may-be-brought-up-when-relevant {
+  color: #6f6662;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  position: relative;
+  width: 269.71px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.body-subpage .button-type-audio {
+  display: flex;
+  flex-direction: row;
+  gap: 7px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.body-subpage .button-type {
+  background: rgba(255, 255, 255, 0.33);
+  border-radius: 1000px;
+  border-style: solid;
+  border-color: #eed8d8;
+  border-width: 1px;
+  padding: 10px 16px 10px 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  flex-shrink: 0;
+  width: 267px;
+  position: relative;
+}
+.body-subpage .voice-input {
+  color: #000000;
+  text-align: center;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.body-subpage .button-voice {
+  background: rgba(255, 255, 255, 0.33);
+  border-radius: 1000px;
+  border-style: solid;
+  border-color: #eed8d8;
+  border-width: 1px;
+  padding: 10px 16px 10px 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 46px;
+  height: 38px;
+  position: relative;
+}
+.body-subpage .pencil-streamline-lucide-line {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  overflow: visible;
+}
+.body-subpage .frame-87 {
+  background: linear-gradient(
+    180deg,
+    rgba(251, 244, 241, 0.9) 37.499675154685974%,
+    rgba(251, 244, 241, 0) 100%
+  );
+  padding: 10px 16px 24px 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 393px;
+  height: 130px;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+}
+.body-subpage .frame-77 {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  height: auto;
+  position: relative;
+  overflow: visible;
+}
+.body-subpage .label-subpage-body {
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.body-subpage .body {
+  color: #413737;
+  text-align: center;
+  font-family: "PpWriter-Regular", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  position: relative;
+}
+.body-subpage .button-more-options {
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.body-subpage .ellipse-5 {
+  background: #413737;
+  border-radius: 50%;
+  flex-shrink: 0;
+  width: 4px;
+  height: 4px;
+  position: relative;
+}
+.body-subpage .ellipse-6 {
+  background: #413737;
+  border-radius: 50%;
+  flex-shrink: 0;
+  width: 4px;
+  height: 4px;
+  position: relative;
+}
+.body-subpage .ellipse-7 {
+  background: #413737;
+  border-radius: 50%;
+  flex-shrink: 0;
+  width: 4px;
+  height: 4px;
+  position: relative;
+}

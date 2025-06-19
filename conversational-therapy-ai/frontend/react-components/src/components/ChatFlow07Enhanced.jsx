@@ -38,6 +38,8 @@ export const ChatFlow07Enhanced = ({
 	const [emotionalState, setEmotionalState] = React.useState("calm");
 	const [showOldMessagesIndicator, setShowOldMessagesIndicator] =
 		React.useState(false);
+	const [showNewMessagesIndicator, setShowNewMessagesIndicator] =
+		React.useState(false);
 
 	// Enhanced: UniversalOrbAnimation State anstelle von Blob-System
 	const [orbEmotionalState, setOrbEmotionalState] = React.useState("neutral");
@@ -432,23 +434,50 @@ export const ChatFlow07Enhanced = ({
 		}
 	};
 
-	// Enhanced scroll with old messages detection
+	// Enhanced scroll with old messages detection and new messages indicator
 	const handleScroll = () => {
 		if (chatContainerRef.current) {
 			const { scrollTop, scrollHeight, clientHeight } =
 				chatContainerRef.current;
 			const isAtTop = scrollTop < 30;
+			const isAtBottom = scrollTop + clientHeight >= scrollHeight - 50;
 			const hasOldMessages = messages.length > 3;
+			
 			setShowOldMessagesIndicator(isAtTop && hasOldMessages);
+			setShowNewMessagesIndicator(!isAtBottom && hasOldMessages);
+			
+			console.log("📜 Scroll Position:", {
+				isAtTop,
+				isAtBottom,
+				hasOldMessages,
+				showOldIndicator: isAtTop && hasOldMessages,
+				showNewIndicator: !isAtBottom && hasOldMessages
+			});
 		}
 	};
 
-	// Enhanced auto-scroll with delay for better UX
+	// Intelligente auto-scroll Logik - nur scrollen wenn User am Ende ist
 	React.useEffect(() => {
 		const scrollWithDelay = () => {
-			setTimeout(() => {
-				scrollToBottom();
-			}, 50);
+			if (chatContainerRef.current) {
+				const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+				const isNearBottom = scrollTop + clientHeight >= scrollHeight - 100; // 100px Toleranz
+				
+				// Nur automatisch scrollen wenn User sich am Ende befindet
+				if (isNearBottom) {
+					setTimeout(() => {
+						scrollToBottom();
+					}, 50);
+					console.log("📜 Auto-scroll: User war am Ende, scrolle zu neuen Nachrichten");
+				} else {
+					console.log("📜 Auto-scroll übersprungen: User liest alte Nachrichten", {
+						scrollTop,
+						scrollHeight,
+						clientHeight,
+						isNearBottom
+					});
+				}
+			}
 		};
 		scrollWithDelay();
 	}, [messages, typingMessage]);
@@ -488,7 +517,38 @@ export const ChatFlow07Enhanced = ({
 			});
 
 			setCurrentThreadId(thread.id);
-			setMessages(conversationManager.getThreadMessages(thread.id));
+			// Nachrichten zu bestehenden hinzufügen, nur bei komplett neuer Session überschreiben
+			const threadMessages = conversationManager.getThreadMessages(thread.id);
+			setMessages(prevMessages => {
+				// Bei der Initialisierung: Wenn es bereits Nachrichten gibt, diese behalten und neue anhängen
+				if (prevMessages.length > 0 && threadMessages.length > 0) {
+					console.log("🔄 Thread-Wechsel: Nachrichten akkumulieren", {
+						previous: prevMessages.length,
+						thread: threadMessages.length
+					});
+					// Kombiniere vorherige Nachrichten mit Thread-Nachrichten (Duplikate vermeiden)
+					const combinedMessages = [...prevMessages];
+					threadMessages.forEach(threadMsg => {
+						if (!combinedMessages.find(msg => msg.id === threadMsg.id)) {
+							combinedMessages.push(threadMsg);
+						}
+					});
+					return combinedMessages;
+				}
+				// Bei der ersten Initialisierung oder leerem State: Thread-Nachrichten verwenden
+				console.log("🆕 Initiale Thread-Nachrichten geladen:", threadMessages.length);
+				return threadMessages;
+			});
+	
+			// Debug: Nachrichten-Anzahl überwachen
+			console.log("📊 Messages Debug:", {
+				totalMessages: threadMessages.length,
+				currentState: threadMessages.map(msg => ({
+					id: msg.id,
+					type: msg.type,
+					text: msg.text?.substring(0, 30) + "..."
+				}))
+			});
 
 			// Analyse der Welcome-Message für Orb
 			analyzeTextForOrb(welcomeMessage, false);
@@ -776,7 +836,20 @@ export const ChatFlow07Enhanced = ({
 				currentThreadId,
 				segmentMessage
 			);
-			setMessages(conversationManager.getThreadMessages(currentThreadId));
+			// Neue Nachrichten zu bestehenden hinzufügen, nicht überschreiben
+			const threadMessages = conversationManager.getThreadMessages(currentThreadId);
+			setMessages(prevMessages => {
+				// Prüfen, ob neue Nachrichten hinzugekommen sind
+				if (threadMessages.length > prevMessages.length) {
+					console.log("📨 Neue AI-Nachrichten hinzugefügt:", {
+						previous: prevMessages.length,
+						current: threadMessages.length,
+						new: threadMessages.length - prevMessages.length
+					});
+					return threadMessages; // Alle Nachrichten vom Thread verwenden
+				}
+				return prevMessages; // Bestehende Nachrichten behalten
+			});
 			setTypingMessage("");
 
 			if (i < segments.length - 1) {
@@ -854,7 +927,20 @@ export const ChatFlow07Enhanced = ({
 				blobUpdate.analysis
 			);
 
-			setMessages(conversationManager.getThreadMessages(currentThreadId));
+			// Neue User-Nachrichten zu bestehenden hinzufügen, nicht überschreiben
+			const threadMessages = conversationManager.getThreadMessages(currentThreadId);
+			setMessages(prevMessages => {
+				// Prüfen, ob neue Nachrichten hinzugekommen sind
+				if (threadMessages.length > prevMessages.length) {
+					console.log("📨 Neue User-Nachrichten hinzugefügt:", {
+						previous: prevMessages.length,
+						current: threadMessages.length,
+						new: threadMessages.length - prevMessages.length
+					});
+					return threadMessages; // Alle Nachrichten vom Thread verwenden
+				}
+				return prevMessages; // Bestehende Nachrichten behalten
+			});
 			setInputText("");
 			setIsLoading(true);
 			setShowKeyboard(false);
@@ -915,9 +1001,18 @@ export const ChatFlow07Enhanced = ({
 					currentThreadId,
 					errorMessage
 				);
-				setMessages(
-					conversationManager.getThreadMessages(currentThreadId)
-				);
+				// Auch bei Fehlern: Neue Nachrichten zu bestehenden hinzufügen
+				const threadMessages = conversationManager.getThreadMessages(currentThreadId);
+				setMessages(prevMessages => {
+					if (threadMessages.length > prevMessages.length) {
+						console.log("📨 Neue Fehler-Nachrichten hinzugefügt:", {
+							previous: prevMessages.length,
+							current: threadMessages.length
+						});
+						return threadMessages;
+					}
+					return prevMessages;
+				});
 				setTypingMessage("");
 				setShowKeyboard(true);
 			}
@@ -1065,6 +1160,48 @@ export const ChatFlow07Enhanced = ({
 				)}
 				<div ref={messagesEndRef} />
 			</div>
+
+			{/* Neue Nachrichten Indikator */}
+			{showNewMessagesIndicator && (
+				<div
+					style={{
+						position: "absolute",
+						bottom: showKeyboard ? "280px" : "80px",
+						right: "20px",
+						background: "rgba(0, 122, 255, 0.9)",
+						color: "white",
+						padding: "8px 16px",
+						borderRadius: "20px",
+						fontSize: "14px",
+						fontWeight: "500",
+						cursor: "pointer",
+						zIndex: 1000,
+						boxShadow: "0 4px 12px rgba(0, 122, 255, 0.3)",
+						backdropFilter: "blur(10px)",
+						transition: "all 0.3s ease",
+						display: "flex",
+						alignItems: "center",
+						gap: "8px"
+					}}
+					onClick={() => {
+						scrollToBottom();
+						setShowNewMessagesIndicator(false);
+					}}
+				>
+					<span>↓</span>
+					<span>
+						{currentLanguage === "de"
+							? "Neue Nachrichten"
+							: currentLanguage === "fr"
+							? "Nouveaux messages"
+							: currentLanguage === "es"
+							? "Nuevos mensajes"
+							: currentLanguage === "it"
+							? "Nuovi messaggi"
+							: "New messages"}
+					</span>
+				</div>
+			)}
 
 			<div className="frame-1">
 				<div className="ellipse-52"></div>

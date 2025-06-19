@@ -5,12 +5,13 @@ import PrototypeDemo from './components/PrototypeDemo';
 import UniversalOrbDemo from './components/UniversalOrbDemo';
 
 function App() {
-  // Check URL parameters for demo modes
+  // Check URL parameters for hidden debug modes (only for development)
   const urlParams = new URLSearchParams(window.location.search);
   const showPrototype = urlParams.get('prototype') === 'true';
   const showUniversal = urlParams.get('universal') === 'true';
+  const showDebugButtons = urlParams.get('debug') === 'true' || process.env.NODE_ENV === 'development';
 
-  // Universal Orb Demo (New System)
+  // Hidden: Universal Orb Demo (Development/Debug only)
   if (showUniversal) {
     return (
       <div className="App">
@@ -64,7 +65,7 @@ function App() {
     );
   }
 
-  // Original Prototype Demo
+  // Hidden: Original Prototype Demo (Development/Debug only)
   if (showPrototype) {
     return (
       <div className="App">
@@ -118,86 +119,88 @@ function App() {
     );
   }
 
-  // Main App
+  // Main App - Production ready with Text-Enhanced as default
   return (
     <div className="App">
       <main className="app-content">
         <SwipeContainer />
-        {/* Demo buttons */}
-        <div style={{
-          position: 'fixed',
-          top: '20px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 1000,
-          display: 'flex',
-          gap: '8px'
-        }}>
-          <button
-            onClick={() => window.location.search = '?prototype=true'}
-            style={{
-              padding: '6px 12px',
-              background: '#6c757d',
-              color: 'white',
-              border: 'none',
-              borderRadius: '14px',
-              cursor: 'pointer',
-              fontSize: '10px',
-              fontWeight: '600',
-              boxShadow: '0 2px 8px rgba(108, 117, 125, 0.3)'
-            }}
-          >
-            🔬 Prototyp
-          </button>
-          <button
-            onClick={() => window.location.search = '?universal=true'}
-            style={{
-              padding: '6px 12px',
-              background: '#28a745',
-              color: 'white',
-              border: 'none',
-              borderRadius: '14px',
-              cursor: 'pointer',
-              fontSize: '10px',
-              fontWeight: '600',
-              boxShadow: '0 2px 8px rgba(40, 167, 69, 0.3)'
-            }}
-          >
-            🚀 Universal
-          </button>
-          <button
-            onClick={() => window.location.search = '?enhanced=true'}
-            style={{
-              padding: '6px 12px',
-              background: '#ff6b35',
-              color: 'white',
-              border: 'none',
-              borderRadius: '14px',
-              cursor: 'pointer',
-              fontSize: '10px',
-              fontWeight: '600',
-              boxShadow: '0 2px 8px rgba(255, 107, 53, 0.3)'
-            }}
-          >
-            🎵 Audio Enhanced
-          </button>
-          <button
-            onClick={() => window.location.search = '?text-enhanced=true'}
-            style={{
-              padding: '6px 12px',
-              background: '#9c27b0',
-              color: 'white',
-              border: 'none',
-              borderRadius: '14px',
-              cursor: 'pointer',
-              fontSize: '10px',
-              fontWeight: '600',
-              boxShadow: '0 2px 8px rgba(156, 39, 176, 0.3)'
-            }}
-          >
-            💬 Text Enhanced
-          </button>
-        </div>
+        {/* Hidden debug buttons - only visible with ?debug=true or in development */}
+        {showDebugButtons && (
+          <div style={{
+            position: 'fixed',
+            top: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 1000,
+            display: 'flex',
+            gap: '8px'
+          }}>
+            <button
+              onClick={() => window.location.search = '?prototype=true'}
+              style={{
+                padding: '6px 12px',
+                background: '#6c757d',
+                color: 'white',
+                border: 'none',
+                borderRadius: '14px',
+                cursor: 'pointer',
+                fontSize: '10px',
+                fontWeight: '600',
+                boxShadow: '0 2px 8px rgba(108, 117, 125, 0.3)'
+              }}
+            >
+              🔬 Prototyp
+            </button>
+            <button
+              onClick={() => window.location.search = '?universal=true'}
+              style={{
+                padding: '6px 12px',
+                background: '#28a745',
+                color: 'white',
+                border: 'none',
+                borderRadius: '14px',
+                cursor: 'pointer',
+                fontSize: '10px',
+                fontWeight: '600',
+                boxShadow: '0 2px 8px rgba(40, 167, 69, 0.3)'
+              }}
+            >
+              🚀 Universal
+            </button>
+            <button
+              onClick={() => window.location.search = '?enhanced=true'}
+              style={{
+                padding: '6px 12px',
+                background: '#ff6b35',
+                color: 'white',
+                border: 'none',
+                borderRadius: '14px',
+                cursor: 'pointer',
+                fontSize: '10px',
+                fontWeight: '600',
+                boxShadow: '0 2px 8px rgba(255, 107, 53, 0.3)'
+              }}
+            >
+              🎵 Audio Enhanced
+            </button>
+            <button
+              onClick={() => window.location.search = ''}
+              style={{
+                padding: '6px 12px',
+                background: '#9c27b0',
+                color: 'white',
+                border: 'none',
+                borderRadius: '14px',
+                cursor: 'pointer',
+                fontSize: '10px',
+                fontWeight: '600',
+                boxShadow: '0 2px 8px rgba(156, 39, 176, 0.3)'
+              }}
+            >
+              💬 Text Enhanced (Standard)
+            </button>
+          </div>
+        )}
       </main>
     </div>
   );

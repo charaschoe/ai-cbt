@@ -94,8 +94,8 @@
 
 /* Focus für Barrierefreiheit */
 .universal-orb:focus {
-  outline: 2px solid rgba(0, 255, 161, 0.8);
-  outline-offset: 4px;
+  outline: none;
+  box-shadow: 0 0 20px rgba(0, 255, 161, 0.6);
 }
 
 /* Debug Panel */
@@ -174,7 +174,7 @@
 /* High contrast mode */
 @media (prefers-contrast: high) {
   .universal-orb {
-    outline: 2px solid white;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
   }
   
   .universal-orb-debug {
@@ -282,6 +282,37 @@
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+/* Organic morphing animation for natural, fluid shapes - Extra smooth */
+@keyframes organicMorph {
+  0% {
+    border-radius: 45% 55% 50% 60%;
+  }
+  12.5% {
+    border-radius: 47% 58% 48% 57%;
+  }
+  25% {
+    border-radius: 50% 60% 45% 55%;
+  }
+  37.5% {
+    border-radius: 55% 50% 52% 48%;
+  }
+  50% {
+    border-radius: 60% 40% 55% 45%;
+  }
+  62.5% {
+    border-radius: 50% 50% 48% 52%;
+  }
+  75% {
+    border-radius: 40% 60% 45% 55%;
+  }
+  87.5% {
+    border-radius: 48% 52% 55% 58%;
+  }
+  100% {
+    border-radius: 45% 55% 50% 60%;
   }
 }
 

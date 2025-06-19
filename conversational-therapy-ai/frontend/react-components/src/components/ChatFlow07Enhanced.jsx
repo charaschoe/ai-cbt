@@ -38,8 +38,6 @@ export const ChatFlow07Enhanced = ({
 	const [emotionalState, setEmotionalState] = React.useState("calm");
 	const [showOldMessagesIndicator, setShowOldMessagesIndicator] =
 		React.useState(false);
-	const [showNewMessagesIndicator, setShowNewMessagesIndicator] =
-		React.useState(false);
 
 	// Enhanced: UniversalOrbAnimation State anstelle von Blob-System
 	const [orbEmotionalState, setOrbEmotionalState] = React.useState("neutral");
@@ -48,12 +46,12 @@ export const ChatFlow07Enhanced = ({
 	const [orbSentimentScore, setOrbSentimentScore] = React.useState(0);
 	const [currentTextForAnalysis, setCurrentTextForAnalysis] =
 		React.useState("");
-	
+
 	// Neue States für intelligentere Emotionserkennung
-	const [persistentEmotionalState, setPersistentEmotionalState] = React.useState("neutral");
+	const [persistentEmotionalState, setPersistentEmotionalState] =
+		React.useState("neutral");
 	const [emotionalHistory, setEmotionalHistory] = React.useState([]);
 	const [isTransitioning, setIsTransitioning] = React.useState(false);
-	const [lastEmotionChange, setLastEmotionChange] = React.useState(Date.now());
 
 	// Legacy: Blob-Analyse für Vergleich/Debug (Optional)
 	const [activeBlobs, setActiveBlobs] = React.useState([]);
@@ -77,144 +75,60 @@ export const ChatFlow07Enhanced = ({
 			// Normalisierung für bessere Analyse
 			const normalizedText = text.toLowerCase().trim();
 
-			// DIREKTE EMOTIONSERKENNUNG (Priorität für häufige Ausdrücke)
-			const directEmotionTests = {
-				sadness: /\b(i'?m sad|i feel sad|feeling sad|so sad|very sad|im sad)\b/gi,
-				happiness: /\b(i'?m happy|i feel happy|feeling happy|so happy|very happy|im happy)\b/gi,
-				anger: /\b(i'?m angry|i feel angry|feeling angry|so angry|very angry|im angry)\b/gi,
-				anxiety: /\b(i'?m anxious|i feel anxious|feeling anxious|so anxious|very anxious|im anxious)\b/gi
-			};
-
-			// Test für direkte Emotionserkennung
-			if (directEmotionTests.sadness.test(normalizedText)) {
-				console.log("🎯 DIREKTE ERKENNUNG: Traurigkeit erkannt für:", text);
-				console.log("🔄 Setze Orb-Zustand auf 'trauer' mit blauen Farben");
-				
-				// Sofort den Orb-Zustand aktualisieren
-				setOrbEmotionalState("trauer");
-				setPersistentEmotionalState("trauer");
-				setOrbUrgencyLevel(0.8);
-				setOrbIntensity(1.5);
-				setOrbSentimentScore(-0.8);
-				setCurrentTextForAnalysis(text);
-				
-				// Zusätzlich die sanfte Transition
-				smoothTransitionToState("trauer", 0.8, 1.5, -0.8);
-				
-				return {
-					emotionalState: "trauer",
-					urgencyLevel: 0.8,
-					intensity: 1.5,
-					sentimentScore: -0.8,
-				};
-			}
-
-			if (directEmotionTests.happiness.test(normalizedText)) {
-				console.log("🎯 DIREKTE ERKENNUNG: Freude erkannt für:", text);
-				console.log("🔄 Setze Orb-Zustand auf 'freude' mit gelben/grünen Farben");
-				
-				setOrbEmotionalState("freude");
-				setPersistentEmotionalState("freude");
-				setOrbUrgencyLevel(0.5);
-				setOrbIntensity(1.5);
-				setOrbSentimentScore(0.8);
-				setCurrentTextForAnalysis(text);
-				
-				smoothTransitionToState("freude", 0.5, 1.5, 0.8);
-				return {
-					emotionalState: "freude",
-					urgencyLevel: 0.5,
-					intensity: 1.5,
-					sentimentScore: 0.8,
-				};
-			}
-
-			if (directEmotionTests.anger.test(normalizedText)) {
-				console.log("🎯 DIREKTE ERKENNUNG: Wut/Ärger erkannt für:", text);
-				console.log("🔄 Setze Orb-Zustand auf 'wut' mit roten Farben");
-				
-				setOrbEmotionalState("wut");
-				setPersistentEmotionalState("wut");
-				setOrbUrgencyLevel(0.9);
-				setOrbIntensity(1.6);
-				setOrbSentimentScore(-0.7);
-				setCurrentTextForAnalysis(text);
-				
-				smoothTransitionToState("wut", 0.9, 1.6, -0.7);
-				return {
-					emotionalState: "wut",
-					urgencyLevel: 0.9,
-					intensity: 1.6,
-					sentimentScore: -0.7,
-				};
-			}
-
-			if (directEmotionTests.anxiety.test(normalizedText)) {
-				console.log("🎯 DIREKTE ERKENNUNG: Angst erkannt für:", text);
-				console.log("🔄 Setze Orb-Zustand auf 'neutral' (Angst nicht im Farbsystem)");
-				
-				// Angst wird als neutral dargestellt, da es nicht im Steiner Farbsystem ist
-				setOrbEmotionalState("neutral");
-				setPersistentEmotionalState("neutral");
-				setOrbUrgencyLevel(0.7);
-				setOrbIntensity(1.4);
-				setOrbSentimentScore(-0.6);
-				setCurrentTextForAnalysis(text);
-				
-				smoothTransitionToState("neutral", 0.7, 1.4, -0.6);
-				return {
-					emotionalState: "neutral",
-					urgencyLevel: 0.7,
-					intensity: 1.4,
-					sentimentScore: -0.6,
-				};
-			}
-
 			// Negations-Muster für Kontext-Erkennung (mehrsprachig)
-			const negationPatterns = new RegExp([
-				// Deutsch
-				'\\b(nicht|kein|keine|keiner|niemals|nie|ohne|wenig)\\s+',
-				// Englisch
-				'\\b(not|no|never|without|barely|hardly)\\s+',
-				// Französisch
-				'\\b(ne|pas|non|jamais|sans|peu)\\s+',
-				// Spanisch
-				'\\b(no|nunca|sin|poco|nada)\\s+',
-				// Italienisch
-				'\\b(non|no|mai|senza|poco)\\s+'
-			].join('|'), 'gi');
+			const negationPatterns = new RegExp(
+				[
+					// Deutsch
+					"\\b(nicht|kein|keine|keiner|niemals|nie|ohne|wenig)\\s+",
+					// Englisch
+					"\\b(not|no|never|without|barely|hardly)\\s+",
+					// Französisch
+					"\\b(ne|pas|non|jamais|sans|peu)\\s+",
+					// Spanisch
+					"\\b(no|nunca|sin|poco|nada)\\s+",
+					// Italienisch
+					"\\b(non|no|mai|senza|poco)\\s+",
+				].join("|"),
+				"gi"
+			);
 
 			// Mehrsprachige Sentiment-Analyse mit Kontext
-			const positiveWords = new RegExp([
-				// Englisch
-				'\\b(happy|joy|excited|great|wonderful|amazing|love|fantastic|brilliant|thrilled|good|better|best|awesome|excellent|perfect|beautiful|incredible|outstanding|superb|magnificent|delighted|ecstatic|blissful|cheerful|optimistic|grateful|blessed)\\b',
-				// Deutsch
-				'\\b(glücklich|freude|freudig|aufgeregt|großartig|wunderbar|erstaunlich|liebe|fantastisch|brillant|begeistert|gut|besser|beste|toll|exzellent|perfekt|schön|herrlich|optimistisch|dankbar|gesegnet)\\b',
-				// Französisch
-				'\\b(heureux|joie|joyeux|excité|formidable|merveilleux|incroyable|amour|fantastique|brillant|ravi|bon|meilleur|meilleure|génial|excellent|parfait|beau|magnifique|optimiste|reconnaissant|béni)\\b',
-				// Spanisch
-				'\\b(feliz|alegría|alegre|emocionado|genial|maravilloso|increíble|amor|fantástico|brillante|encantado|bueno|mejor|excelente|perfecto|hermoso|magnífico|optimista|agradecido|bendecido)\\b',
-				// Italienisch
-				'\\b(felice|gioia|gioioso|emozionato|fantastico|meraviglioso|incredibile|amore|brillante|entusiasta|buono|migliore|eccellente|perfetto|bello|magnifico|ottimista|grato|benedetto)\\b'
-			].join('|'), 'gi');
+			const positiveWords = new RegExp(
+				[
+					// Englisch
+					"\\b(happy|joy|excited|great|wonderful|amazing|love|fantastic|brilliant|thrilled|good|better|best|awesome|excellent|perfect|beautiful|incredible|outstanding|superb|magnificent|delighted|ecstatic|blissful|cheerful|optimistic|grateful|blessed)\\b",
+					// Deutsch
+					"\\b(glücklich|freude|freudig|aufgeregt|großartig|wunderbar|erstaunlich|liebe|fantastisch|brillant|begeistert|gut|besser|beste|toll|exzellent|perfekt|schön|herrlich|optimistisch|dankbar|gesegnet)\\b",
+					// Französisch
+					"\\b(heureux|joie|joyeux|excité|formidable|merveilleux|incroyable|amour|fantastique|brillant|ravi|bon|meilleur|meilleure|génial|excellent|parfait|beau|magnifique|optimiste|reconnaissant|béni)\\b",
+					// Spanisch
+					"\\b(feliz|alegría|alegre|emocionado|genial|maravilloso|increíble|amor|fantástico|brillante|encantado|bueno|mejor|excelente|perfecto|hermoso|magnífico|optimista|agradecido|bendecido)\\b",
+					// Italienisch
+					"\\b(felice|gioia|gioioso|emozionato|fantastico|meraviglioso|incredibile|amore|brillante|entusiasta|buono|migliore|eccellente|perfetto|bello|magnifico|ottimista|grato|benedetto)\\b",
+				].join("|"),
+				"gi"
+			);
 
-			const negativeWords = new RegExp([
-				// Englisch
-				'\\b(sad|depressed|down|low|unhappy|miserable|terrible|awful|horrible|bad|worse|worst|hate|angry|frustrated|devastated|heartbroken|disappointed|discouraged|hopeless|despair|anguish|torment|agony|suffering|pain|hurt)\\b',
-				// Deutsch
-				'\\b(traurig|deprimiert|niedergeschlagen|niedrig|unglücklich|elend|schrecklich|furchtbar|schlecht|schlechter|schlechteste|hass|wütend|frustriert|zerstört|gebrochenes herz|enttäuscht|entmutigt|hoffnungslos|verzweiflung|qual|pein|agonie|leiden|schmerz|verletzt)\\b',
-				// Französisch
-				'\\b(triste|déprimé|abattu|bas|malheureux|misérable|terrible|affreux|horrible|mauvais|pire|haine|en colère|frustré|dévasté|cœur brisé|déçu|découragé|désespéré|désespoir|angoisse|tourment|agonie|souffrance|douleur|blessé)\\b',
-				// Spanisch
-				'\\b(triste|deprimido|decaído|bajo|infeliz|miserable|terrible|horrible|malo|peor|odio|enojado|frustrado|devastado|corazón roto|decepcionado|desanimado|desesperanzado|desesperación|angustia|tormento|agonía|sufrimiento|dolor|herido)\\b',
-				// Italienisch
-				'\\b(triste|depresso|giù|basso|infelice|miserabile|terribile|orribile|cattivo|peggio|peggiore|odio|arrabbiato|frustrato|devastato|cuore spezzato|deluso|scoraggiato|senza speranza|disperazione|angoscia|tormento|agonia|sofferenza|dolore|ferito)\\b'
-			].join('|'), 'gi');
+			const negativeWords = new RegExp(
+				[
+					// Englisch
+					"\\b(sad|depressed|down|low|unhappy|miserable|terrible|awful|horrible|bad|worse|worst|hate|angry|frustrated|devastated|heartbroken|disappointed|discouraged|hopeless|despair|anguish|torment|agony|suffering|pain|hurt)\\b",
+					// Deutsch
+					"\\b(traurig|deprimiert|niedergeschlagen|niedrig|unglücklich|elend|schrecklich|furchtbar|schlecht|schlechter|schlechteste|hass|wütend|frustriert|zerstört|gebrochenes herz|enttäuscht|entmutigt|hoffnungslos|verzweiflung|qual|pein|agonie|leiden|schmerz|verletzt)\\b",
+					// Französisch
+					"\\b(triste|déprimé|abattu|bas|malheureux|misérable|terrible|affreux|horrible|mauvais|pire|haine|en colère|frustré|dévasté|cœur brisé|déçu|découragé|désespéré|désespoir|angoisse|tourment|agonie|souffrance|douleur|blessé)\\b",
+					// Spanisch
+					"\\b(triste|deprimido|decaído|bajo|infeliz|miserable|terrible|horrible|malo|peor|odio|enojado|frustrado|devastado|corazón roto|decepcionado|desanimado|desesperanzado|desesperación|angustia|tormento|agonía|sufrimiento|dolor|herido)\\b",
+					// Italienisch
+					"\\b(triste|depresso|giù|basso|infelice|miserabile|terribile|orribile|cattivo|peggio|peggiore|odio|arrabbiato|frustrato|devastato|cuore spezzato|deluso|scoraggiato|senza speranza|disperazione|angoscia|tormento|agonia|sofferenza|dolore|ferito)\\b",
+				].join("|"),
+				"gi"
+			);
 
 			// Kontext-bewusste Analyse mit Sicherheitsüberprüfungen
 			let positiveMatches = [];
 			let negativeMatches = [];
-			
+
 			try {
 				positiveMatches = normalizedText.match(positiveWords) || [];
 				negativeMatches = normalizedText.match(negativeWords) || [];
@@ -228,32 +142,43 @@ export const ChatFlow07Enhanced = ({
 			for (let i = 1; i < negatedSegments.length; i += 2) {
 				const negatedSegment = negatedSegments[i];
 				if (!negatedSegment) continue; // Sicherheitscheck
-				
+
 				const posInNegated = negatedSegment.match(positiveWords) || [];
 				const negInNegated = negatedSegment.match(negativeWords) || [];
-				
+
 				// Polarität umkehren - nur wenn Matches gefunden wurden
 				if (posInNegated.length > 0) {
-					positiveMatches = positiveMatches.filter(match => !posInNegated.includes(match));
+					positiveMatches = positiveMatches.filter(
+						(match) => !posInNegated.includes(match)
+					);
 					negativeMatches = negativeMatches.concat(posInNegated);
 				}
 				if (negInNegated.length > 0) {
-					negativeMatches = negativeMatches.filter(match => !negInNegated.includes(match));
+					negativeMatches = negativeMatches.filter(
+						(match) => !negInNegated.includes(match)
+					);
 					positiveMatches = positiveMatches.concat(negInNegated);
 				}
 			}
 
 			// Kontext-Phrasen für bessere Erkennung
 			const contextualAnalysis = analyzeContextualPhrases(normalizedText);
-			
+
 			// Sentiment Score mit Kontext berechnen
 			const totalWords = normalizedText.split(/\s+/).length;
 			const contextWeight = contextualAnalysis.confidence;
-			const rawSentiment = (positiveMatches.length - negativeMatches.length) / Math.max(totalWords, 1);
+			const rawSentiment =
+				(positiveMatches.length - negativeMatches.length) /
+				Math.max(totalWords, 1);
 			const contextualSentiment = contextualAnalysis.sentiment;
-			
-			const finalSentiment = (rawSentiment * (1 - contextWeight)) + (contextualSentiment * contextWeight);
-			const normalizedSentiment = Math.max(-1, Math.min(1, finalSentiment * 2));
+
+			const finalSentiment =
+				rawSentiment * (1 - contextWeight) +
+				contextualSentiment * contextWeight;
+			const normalizedSentiment = Math.max(
+				-1,
+				Math.min(1, finalSentiment * 2)
+			);
 
 			// Emotionaler Zustand bestimmen
 			let newEmotionalState = persistentEmotionalState; // Erhalte vorherigen Zustand
@@ -282,15 +207,23 @@ export const ChatFlow07Enhanced = ({
 			}
 
 			// Sanfte Transition implementieren
-			smoothTransitionToState(newEmotionalState, newUrgencyLevel, newIntensity, normalizedSentiment);
+			smoothTransitionToState(
+				newEmotionalState,
+				newUrgencyLevel,
+				newIntensity,
+				normalizedSentiment
+			);
 
 			// Emotionale Historie aktualisieren
-			setEmotionalHistory(prev => [...prev.slice(-4), {
-				text: text.substring(0, 30),
-				emotion: newEmotionalState,
-				sentiment: normalizedSentiment,
-				timestamp: Date.now()
-			}]);
+			setEmotionalHistory((prev) => [
+				...prev.slice(-4),
+				{
+					text: text.substring(0, 30),
+					emotion: newEmotionalState,
+					sentiment: normalizedSentiment,
+					timestamp: Date.now(),
+				},
+			]);
 
 			console.log("🧠 Intelligente Emotion Analysis:", {
 				text: text.substring(0, 50) + "...",
@@ -321,105 +254,88 @@ export const ChatFlow07Enhanced = ({
 				en: /\b(i don't feel|i'm not|it's not going|nothing is|not good|not well)\b/gi,
 				fr: /\b(je ne me sens pas|je ne suis pas|ça ne va pas|rien n'est|pas bon|pas bien)\b/gi,
 				es: /\b(no me siento|no estoy|no va|nada es|no bueno|no bien)\b/gi,
-				it: /\b(non mi sento|non sto|non va|niente è|non buono|non bene)\b/gi
+				it: /\b(non mi sento|non sto|non va|niente è|non buono|non bene)\b/gi,
 			},
 			positive: {
 				de: /\b(mir geht es|fühle mich|bin sehr|es läuft|alles ist|sehr gut|sehr schön)\b/gi,
 				en: /\b(i feel|i'm really|it's going|everything is|very good|very well)\b/gi,
 				fr: /\b(je me sens|je suis|ça va|tout est|très bon|très bien)\b/gi,
 				es: /\b(me siento|estoy|va|todo es|muy bueno|muy bien)\b/gi,
-				it: /\b(mi sento|sto|va|tutto è|molto buono|molto bene)\b/gi
-			}
+				it: /\b(mi sento|sto|va|tutto è|molto buono|molto bene)\b/gi,
+			},
 		};
 
 		let negativeContextCount = 0;
 		let positiveContextCount = 0;
 
-		Object.values(contextPhrases.negative).forEach(pattern => {
+		Object.values(contextPhrases.negative).forEach((pattern) => {
 			negativeContextCount += (text.match(pattern) || []).length;
 		});
 
-		Object.values(contextPhrases.positive).forEach(pattern => {
+		Object.values(contextPhrases.positive).forEach((pattern) => {
 			positiveContextCount += (text.match(pattern) || []).length;
 		});
 
 		const totalContext = negativeContextCount + positiveContextCount;
 		const confidence = Math.min(totalContext * 0.3, 0.8);
-		const sentiment = totalContext > 0 ?
-			(positiveContextCount - negativeContextCount) / totalContext : 0;
+		const sentiment =
+			totalContext > 0
+				? (positiveContextCount - negativeContextCount) / totalContext
+				: 0;
 
 		return { sentiment, confidence };
 	};
 
 	/**
-	 * Sanfte Transition zwischen emotionalen Zuständen mit Persistenz-Check
+	 * Sanfte Transition zwischen emotionalen Zuständen
 	 */
-	const smoothTransitionToState = React.useCallback((targetState, targetUrgency, targetIntensity, targetSentiment) => {
-		if (isTransitioning) return;
+	const smoothTransitionToState = React.useCallback(
+		(targetState, targetUrgency, targetIntensity, targetSentiment) => {
+			if (isTransitioning) return;
 
-		const now = Date.now();
-		const timeSinceLastChange = now - lastEmotionChange;
-		const EMOTION_MIN_DURATION = 5000; // 5 Sekunden Mindestdauer
-		
-		// Verhindere zu schnelle Zustandswechsel, außer bei starken Emotionen
-		if (timeSinceLastChange < EMOTION_MIN_DURATION &&
-			targetState !== 'neutral' &&
-			persistentEmotionalState !== 'neutral' &&
-			Math.abs(targetSentiment) < 0.7) {
-			console.log("🚫 Emotionswechsel zu schnell, wird übersprungen:", targetState);
-			return;
-		}
+			setIsTransitioning(true);
 
-		console.log("🎭 Emotionsübergang:", {
-			from: persistentEmotionalState,
-			to: targetState,
-			timeSinceLastChange,
-			targetSentiment
-		});
+			// Sanfte Animation über 2 Sekunden
+			const transitionDuration = 2000;
+			const steps = 20;
+			const stepDuration = transitionDuration / steps;
 
-		setLastEmotionChange(now);
-		setIsTransitioning(true);
-		
-		// Längere Animation für emotionale Übergänge (3 Sekunden für bessere Sichtbarkeit)
-		const transitionDuration = 3000;
-		const steps = 30;
-		const stepDuration = transitionDuration / steps;
-		
-		const startUrgency = orbUrgencyLevel;
-		const startIntensity = orbIntensity;
-		const startSentiment = orbSentimentScore;
-		
-		let currentStep = 0;
-		
-		const transitionInterval = setInterval(() => {
-			currentStep++;
-			const progress = currentStep / steps;
-			const easeProgress = 1 - Math.pow(1 - progress, 3); // Cubic ease-out
-			
-			const newUrgency = startUrgency + (targetUrgency - startUrgency) * easeProgress;
-			const newIntensity = startIntensity + (targetIntensity - startIntensity) * easeProgress;
-			const newSentiment = startSentiment + (targetSentiment - startSentiment) * easeProgress;
-			
-			setOrbUrgencyLevel(newUrgency);
-			setOrbIntensity(newIntensity);
-			setOrbSentimentScore(newSentiment);
-			
-			if (currentStep >= steps) {
-				clearInterval(transitionInterval);
-				setOrbEmotionalState(targetState);
-				setPersistentEmotionalState(targetState);
-				setCurrentTextForAnalysis("");
-				setIsTransitioning(false);
-				
-				console.log("✅ Emotionsübergang abgeschlossen:", {
-					state: targetState,
-					urgency: newUrgency,
-					intensity: newIntensity,
-					sentiment: newSentiment
-				});
-			}
-		}, stepDuration);
-	}, [isTransitioning, orbUrgencyLevel, orbIntensity, orbSentimentScore, lastEmotionChange, persistentEmotionalState]);
+			const startUrgency = orbUrgencyLevel;
+			const startIntensity = orbIntensity;
+			const startSentiment = orbSentimentScore;
+
+			let currentStep = 0;
+
+			const transitionInterval = setInterval(() => {
+				currentStep++;
+				const progress = currentStep / steps;
+				const easeProgress = 1 - Math.pow(1 - progress, 3); // Cubic ease-out
+
+				const newUrgency =
+					startUrgency +
+					(targetUrgency - startUrgency) * easeProgress;
+				const newIntensity =
+					startIntensity +
+					(targetIntensity - startIntensity) * easeProgress;
+				const newSentiment =
+					startSentiment +
+					(targetSentiment - startSentiment) * easeProgress;
+
+				setOrbUrgencyLevel(newUrgency);
+				setOrbIntensity(newIntensity);
+				setOrbSentimentScore(newSentiment);
+
+				if (currentStep >= steps) {
+					clearInterval(transitionInterval);
+					setOrbEmotionalState(targetState);
+					setPersistentEmotionalState(targetState);
+					setCurrentTextForAnalysis("");
+					setIsTransitioning(false);
+				}
+			}, stepDuration);
+		},
+		[isTransitioning, orbUrgencyLevel, orbIntensity, orbSentimentScore]
+	);
 
 	// Enhanced scroll function with better reliability
 	const scrollToBottom = () => {
@@ -434,50 +350,23 @@ export const ChatFlow07Enhanced = ({
 		}
 	};
 
-	// Enhanced scroll with old messages detection and new messages indicator
+	// Enhanced scroll with old messages detection
 	const handleScroll = () => {
 		if (chatContainerRef.current) {
 			const { scrollTop, scrollHeight, clientHeight } =
 				chatContainerRef.current;
 			const isAtTop = scrollTop < 30;
-			const isAtBottom = scrollTop + clientHeight >= scrollHeight - 50;
 			const hasOldMessages = messages.length > 3;
-			
 			setShowOldMessagesIndicator(isAtTop && hasOldMessages);
-			setShowNewMessagesIndicator(!isAtBottom && hasOldMessages);
-			
-			console.log("📜 Scroll Position:", {
-				isAtTop,
-				isAtBottom,
-				hasOldMessages,
-				showOldIndicator: isAtTop && hasOldMessages,
-				showNewIndicator: !isAtBottom && hasOldMessages
-			});
 		}
 	};
 
-	// Intelligente auto-scroll Logik - nur scrollen wenn User am Ende ist
+	// Enhanced auto-scroll with delay for better UX
 	React.useEffect(() => {
 		const scrollWithDelay = () => {
-			if (chatContainerRef.current) {
-				const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
-				const isNearBottom = scrollTop + clientHeight >= scrollHeight - 100; // 100px Toleranz
-				
-				// Nur automatisch scrollen wenn User sich am Ende befindet
-				if (isNearBottom) {
-					setTimeout(() => {
-						scrollToBottom();
-					}, 50);
-					console.log("📜 Auto-scroll: User war am Ende, scrolle zu neuen Nachrichten");
-				} else {
-					console.log("📜 Auto-scroll übersprungen: User liest alte Nachrichten", {
-						scrollTop,
-						scrollHeight,
-						clientHeight,
-						isNearBottom
-					});
-				}
-			}
+			setTimeout(() => {
+				scrollToBottom();
+			}, 50);
 		};
 		scrollWithDelay();
 	}, [messages, typingMessage]);
@@ -517,38 +406,7 @@ export const ChatFlow07Enhanced = ({
 			});
 
 			setCurrentThreadId(thread.id);
-			// Nachrichten zu bestehenden hinzufügen, nur bei komplett neuer Session überschreiben
-			const threadMessages = conversationManager.getThreadMessages(thread.id);
-			setMessages(prevMessages => {
-				// Bei der Initialisierung: Wenn es bereits Nachrichten gibt, diese behalten und neue anhängen
-				if (prevMessages.length > 0 && threadMessages.length > 0) {
-					console.log("🔄 Thread-Wechsel: Nachrichten akkumulieren", {
-						previous: prevMessages.length,
-						thread: threadMessages.length
-					});
-					// Kombiniere vorherige Nachrichten mit Thread-Nachrichten (Duplikate vermeiden)
-					const combinedMessages = [...prevMessages];
-					threadMessages.forEach(threadMsg => {
-						if (!combinedMessages.find(msg => msg.id === threadMsg.id)) {
-							combinedMessages.push(threadMsg);
-						}
-					});
-					return combinedMessages;
-				}
-				// Bei der ersten Initialisierung oder leerem State: Thread-Nachrichten verwenden
-				console.log("🆕 Initiale Thread-Nachrichten geladen:", threadMessages.length);
-				return threadMessages;
-			});
-	
-			// Debug: Nachrichten-Anzahl überwachen
-			console.log("📊 Messages Debug:", {
-				totalMessages: threadMessages.length,
-				currentState: threadMessages.map(msg => ({
-					id: msg.id,
-					type: msg.type,
-					text: msg.text?.substring(0, 30) + "..."
-				}))
-			});
+			setMessages(conversationManager.getThreadMessages(thread.id));
 
 			// Analyse der Welcome-Message für Orb
 			analyzeTextForOrb(welcomeMessage, false);
@@ -617,83 +475,101 @@ export const ChatFlow07Enhanced = ({
 
 	// Enhanced facial expression detection and emotional state management with multilingual support
 	const detectFacialExpression = (text, userMessage = "") => {
-		const sadWords = new RegExp([
-			// Englisch
-			'\\b(sad|depressed|down|low|unhappy|miserable|grief|sorrow|despair|heartbreak|devastated)\\b',
-			// Deutsch
-			'\\b(traurig|deprimiert|niedergeschlagen|unglücklich|elend|kummer|sorge|verzweiflung|herzschmerz|zerstört)\\b',
-			// Französisch
-			'\\b(triste|déprimé|abattu|malheureux|misérable|chagrin|tristesse|désespoir|cœur brisé|dévasté)\\b',
-			// Spanisch
-			'\\b(triste|deprimido|decaído|infeliz|miserable|pena|tristeza|desesperación|corazón roto|devastado)\\b',
-			// Italienisch
-			'\\b(triste|depresso|giù|infelice|miserabile|dolore|tristezza|disperazione|cuore spezzato|devastato)\\b'
-		].join('|'), 'i');
+		const sadWords = new RegExp(
+			[
+				// Englisch
+				"\\b(sad|depressed|down|low|unhappy|miserable|grief|sorrow|despair|heartbreak|devastated)\\b",
+				// Deutsch
+				"\\b(traurig|deprimiert|niedergeschlagen|unglücklich|elend|kummer|sorge|verzweiflung|herzschmerz|zerstört)\\b",
+				// Französisch
+				"\\b(triste|déprimé|abattu|malheureux|misérable|chagrin|tristesse|désespoir|cœur brisé|dévasté)\\b",
+				// Spanisch
+				"\\b(triste|deprimido|decaído|infeliz|miserable|pena|tristeza|desesperación|corazón roto|devastado)\\b",
+				// Italienisch
+				"\\b(triste|depresso|giù|infelice|miserabile|dolore|tristezza|disperazione|cuore spezzato|devastato)\\b",
+			].join("|"),
+			"i"
+		);
 
-		const happyWords = new RegExp([
-			// Englisch
-			'\\b(happy|joy|excited|great|wonderful|amazing|fantastic|love|excellent|brilliant|thrilled)\\b',
-			// Deutsch
-			'\\b(glücklich|freude|aufgeregt|großartig|wunderbar|erstaunlich|fantastisch|liebe|exzellent|brillant|begeistert)\\b',
-			// Französisch
-			'\\b(heureux|joie|excité|formidable|merveilleux|incroyable|fantastique|amour|excellent|brillant|ravi)\\b',
-			// Spanisch
-			'\\b(feliz|alegría|emocionado|genial|maravilloso|increíble|fantástico|amor|excelente|brillante|encantado)\\b',
-			// Italienisch
-			'\\b(felice|gioia|emozionato|fantastico|meraviglioso|incredibile|fantastico|amore|eccellente|brillante|entusiasta)\\b'
-		].join('|'), 'i');
+		const happyWords = new RegExp(
+			[
+				// Englisch
+				"\\b(happy|joy|excited|great|wonderful|amazing|fantastic|love|excellent|brilliant|thrilled)\\b",
+				// Deutsch
+				"\\b(glücklich|freude|aufgeregt|großartig|wunderbar|erstaunlich|fantastisch|liebe|exzellent|brillant|begeistert)\\b",
+				// Französisch
+				"\\b(heureux|joie|excité|formidable|merveilleux|incroyable|fantastique|amour|excellent|brillant|ravi)\\b",
+				// Spanisch
+				"\\b(feliz|alegría|emocionado|genial|maravilloso|increíble|fantástico|amor|excelente|brillante|encantado)\\b",
+				// Italienisch
+				"\\b(felice|gioia|emozionato|fantastico|meraviglioso|incredibile|fantastico|amore|eccellente|brillante|entusiasta)\\b",
+			].join("|"),
+			"i"
+		);
 
-		const anxiousWords = new RegExp([
-			// Englisch
-			'\\b(anxious|worry|worried|stress|nervous|panic|fear|scared|overwhelmed|tension)\\b',
-			// Deutsch
-			'\\b(ängstlich|sorge|besorgt|stress|nervös|panik|furcht|verängstigt|überwältigt|spannung)\\b',
-			// Französisch
-			'\\b(anxieux|inquiétude|inquiet|stress|nerveux|panique|peur|effrayé|submergé|tension)\\b',
-			// Spanisch
-			'\\b(ansioso|preocupación|preocupado|estrés|nervioso|pánico|miedo|asustado|abrumado|tensión)\\b',
-			// Italienisch
-			'\\b(ansioso|preoccupazione|preoccupato|stress|nervoso|panico|paura|spaventato|sopraffatto|tensione)\\b'
-		].join('|'), 'i');
+		const anxiousWords = new RegExp(
+			[
+				// Englisch
+				"\\b(anxious|worry|worried|stress|nervous|panic|fear|scared|overwhelmed|tension)\\b",
+				// Deutsch
+				"\\b(ängstlich|sorge|besorgt|stress|nervös|panik|furcht|verängstigt|überwältigt|spannung)\\b",
+				// Französisch
+				"\\b(anxieux|inquiétude|inquiet|stress|nerveux|panique|peur|effrayé|submergé|tension)\\b",
+				// Spanisch
+				"\\b(ansioso|preocupación|preocupado|estrés|nervioso|pánico|miedo|asustado|abrumado|tensión)\\b",
+				// Italienisch
+				"\\b(ansioso|preoccupazione|preoccupato|stress|nervoso|panico|paura|spaventato|sopraffatto|tensione)\\b",
+			].join("|"),
+			"i"
+		);
 
-		const angryWords = new RegExp([
-			// Englisch
-			'\\b(angry|mad|furious|annoyed|frustrated|irritated|rage|upset|pissed)\\b',
-			// Deutsch
-			'\\b(wütend|verrückt|wütend|genervt|frustriert|gereizt|wut|aufgebracht|sauer)\\b',
-			// Französisch
-			'\\b(en colère|fou|furieux|agacé|frustré|irrité|rage|contrarié|énervé)\\b',
-			// Spanisch
-			'\\b(enojado|loco|furioso|molesto|frustrado|irritado|rabia|disgustado|cabreado)\\b',
-			// Italienisch
-			'\\b(arrabbiato|pazzo|furioso|infastidito|frustrato|irritato|rabbia|sconvolto|incazzato)\\b'
-		].join('|'), 'i');
+		const angryWords = new RegExp(
+			[
+				// Englisch
+				"\\b(angry|mad|furious|annoyed|frustrated|irritated|rage|upset|pissed)\\b",
+				// Deutsch
+				"\\b(wütend|verrückt|wütend|genervt|frustriert|gereizt|wut|aufgebracht|sauer)\\b",
+				// Französisch
+				"\\b(en colère|fou|furieux|agacé|frustré|irrité|rage|contrarié|énervé)\\b",
+				// Spanisch
+				"\\b(enojado|loco|furioso|molesto|frustrado|irritado|rabia|disgustado|cabreado)\\b",
+				// Italienisch
+				"\\b(arrabbiato|pazzo|furioso|infastidito|frustrato|irritato|rabbia|sconvolto|incazzato)\\b",
+			].join("|"),
+			"i"
+		);
 
-		const surprisedWords = new RegExp([
-			// Englisch
-			'\\b(surprised|shocked|amazed|wow|incredible|unbelievable|astonishing)\\b',
-			// Deutsch
-			'\\b(überrascht|schockiert|erstaunt|wow|unglaublich|unglaublich|erstaunlich)\\b',
-			// Französisch
-			'\\b(surpris|choqué|étonné|wow|incroyable|incroyable|étonnant)\\b',
-			// Spanisch
-			'\\b(sorprendido|conmocionado|asombrado|wow|increíble|increíble|asombroso)\\b',
-			// Italienisch
-			'\\b(sorpreso|scioccato|stupito|wow|incredibile|incredibile|sorprendente)\\b'
-		].join('|'), 'i');
+		const surprisedWords = new RegExp(
+			[
+				// Englisch
+				"\\b(surprised|shocked|amazed|wow|incredible|unbelievable|astonishing)\\b",
+				// Deutsch
+				"\\b(überrascht|schockiert|erstaunt|wow|unglaublich|unglaublich|erstaunlich)\\b",
+				// Französisch
+				"\\b(surpris|choqué|étonné|wow|incroyable|incroyable|étonnant)\\b",
+				// Spanisch
+				"\\b(sorprendido|conmocionado|asombrado|wow|increíble|increíble|asombroso)\\b",
+				// Italienisch
+				"\\b(sorpreso|scioccato|stupito|wow|incredibile|incredibile|sorprendente)\\b",
+			].join("|"),
+			"i"
+		);
 
-		const thoughtfulWords = new RegExp([
-			// Englisch
-			'\\b(think|consider|wonder|contemplate|reflect|ponder|question|curious)\\b',
-			// Deutsch
-			'\\b(denken|überlegen|fragen|nachdenken|reflektieren|grübeln|frage|neugierig)\\b',
-			// Französisch
-			'\\b(penser|considérer|se demander|contempler|réfléchir|méditer|question|curieux)\\b',
-			// Spanisch
-			'\\b(pensar|considerar|preguntarse|contemplar|reflexionar|meditar|pregunta|curioso)\\b',
-			// Italienisch
-			'\\b(pensare|considerare|chiedersi|contemplare|riflettere|meditare|domanda|curioso)\\b'
-		].join('|'), 'i');
+		const thoughtfulWords = new RegExp(
+			[
+				// Englisch
+				"\\b(think|consider|wonder|contemplate|reflect|ponder|question|curious)\\b",
+				// Deutsch
+				"\\b(denken|überlegen|fragen|nachdenken|reflektieren|grübeln|frage|neugierig)\\b",
+				// Französisch
+				"\\b(penser|considérer|se demander|contempler|réfléchir|méditer|question|curieux)\\b",
+				// Spanisch
+				"\\b(pensar|considerar|preguntarse|contemplar|reflexionar|meditar|pregunta|curioso)\\b",
+				// Italienisch
+				"\\b(pensare|considerare|chiedersi|contemplare|riflettere|meditare|domanda|curioso)\\b",
+			].join("|"),
+			"i"
+		);
 
 		if (sadWords.test(text) || sadWords.test(userMessage)) return "sad";
 		if (happyWords.test(text) || happyWords.test(userMessage))
@@ -803,19 +679,8 @@ export const ChatFlow07Enhanced = ({
 			);
 			setFacialExpression(segmentExpression);
 
-			// Analyse des aktuellen Segments für Orb-Animation - ABER NUR WENN KEIN STARKER USER-EMOTION ZUSTAND VORHANDEN
-			const timeSinceLastUserEmotion = Date.now() - lastEmotionChange;
-			const shouldAnalyzeAIResponse = timeSinceLastUserEmotion > 10000; // Erst nach 10 Sekunden AI-Response analysieren
-			
-			if (shouldAnalyzeAIResponse) {
-				console.log("📝 AI-Response wird analysiert (genug Zeit seit User-Emotion vergangen)");
-				analyzeTextForOrb(segments[i], false);
-			} else {
-				console.log("🚫 AI-Response Analyse übersprungen - User-Emotion noch aktiv", {
-					timeSinceLastUserEmotion,
-					currentState: persistentEmotionalState
-				});
-			}
+			// Analyse des aktuellen Segments für Orb-Animation
+			analyzeTextForOrb(segments[i], false);
 
 			await typeMessage(segments[i], true);
 
@@ -836,20 +701,7 @@ export const ChatFlow07Enhanced = ({
 				currentThreadId,
 				segmentMessage
 			);
-			// Neue Nachrichten zu bestehenden hinzufügen, nicht überschreiben
-			const threadMessages = conversationManager.getThreadMessages(currentThreadId);
-			setMessages(prevMessages => {
-				// Prüfen, ob neue Nachrichten hinzugekommen sind
-				if (threadMessages.length > prevMessages.length) {
-					console.log("📨 Neue AI-Nachrichten hinzugefügt:", {
-						previous: prevMessages.length,
-						current: threadMessages.length,
-						new: threadMessages.length - prevMessages.length
-					});
-					return threadMessages; // Alle Nachrichten vom Thread verwenden
-				}
-				return prevMessages; // Bestehende Nachrichten behalten
-			});
+			setMessages(conversationManager.getThreadMessages(currentThreadId));
 			setTypingMessage("");
 
 			if (i < segments.length - 1) {
@@ -927,20 +779,7 @@ export const ChatFlow07Enhanced = ({
 				blobUpdate.analysis
 			);
 
-			// Neue User-Nachrichten zu bestehenden hinzufügen, nicht überschreiben
-			const threadMessages = conversationManager.getThreadMessages(currentThreadId);
-			setMessages(prevMessages => {
-				// Prüfen, ob neue Nachrichten hinzugekommen sind
-				if (threadMessages.length > prevMessages.length) {
-					console.log("📨 Neue User-Nachrichten hinzugefügt:", {
-						previous: prevMessages.length,
-						current: threadMessages.length,
-						new: threadMessages.length - prevMessages.length
-					});
-					return threadMessages; // Alle Nachrichten vom Thread verwenden
-				}
-				return prevMessages; // Bestehende Nachrichten behalten
-			});
+			setMessages(conversationManager.getThreadMessages(currentThreadId));
 			setInputText("");
 			setIsLoading(true);
 			setShowKeyboard(false);
@@ -1001,18 +840,9 @@ export const ChatFlow07Enhanced = ({
 					currentThreadId,
 					errorMessage
 				);
-				// Auch bei Fehlern: Neue Nachrichten zu bestehenden hinzufügen
-				const threadMessages = conversationManager.getThreadMessages(currentThreadId);
-				setMessages(prevMessages => {
-					if (threadMessages.length > prevMessages.length) {
-						console.log("📨 Neue Fehler-Nachrichten hinzugefügt:", {
-							previous: prevMessages.length,
-							current: threadMessages.length
-						});
-						return threadMessages;
-					}
-					return prevMessages;
-				});
+				setMessages(
+					conversationManager.getThreadMessages(currentThreadId)
+				);
 				setTypingMessage("");
 				setShowKeyboard(true);
 			}
@@ -1024,14 +854,11 @@ export const ChatFlow07Enhanced = ({
 		setInputText(newValue);
 
 		// Live-Analyse während des Tippens für sofortige Orb-Reaktion
-		if (newValue.trim().length > 2) {
-			// Analyse ab 3 Zeichen für frühere Erkennung von "I'm sad"
-			const result = analyzeTextForOrb(newValue.trim(), true);
-			if (result) {
-				console.log("🎯 Live-Analyse Ergebnis:", result);
-			}
+		if (newValue.trim().length > 3) {
+			// Analyse erst ab 4 Zeichen
+			analyzeTextForOrb(newValue.trim(), true);
 		}
-		// Emotionaler Zustand bleibt persistent - kein automatischer Reset
+		// Kein Reset mehr wenn Text gelöscht wird - emotionaler Zustand bleibt persistent
 	};
 
 	const handleKeyPress = (e) => {
@@ -1160,48 +987,6 @@ export const ChatFlow07Enhanced = ({
 				)}
 				<div ref={messagesEndRef} />
 			</div>
-
-			{/* Neue Nachrichten Indikator */}
-			{showNewMessagesIndicator && (
-				<div
-					style={{
-						position: "absolute",
-						bottom: showKeyboard ? "280px" : "80px",
-						right: "20px",
-						background: "rgba(0, 122, 255, 0.9)",
-						color: "white",
-						padding: "8px 16px",
-						borderRadius: "20px",
-						fontSize: "14px",
-						fontWeight: "500",
-						cursor: "pointer",
-						zIndex: 1000,
-						boxShadow: "0 4px 12px rgba(0, 122, 255, 0.3)",
-						backdropFilter: "blur(10px)",
-						transition: "all 0.3s ease",
-						display: "flex",
-						alignItems: "center",
-						gap: "8px"
-					}}
-					onClick={() => {
-						scrollToBottom();
-						setShowNewMessagesIndicator(false);
-					}}
-				>
-					<span>↓</span>
-					<span>
-						{currentLanguage === "de"
-							? "Neue Nachrichten"
-							: currentLanguage === "fr"
-							? "Nouveaux messages"
-							: currentLanguage === "es"
-							? "Nuevos mensajes"
-							: currentLanguage === "it"
-							? "Nuovi messaggi"
-							: "New messages"}
-					</span>
-				</div>
-			)}
 
 			<div className="frame-1">
 				<div className="ellipse-52"></div>

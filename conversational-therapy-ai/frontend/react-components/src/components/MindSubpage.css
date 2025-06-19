@@ -1,0 +1,401 @@
+/* Mind Subpage Styles - Based on BodySubpage but with mind-specific theming */
+
+.mind-subpage {
+  background: linear-gradient(180deg, #f1f8fb 0%, #e8f4f8 100%); /* Cool blue tones for mind */
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+  z-index: 10;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+.mind-subpage .frame-87 {
+  background: linear-gradient(
+    180deg,
+    rgba(241, 248, 251, 0.9) 37.499675154685974%,
+    rgba(241, 248, 251, 0) 100%
+  );
+  padding: 10px 16px 24px 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 393px;
+  height: 130px;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+}
+
+.mind-subpage .frame-77 {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 36px;
+  position: relative;
+  border-radius: 20px;
+  transition: background-color 0.2s ease;
+}
+
+.mind-subpage .frame-77:hover {
+  background-color: rgba(74, 144, 226, 0.1);
+}
+
+.mind-subpage .mind-readiness {
+  color: #2c3e50;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.mind-subpage .frame-91 {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: calc(100% - 40px);
+  max-width: 354px;
+  position: relative;
+  margin: 140px 20px 120px 20px;
+  padding-bottom: 60px;
+}
+
+/* Mental Load Section */
+.mind-subpage .frame-80 {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  width: 354px;
+  position: relative;
+}
+
+.mind-subpage .mental-load {
+  color: #2c3e50;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.mind-subpage .mental-bar {
+  flex-shrink: 0;
+  width: 314.55px;
+  height: 25.32px;
+  position: relative;
+}
+
+.mind-subpage .bar-empty {
+  background: #ffffff;
+  border-radius: 10000px;
+  width: 314.55px;
+  height: 25.32px;
+  position: relative;
+}
+
+.mind-subpage .bar-fill {
+  background: linear-gradient(
+    90deg,
+    rgba(116, 185, 255, 1) 0%,
+    rgba(74, 144, 226, 1) 100%
+  );
+  border-radius: 10000px;
+  width: 258px; /* 82% filled */
+  height: 25.32px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.mind-subpage .percent-82 {
+  color: #4a90e2;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Focus Enhancement Section */
+.mind-subpage .frame-83 {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  width: 354px;
+  position: relative;
+}
+
+.mind-subpage .focus-moment {
+  color: #2c3e50;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.mind-subpage .minute-4-7-8-focus {
+  color: #4a90e2;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.mind-subpage .focus-graph {
+  flex-shrink: 0;
+  width: 320px;
+  height: 87.15px;
+  position: relative;
+}
+
+.mind-subpage .timing-guidelines {
+  width: 319.67px;
+  height: 70.06px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+}
+
+.mind-subpage .waveform-graph {
+  width: 319px;
+  height: 82px;
+  position: absolute;
+  left: 1px;
+  top: 4.67px;
+  overflow: visible;
+}
+
+.mind-subpage .label-inhale,
+.mind-subpage .label-hold,
+.mind-subpage .label-exhale {
+  color: #6b7280;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  position: absolute;
+  top: 73.15px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.mind-subpage .label-inhale {
+  left: 1.67px;
+}
+
+.mind-subpage .label-hold {
+  left: 107px;
+}
+
+.mind-subpage .label-exhale {
+  left: 213.67px;
+}
+
+/* Cognitive Insight Section */
+.mind-subpage .frame-85 {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  width: 354px;
+  position: relative;
+}
+
+.mind-subpage .cognitive-insight {
+  color: #2c3e50;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.mind-subpage .concentration-patterns {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.mind-subpage .concentration-info,
+.mind-subpage .cognitive-load-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(116, 185, 255, 0.1);
+  border-radius: 12px;
+}
+
+.mind-subpage .focus-span,
+.mind-subpage .cognitive-load {
+  color: #4a90e2;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.mind-subpage .minutes-12,
+.mind-subpage .task-switching {
+  color: #2c3e50;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.mind-subpage .mental-clarity-score {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 16px;
+  background: rgba(74, 144, 226, 0.15);
+  border-radius: 16px;
+}
+
+.mind-subpage .clarity-label {
+  color: #4a90e2;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.mind-subpage .clarity-percentage {
+  color: #2c3e50;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* Mind Notes Section */
+.mind-subpage .frame-86 {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  width: 354px;
+  position: relative;
+}
+
+.mind-subpage .leave-a-mind-note {
+  color: #2c3e50;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.mind-subpage .voice-input-mental {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  width: 354px;
+  height: 48px;
+  position: relative;
+  border-radius: 15px;
+  background: rgba(116, 185, 255, 0.1);
+  padding: 12px 16px;
+}
+
+.mind-subpage .pencil-icon,
+.mind-subpage .voice-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  position: relative;
+  overflow: visible;
+}
+
+.mind-subpage .mental-thoughts {
+  color: #6b7280;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .mind-subpage .frame-91 {
+    margin: 140px 16px 120px 16px;
+    width: calc(100% - 32px);
+  }
+  
+  .mind-subpage .frame-80,
+  .mind-subpage .frame-83,
+  .mind-subpage .frame-85,
+  .mind-subpage .frame-86 {
+    width: 100%;
+  }
+  
+  .mind-subpage .mental-bar,
+  .mind-subpage .focus-graph {
+    width: 100%;
+    max-width: 320px;
+  }
+}

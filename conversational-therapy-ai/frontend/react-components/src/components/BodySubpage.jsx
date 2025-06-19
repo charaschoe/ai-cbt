@@ -1,4 +1,3 @@
-import React from "react";
 import "./BodySubpage.css";
 
 export const BodySubpage = ({ className, onBackClick, ...props }) => {

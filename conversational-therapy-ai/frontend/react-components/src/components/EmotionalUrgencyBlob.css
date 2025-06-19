@@ -32,6 +32,25 @@
 	}
 }
 
+/* Organic morphing animation for natural, fluid shapes */
+@keyframes organicMorph {
+  0% {
+    border-radius: 45% 55% 50% 60%;
+  }
+  25% {
+    border-radius: 60% 40% 55% 45%;
+  }
+  50% {
+    border-radius: 40% 60% 45% 55%;
+  }
+  75% {
+    border-radius: 55% 45% 60% 40%;
+  }
+  100% {
+    border-radius: 45% 55% 50% 60%;
+  }
+}
+
 /* Emotionstyp-spezifische Stile */
 .emotional-urgency-blob-container.anxiety {
 	filter: drop-shadow(0 0 20px rgba(74, 144, 226, 0.3));

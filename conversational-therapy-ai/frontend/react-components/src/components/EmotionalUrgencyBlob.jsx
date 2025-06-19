@@ -247,8 +247,9 @@ const EmotionalUrgencyBlob = ({
 						(properties.height * pulseFactor) / 2
 					}px)`,
 					background: getGradientBackground(),
-					borderRadius: "50%",
-					transition: "all 0.1s ease-out",
+					borderRadius: "45% 55% 50% 60%",
+					transition: "all 0.3s ease-out",
+					animation: "organicMorph 15s linear infinite",
 					opacity: 0.8 + 0.2 * currentIntensity,
 					filter: `blur(${Math.max(0, 2 - currentIntensity)}px)`,
 				}}
@@ -269,8 +270,9 @@ const EmotionalUrgencyBlob = ({
 							(properties.height * pulseFactor * 1.2) / 2
 						}px)`,
 						background: `radial-gradient(50% 50% at 50% 50%, transparent 0%, ${colors.primary}40 30%, transparent 70%)`,
-						borderRadius: "50%",
+						borderRadius: "40% 60% 55% 45%",
 						opacity: 0.3,
+						animation: "organicMorph 18s linear infinite reverse",
 						animation: `urgency-pulse ${
 							2 / currentIntensity
 						}s ease-in-out infinite alternate`,
@@ -295,9 +297,10 @@ const EmotionalUrgencyBlob = ({
 							top: `calc(50% - ${
 								(properties.height * pulseFactor * 1.5) / 2
 							}px)`,
-							border: `3px solid ${colors.primary}`,
-							borderRadius: "50%",
+							boxShadow: `0 0 15px ${colors.primary}80`,
+							borderRadius: "55% 45% 40% 60%",
 							opacity: 0.6,
+							animation: "organicMorph 12s linear infinite",
 							animation:
 								"critical-warning 0.5s ease-in-out infinite alternate",
 						}}
@@ -316,9 +319,10 @@ const EmotionalUrgencyBlob = ({
 							top: `calc(50% - ${
 								(properties.height * pulseFactor * 0.7) / 2
 							}px)`,
-							border: `2px solid ${colors.primary}`,
-							borderRadius: "50%",
+							boxShadow: `0 0 10px ${colors.primary}60`,
+							borderRadius: "60% 40% 45% 55%",
 							opacity: 0.4,
+							animation: "organicMorph 20s linear infinite reverse",
 							animation:
 								"critical-warning 0.3s ease-in-out infinite alternate reverse",
 						}}

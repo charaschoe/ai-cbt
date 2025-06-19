@@ -287,7 +287,9 @@
 }
 
 .chat-flow-07.enhanced.keyboard-hidden .chat-messages-container {
-	height: calc(100vh - 240px); /* Angepasste Höhe wenn Keyboard versteckt ist */
+	height: calc(
+		100vh - 240px
+	); /* Angepasste Höhe wenn Keyboard versteckt ist */
 	top: 240px;
 }
 
@@ -322,7 +324,7 @@
 		top: 240px; /* Below orb on smaller screens */
 		height: calc(100vh - 420px); /* Less space reserved */
 	}
-	
+
 	.chat-flow-07.enhanced .chat-messages-container {
 		top: 240px;
 		height: calc(100vh - 420px);

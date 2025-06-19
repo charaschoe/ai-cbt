@@ -58,7 +58,7 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  border: 2px solid rgba(0, 255, 161, 0.4);
+  box-shadow: 0 0 20px rgba(0, 255, 161, 0.4);
   border-radius: 50%;
   animation: pulse-ring 2s ease-in-out infinite;
 }

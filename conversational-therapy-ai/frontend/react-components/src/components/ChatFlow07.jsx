@@ -8,6 +8,7 @@ import EnhancedMessageBubble from "./EnhancedMessageBubble";
 import chatService from "../services/chatService";
 import blobManager from "../services/blobManager";
 import conversationManager from "../services/conversationManager";
+import emotionStateManager from "../services/emotionStateManager";
 
 export const ChatFlow07 = ({
 	className,
@@ -24,6 +25,9 @@ export const ChatFlow07 = ({
 	const [patterns, setPatterns] = React.useState([]);
 	const [messages, setMessages] = React.useState([]);
 	const [currentThreadId, setCurrentThreadId] = React.useState(null);
+	// CRITICAL FIX: Message backup and recovery system
+	const messageBackupRef = React.useRef([]);
+	const lastKnownThreadIdRef = React.useRef(null);
 	const [typingMessage, setTypingMessage] = React.useState("");
 	const [isTypingAnimation, setIsTypingAnimation] = React.useState(false);
 	const [showKeyboard, setShowKeyboard] = React.useState(true);
@@ -81,6 +85,39 @@ export const ChatFlow07 = ({
 			});
 		}
 	};
+
+	// CRITICAL FIX: Safe message update function with backup and validation
+	const updateMessagesWithBackup = React.useCallback((threadId) => {
+		try {
+			const newMessages = conversationManager.getThreadMessages(threadId);
+			
+			// Validate messages before updating
+			if (!Array.isArray(newMessages)) {
+				console.error('🚨 Invalid messages received, using backup');
+				return;
+			}
+			
+			// Backup current state before update
+			messageBackupRef.current = messages;
+			lastKnownThreadIdRef.current = currentThreadId;
+			
+			// Log the update for debugging
+			console.log(`📝 Updating messages for thread ${threadId}:`, {
+				previousCount: messages.length,
+				newCount: newMessages.length,
+				threadId: threadId
+			});
+			
+			setMessages(newMessages);
+		} catch (error) {
+			console.error('🚨 Error updating messages:', error);
+			// Restore from backup if possible
+			if (messageBackupRef.current.length > 0) {
+				console.log('🔄 Restoring from backup');
+				setMessages(messageBackupRef.current);
+			}
+		}
+	}, [messages, currentThreadId]);
 
 	// Enhanced scroll with old messages detection
 	const handleScroll = () => {
@@ -142,7 +179,7 @@ export const ChatFlow07 = ({
 			});
 
 			setCurrentThreadId(thread.id);
-			setMessages(conversationManager.getThreadMessages(thread.id));
+			updateMessagesWithBackup(thread.id);
 		};
 
 		initializeChat();
@@ -365,8 +402,8 @@ export const ChatFlow07 = ({
 				segmentMessage
 			);
 
-			// Update messages from conversation manager
-			setMessages(conversationManager.getThreadMessages(currentThreadId));
+			// CRITICAL FIX: Use safe message update instead of direct setMessages
+			updateMessagesWithBackup(currentThreadId);
 			setTypingMessage("");
 
 			// Dramatic pause between segments with varying duration
@@ -442,8 +479,8 @@ export const ChatFlow07 = ({
 				blobUpdate.analysis
 			);
 
-			// Update messages from conversation manager
-			setMessages(conversationManager.getThreadMessages(currentThreadId));
+			// CRITICAL FIX: Use safe message update instead of direct setMessages
+			updateMessagesWithBackup(currentThreadId);
 			setInputText("");
 			setIsLoading(true);
 			setShowKeyboard(false); // Hide keyboard when waiting for AI response
@@ -513,10 +550,8 @@ export const ChatFlow07 = ({
 					errorMessage
 				);
 
-				// Update messages from conversation manager
-				setMessages(
-					conversationManager.getThreadMessages(currentThreadId)
-				);
+				// CRITICAL FIX: Use safe message update instead of direct setMessages
+				updateMessagesWithBackup(currentThreadId);
 				setTypingMessage("");
 				setShowKeyboard(true); // Show keyboard again when ready for user input
 			}

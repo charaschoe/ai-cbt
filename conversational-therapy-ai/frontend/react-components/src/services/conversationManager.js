@@ -334,28 +334,37 @@ class ConversationManager {
   }
 
   /**
-   * Performs cleanup of old data
+   * Performs cleanup of old data - ENHANCED: Protects active threads and messages
    */
   performCleanup() {
-    // Cleanup message history
-    if (this.messageHistory.length > this.maxHistoryLength) {
+    // CRITICAL FIX: Never cleanup message history if we have active threads
+    if (this.messageHistory.length > this.maxHistoryLength && this.threads.size === 0) {
       const removed = this.messageHistory.splice(0, this.messageHistory.length - this.maxHistoryLength);
-      console.log(`🧹 Cleaned up ${removed.length} old messages`);
+      console.log(`🧹 Cleaned up ${removed.length} old messages (no active threads)`);
     }
 
-    // Cleanup inactive threads older than 1 hour
-    const oneHourAgo = Date.now() - (60 * 60 * 1000);
+    // CRITICAL FIX: Much more conservative thread cleanup
+    const sixHoursAgo = Date.now() - (6 * 60 * 60 * 1000); // 6 hours instead of 1
     let cleanedThreads = 0;
 
     for (const [threadId, thread] of this.threads) {
-      if (!thread.isActive && thread.lastActivity < oneHourAgo) {
+      const isCurrentThread = threadId === this.currentThread;
+      const hasRecentActivity = (Date.now() - thread.lastActivity) < (30 * 60 * 1000); // 30 min protection
+      const hasMessages = thread.messages && thread.messages.length > 0;
+      
+      // NEVER delete current thread, recent activity, or threads with messages
+      if (!thread.isActive &&
+          !isCurrentThread &&
+          !hasRecentActivity &&
+          !hasMessages &&
+          thread.lastActivity < sixHoursAgo) {
         this.threads.delete(threadId);
         cleanedThreads++;
       }
     }
 
     if (cleanedThreads > 0) {
-      console.log(`🧹 Cleaned up ${cleanedThreads} inactive threads`);
+      console.log(`🧹 Cleaned up ${cleanedThreads} inactive threads (protected current and recent)`);
     }
   }
 

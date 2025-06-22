@@ -7,6 +7,7 @@ import WidgetsLeft from "./WidgetsLeft";
 import { ChatFlow07 } from "./ChatFlow07";
 import Screen2V4 from "./Screen2V4";
 import BodySubpage from "./BodySubpage";
+import MindSubpage from "./MindSubpage";
 import chatService from "../services/chatService";
 
 const SwipeContainer = ({ onDebugUpdate }) => {
@@ -16,7 +17,7 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 	// Text-Enhanced ist jetzt standardmäßig aktiv, außer explizit deaktiviert
 	const useTextEnhanced = urlParams.get("text-enhanced") !== "false";
 
-	const [currentScreen, setCurrentScreen] = useState("chat"); // 'widgets', 'chat', 'emotional-tasks', 'chatflow07', or 'body'
+	const [currentScreen, setCurrentScreen] = useState("chat"); // 'widgets', 'chat', 'emotional-tasks', 'chatflow07', 'body', or 'mind'
 	const [aiResponse, setAiResponse] = useState("");
 
 	// Debug data from child components - removed local state, using external handler
@@ -63,8 +64,8 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 		const isUpSwipe = distanceY > minSwipeDistance;
 		const isDownSwipe = distanceY < -minSwipeDistance;
 
-		// DISABLED: No swipe navigation on body page (only Back-Button works)
-		if (currentScreen === "body") {
+		// DISABLED: No swipe navigation on body and mind pages (only Back-Button works)
+		if (currentScreen === "body" || currentScreen === "mind") {
 			return;
 		}
 
@@ -140,6 +141,7 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 	const showWidgets = () => setCurrentScreen("widgets");
 	const showChat = () => setCurrentScreen("chat");
 	const showBodySubpage = () => setCurrentScreen("body");
+	const showMindSubpage = () => setCurrentScreen("mind");
 	const backToInsights = () => setCurrentScreen("emotional-tasks");
 
 	// Mouse event handlers for desktop testing
@@ -178,8 +180,8 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 		const isUpSwipe = distanceY > minSwipeDistance;
 		const isDownSwipe = distanceY < -minSwipeDistance;
 
-		// DISABLED: No swipe navigation on body page (only Back-Button works)
-		if (currentScreen === "body") {
+		// DISABLED: No swipe navigation on body and mind pages (only Back-Button works)
+		if (currentScreen === "body" || currentScreen === "mind") {
 			setIsDragging(false);
 			return;
 		}
@@ -398,15 +400,15 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 			<div
 				className="simple-container"
 				ref={containerRef}
-				onTouchStart={currentScreen === "body" ? undefined : onTouchStart}
-				onTouchMove={currentScreen === "body" ? undefined : onTouchMove}
-				onTouchEnd={currentScreen === "body" ? undefined : onTouchEnd}
-				onMouseDown={currentScreen === "body" ? undefined : onMouseDown}
-				onMouseMove={currentScreen === "body" ? undefined : onMouseMove}
-				onMouseUp={currentScreen === "body" ? undefined : onMouseUp}
-				onMouseLeave={currentScreen === "body" ? undefined : onMouseUp}
+				onTouchStart={currentScreen === "body" || currentScreen === "mind" ? undefined : onTouchStart}
+				onTouchMove={currentScreen === "body" || currentScreen === "mind" ? undefined : onTouchMove}
+				onTouchEnd={currentScreen === "body" || currentScreen === "mind" ? undefined : onTouchEnd}
+				onMouseDown={currentScreen === "body" || currentScreen === "mind" ? undefined : onMouseDown}
+				onMouseMove={currentScreen === "body" || currentScreen === "mind" ? undefined : onMouseMove}
+				onMouseUp={currentScreen === "body" || currentScreen === "mind" ? undefined : onMouseUp}
+				onMouseLeave={currentScreen === "body" || currentScreen === "mind" ? undefined : onMouseUp}
 				style={{
-					cursor: currentScreen === "body" ? "default" : (isDragging ? "grabbing" : "grab")
+					cursor: currentScreen === "body" || currentScreen === "mind" ? "default" : (isDragging ? "grabbing" : "grab")
 				}}
 			>
 				{currentScreen === "widgets" && (
@@ -446,7 +448,7 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 
 				{currentScreen === "emotional-tasks" && (
 					<div className="screen active">
-						<Screen2V4 onLowEnergyClick={showBodySubpage} />
+						<Screen2V4 onBodyPageClick={showBodySubpage} onMindPageClick={showMindSubpage} />
 					</div>
 				)}
 
@@ -455,6 +457,13 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 						<BodySubpage onBackClick={backToInsights} />
 					</div>
 				)}
+
+				{currentScreen === "mind" && (
+					<div className="screen active">
+						<MindSubpage onBackClick={backToInsights} />
+					</div>
+				)}
+
 			</div>
 		</div>
 	);

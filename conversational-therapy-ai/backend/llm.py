@@ -12,7 +12,7 @@ def chat_with_llm(messages: list, api_key: str) -> str:
         "Content-Type": "application/json",
     }
     payload = {
-        "model": "Qwen/Qwen3-32B",
+        "model": "meta-llama/Llama-3.2-3B-Instruct",
         "messages": messages,
         "stream": False,
     }

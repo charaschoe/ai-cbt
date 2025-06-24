@@ -86,38 +86,50 @@ export const ChatFlow07 = ({
 		}
 	};
 
-	// CRITICAL FIX: Safe message update function with backup and validation
-	const updateMessagesWithBackup = React.useCallback((threadId) => {
-		try {
-			const newMessages = conversationManager.getThreadMessages(threadId);
-			
-			// Validate messages before updating
-			if (!Array.isArray(newMessages)) {
-				console.error('🚨 Invalid messages received, using backup');
-				return;
+	// CRITICAL FIX: Safe message update function with enhanced validation and logging
+	const updateMessagesWithBackup = React.useCallback(
+		(threadId) => {
+			try {
+				const newMessages =
+					conversationManager.getThreadMessages(threadId);
+
+				// Validate messages before updating
+				if (!Array.isArray(newMessages)) {
+					console.error("🚨 Invalid messages received, using backup");
+					return;
+				}
+
+				// Ensure threadId matches the current thread
+				if (threadId !== currentThreadId) {
+					console.warn(
+						`⚠️ Thread ID mismatch: expected ${currentThreadId}, got ${threadId}`
+					);
+					return;
+				}
+
+				// Backup current state before update
+				messageBackupRef.current = messages;
+				lastKnownThreadIdRef.current = currentThreadId;
+
+				// Log the update for debugging
+				console.log(`📝 Updating messages for thread ${threadId}:`, {
+					previousCount: messages.length,
+					newCount: newMessages.length,
+					threadId: threadId,
+				});
+
+				setMessages(newMessages);
+			} catch (error) {
+				console.error("🚨 Error updating messages:", error);
+				// Restore from backup if possible
+				if (messageBackupRef.current.length > 0) {
+					console.log("🔄 Restoring from backup");
+					setMessages(messageBackupRef.current);
+				}
 			}
-			
-			// Backup current state before update
-			messageBackupRef.current = messages;
-			lastKnownThreadIdRef.current = currentThreadId;
-			
-			// Log the update for debugging
-			console.log(`📝 Updating messages for thread ${threadId}:`, {
-				previousCount: messages.length,
-				newCount: newMessages.length,
-				threadId: threadId
-			});
-			
-			setMessages(newMessages);
-		} catch (error) {
-			console.error('🚨 Error updating messages:', error);
-			// Restore from backup if possible
-			if (messageBackupRef.current.length > 0) {
-				console.log('🔄 Restoring from backup');
-				setMessages(messageBackupRef.current);
-			}
-		}
-	}, [messages, currentThreadId]);
+		},
+		[messages, currentThreadId]
+	);
 
 	// Enhanced scroll with old messages detection
 	const handleScroll = () => {
@@ -478,6 +490,15 @@ export const ChatFlow07 = ({
 				userMessageObj,
 				blobUpdate.analysis
 			);
+
+			// Validate if the message was successfully added
+			if (!addedUserMessage) {
+				console.error("🚨 Failed to add user message to thread.");
+				return;
+			}
+
+			// Log the added message for debugging
+			console.log("📝 User message added:", addedUserMessage);
 
 			// CRITICAL FIX: Use safe message update instead of direct setMessages
 			updateMessagesWithBackup(currentThreadId);

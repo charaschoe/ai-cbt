@@ -5,6 +5,7 @@
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import animationStateManager from '../services/animationStateManager.js';
+import emotionStateManager from '../services/emotionStateManager.js';
 import performanceManager from '../services/performanceManager.js';
 import steinerColorSystem from '../services/steinerColorSystem.js';
 import './UniversalOrbAnimation.css';
@@ -62,6 +63,21 @@ const UniversalOrbAnimation = ({
   // Internal state
   const [isInitialized, setIsInitialized] = useState(false);
   const [currentColors, setCurrentColors] = useState(null);
+  const [currentEmotion, setCurrentEmotion] = useState("neutral");
+  const [animation, setAnimation] = useState("gentle-breath");
+
+  // Subscribe to EmotionStateManager updates
+  useEffect(() => {
+    const unsubscribe = emotionStateManager.subscribe((state) => {
+      setCurrentEmotion(state.emotion);
+      setCurrentColors(state.colors);
+      setAnimation(state.animation);
+    });
+
+    return () => {
+      unsubscribe(); // Cleanup subscription on unmount
+    };
+  }, []);
   
   /**
    * Komponente initialisieren
@@ -129,11 +145,7 @@ const UniversalOrbAnimation = ({
    */
   const handleStateChange = useCallback((newState, previousState) => {
     // Farben aktualisieren
-    const colors = steinerColorSystem.getColorForState(
-      newState.emotionalState,
-      newState.intensity,
-      getTherapeuticContext()
-    );
+    const colors = emotionStateManager.getEmotionColor(newState.emotionalState);
     setCurrentColors(colors);
     
     // External Callback

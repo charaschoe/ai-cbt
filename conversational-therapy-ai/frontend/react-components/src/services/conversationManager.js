@@ -130,6 +130,13 @@ class ConversationManager {
     // Add to global message history
     this.messageHistory.push(enhancedMessage);
 
+    // Validate message persistence
+    const isPersisted = this.messageHistory.includes(enhancedMessage);
+    if (!isPersisted) {
+      console.error(`🚨 Message persistence failed for thread ${threadId}`);
+      return null;
+    }
+
     // Add emotional analysis to journey if provided
     if (emotionalAnalysis) {
       thread.emotionalJourney.push({

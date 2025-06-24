@@ -8,6 +8,7 @@ import { ChatFlow07 } from "./ChatFlow07";
 import Screen2V4 from "./Screen2V4";
 import BodySubpage from "./BodySubpage";
 import MindSubpage from "./MindSubpage";
+import ConnectionSubpage from "./ConnectionSubpage";
 import chatService from "../services/chatService";
 
 const SwipeContainer = ({ onDebugUpdate }) => {
@@ -17,7 +18,7 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 	// Text-Enhanced ist jetzt standardmäßig aktiv, außer explizit deaktiviert
 	const useTextEnhanced = urlParams.get("text-enhanced") !== "false";
 
-	const [currentScreen, setCurrentScreen] = useState("chat"); // 'widgets', 'chat', 'emotional-tasks', 'chatflow07', 'body', or 'mind'
+	const [currentScreen, setCurrentScreen] = useState("chat"); // 'widgets', 'chat', 'emotional-tasks', 'chatflow07', 'body', 'mind', or 'connection'
 	const [aiResponse, setAiResponse] = useState("");
 
 	// Debug data from child components - removed local state, using external handler
@@ -64,8 +65,8 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 		const isUpSwipe = distanceY > minSwipeDistance;
 		const isDownSwipe = distanceY < -minSwipeDistance;
 
-		// DISABLED: No swipe navigation on body and mind pages (only Back-Button works)
-		if (currentScreen === "body" || currentScreen === "mind") {
+		// DISABLED: No swipe navigation on body, mind, and connection pages (only Back-Button works)
+		if (currentScreen === "body" || currentScreen === "mind" || currentScreen === "connection") {
 			return;
 		}
 
@@ -142,6 +143,7 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 	const showChat = () => setCurrentScreen("chat");
 	const showBodySubpage = () => setCurrentScreen("body");
 	const showMindSubpage = () => setCurrentScreen("mind");
+	const showConnectionSubpage = () => setCurrentScreen("connection");
 	const backToInsights = () => setCurrentScreen("emotional-tasks");
 
 	// Mouse event handlers for desktop testing
@@ -180,8 +182,8 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 		const isUpSwipe = distanceY > minSwipeDistance;
 		const isDownSwipe = distanceY < -minSwipeDistance;
 
-		// DISABLED: No swipe navigation on body and mind pages (only Back-Button works)
-		if (currentScreen === "body" || currentScreen === "mind") {
+		// DISABLED: No swipe navigation on body, mind, and connection pages (only Back-Button works)
+		if (currentScreen === "body" || currentScreen === "mind" || currentScreen === "connection") {
 			setIsDragging(false);
 			return;
 		}
@@ -400,15 +402,15 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 			<div
 				className="simple-container"
 				ref={containerRef}
-				onTouchStart={currentScreen === "body" || currentScreen === "mind" ? undefined : onTouchStart}
-				onTouchMove={currentScreen === "body" || currentScreen === "mind" ? undefined : onTouchMove}
-				onTouchEnd={currentScreen === "body" || currentScreen === "mind" ? undefined : onTouchEnd}
-				onMouseDown={currentScreen === "body" || currentScreen === "mind" ? undefined : onMouseDown}
-				onMouseMove={currentScreen === "body" || currentScreen === "mind" ? undefined : onMouseMove}
-				onMouseUp={currentScreen === "body" || currentScreen === "mind" ? undefined : onMouseUp}
-				onMouseLeave={currentScreen === "body" || currentScreen === "mind" ? undefined : onMouseUp}
+				onTouchStart={currentScreen === "body" || currentScreen === "mind" || currentScreen === "connection" ? undefined : onTouchStart}
+				onTouchMove={currentScreen === "body" || currentScreen === "mind" || currentScreen === "connection" ? undefined : onTouchMove}
+				onTouchEnd={currentScreen === "body" || currentScreen === "mind" || currentScreen === "connection" ? undefined : onTouchEnd}
+				onMouseDown={currentScreen === "body" || currentScreen === "mind" || currentScreen === "connection" ? undefined : onMouseDown}
+				onMouseMove={currentScreen === "body" || currentScreen === "mind" || currentScreen === "connection" ? undefined : onMouseMove}
+				onMouseUp={currentScreen === "body" || currentScreen === "mind" || currentScreen === "connection" ? undefined : onMouseUp}
+				onMouseLeave={currentScreen === "body" || currentScreen === "mind" || currentScreen === "connection" ? undefined : onMouseUp}
 				style={{
-					cursor: currentScreen === "body" || currentScreen === "mind" ? "default" : (isDragging ? "grabbing" : "grab")
+					cursor: currentScreen === "body" || currentScreen === "mind" || currentScreen === "connection" ? "default" : (isDragging ? "grabbing" : "grab")
 				}}
 			>
 				{currentScreen === "widgets" && (
@@ -448,7 +450,11 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 
 				{currentScreen === "emotional-tasks" && (
 					<div className="screen active">
-						<Screen2V4 onBodyPageClick={showBodySubpage} onMindPageClick={showMindSubpage} />
+						<Screen2V4
+							onBodyPageClick={showBodySubpage}
+							onMindPageClick={showMindSubpage}
+							onConnectionPageClick={showConnectionSubpage}
+						/>
 					</div>
 				)}
 
@@ -461,6 +467,12 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 				{currentScreen === "mind" && (
 					<div className="screen active">
 						<MindSubpage onBackClick={backToInsights} />
+					</div>
+				)}
+
+				{currentScreen === "connection" && (
+					<div className="screen active">
+						<ConnectionSubpage onBackClick={backToInsights} />
 					</div>
 				)}
 

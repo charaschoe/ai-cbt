@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { OrbsV3Property1Variant4 } from "./OrbsV3Property1Variant4";
 import EmotionalUrgencyBlob from "./EmotionalUrgencyBlob";
+import layoutCoordinator from "../services/LayoutCoordinator";
 import "./OrbContainer.css";
 
 const OrbContainer = ({
@@ -15,6 +16,16 @@ const OrbContainer = ({
 	const [showEmotionalBlob, setShowEmotionalBlob] = useState(false);
 	const [currentVisualState, setCurrentVisualState] = useState(visualState);
 	const orbRef = useRef(null);
+
+	// CRITICAL FIX: Enhanced Transition State Management
+	const [orbTransition, setOrbTransition] = useState({
+		isTransitioning: false,
+		direction: null, // 'to-emotional' | 'to-standard'
+		duration: 500
+	});
+
+	// CRITICAL FIX: Layout Coordinator Integration
+	const coordinatorRef = useRef(null);
 
 	// Bestimme den dominantesten Blob (höchste Priorität)
 	const dominantBlob =
@@ -44,21 +55,103 @@ const OrbContainer = ({
 		large: "350px",
 	};
 
+	// CRITICAL FIX: Enhanced Coordinated Smooth Transitions
 	useEffect(() => {
 		const shouldShowEmotional = dominantBlob && dominantBlob.isVisible;
 
 		if (shouldShowEmotional !== showEmotionalBlob) {
-			setIsTransitioning(true);
-
-			// Smooth transition timing from chat_perfect
-			const timer = setTimeout(() => {
-				setShowEmotionalBlob(shouldShowEmotional);
-				setIsTransitioning(false);
-			}, 200); // Extended for smoother chat_perfect transitions
-
-			return () => clearTimeout(timer);
+			handleCoordinatedTransition(shouldShowEmotional);
 		}
 	}, [dominantBlob, showEmotionalBlob]);
+
+	// CRITICAL FIX: Layout Coordinator Registration
+	useEffect(() => {
+		// Register with Layout Coordinator
+		const orbId = `orb-container-${Date.now()}`;
+		coordinatorRef.current = layoutCoordinator.registerComponent(
+			orbId,
+			'orb',
+			{
+				priority: 3,
+				canInterrupt: true,
+				maxDuration: 500
+			}
+		);
+
+		console.log(`[OrbContainer] Registered with Layout Coordinator: ${orbId}`);
+
+		// Cleanup: Unregister from Layout Coordinator
+		return () => {
+			if (coordinatorRef.current) {
+				layoutCoordinator.unregisterComponent(orbId);
+				console.log(`[OrbContainer] Unregistered from Layout Coordinator: ${orbId}`);
+			}
+		};
+	}, []);
+
+	const handleCoordinatedTransition = async (shouldShowEmotional) => {
+		// Request coordinated transition through layout coordinator
+		const transitionAllowed = await coordinatorRef.current?.requestTransition({
+			type: shouldShowEmotional ? 'orb-to-emotional' : 'orb-to-standard',
+			duration: 500,
+			priority: 3,
+			canInterrupt: true
+		});
+
+		if (!transitionAllowed) {
+			console.warn('[OrbContainer] Orb transition denied by coordinator');
+			return;
+		}
+
+		// Set coordinated transition state
+		setOrbTransition({
+			isTransitioning: true,
+			direction: shouldShowEmotional ? 'to-emotional' : 'to-standard',
+			duration: 500
+		});
+		setIsTransitioning(true);
+
+		// Phase 1: Fade out current orb (250ms)
+		await new Promise(resolve => {
+			requestAnimationFrame(() => {
+				// Add fade-out class to trigger CSS transition
+				if (orbRef.current) {
+					orbRef.current.classList.add('orb-fade-out');
+				}
+				setTimeout(resolve, 250);
+			});
+		});
+
+		// Phase 2: Switch orb content during opacity 0 state
+		requestAnimationFrame(() => {
+			setShowEmotionalBlob(shouldShowEmotional);
+			
+			// Remove fade-out and add fade-in
+			if (orbRef.current) {
+				orbRef.current.classList.remove('orb-fade-out');
+				orbRef.current.classList.add('orb-fade-in');
+			}
+		});
+
+		// Phase 3: Fade in new orb (250ms)
+		await new Promise(resolve => {
+			setTimeout(() => {
+				if (orbRef.current) {
+					orbRef.current.classList.remove('orb-fade-in');
+				}
+				setOrbTransition({
+					isTransitioning: false,
+					direction: null,
+					duration: 500
+				});
+				setIsTransitioning(false);
+				
+				// Notify coordinator of completion
+				coordinatorRef.current?.completeTransition();
+				resolve();
+			}, 250);
+		});
+	};
 
 	// Update visual state based on emotional context
 	useEffect(() => {

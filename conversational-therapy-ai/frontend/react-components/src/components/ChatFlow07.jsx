@@ -9,6 +9,7 @@ import chatService from "../services/chatService";
 import blobManager from "../services/blobManager";
 import conversationManager from "../services/conversationManager";
 import emotionStateManager from "../services/emotionStateManager";
+import layoutCoordinator from "../services/LayoutCoordinator";
 
 export const ChatFlow07 = ({
 	className,
@@ -31,6 +32,14 @@ export const ChatFlow07 = ({
 	const [typingMessage, setTypingMessage] = React.useState("");
 	const [isTypingAnimation, setIsTypingAnimation] = React.useState(false);
 	const [showKeyboard, setShowKeyboard] = React.useState(true);
+	// CRITICAL FIX: Enhanced keyboard transition state management
+	const [keyboardTransition, setKeyboardTransition] = React.useState({
+		isTransitioning: false,
+		targetState: 'visible',
+		transitionDuration: 300
+	});
+	const [isLayoutTransition, setIsLayoutTransition] = React.useState(false);
+	const [messageVisibilityBackup, setMessageVisibilityBackup] = React.useState([]);
 	const [currentResponseSegment, setCurrentResponseSegment] =
 		React.useState(0);
 	const [responseSegments, setResponseSegments] = React.useState([]);
@@ -42,6 +51,9 @@ export const ChatFlow07 = ({
 	const [activeBlobs, setActiveBlobs] = React.useState([]);
 	const [blobAnalysis, setBlobAnalysis] = React.useState(null);
 	const [hasEmotionalBlobs, setHasEmotionalBlobs] = React.useState(false);
+	
+	// CRITICAL FIX: Layout Coordinator Integration
+	const coordinatorRef = React.useRef(null);
 
 	// Default blob state (neutral state when no emotional blobs are active)
 	const [defaultBlob] = React.useState({
@@ -72,13 +84,101 @@ export const ChatFlow07 = ({
 	const typingIntervalRef = React.useRef(null);
 	const thinkingTimeoutRef = React.useRef(null);
 
+	// CRITICAL FIX: Enhanced Keyboard Hide with Layout Coordination
+	const hideKeyboardSmooth = React.useCallback(async () => {
+		// Request coordinated transition through layout coordinator
+		const transitionAllowed = await coordinatorRef.current?.requestTransition({
+			type: 'keyboard-hide',
+			duration: 300,
+			priority: 10,
+			canInterrupt: false
+		});
+
+		if (!transitionAllowed) {
+			console.warn('[ChatFlow07] Keyboard hide transition denied by coordinator');
+			return;
+		}
+
+		setKeyboardTransition({
+			isTransitioning: true,
+			targetState: 'hidden',
+			transitionDuration: 300
+		});
+		
+		// Wait for CSS transition to complete
+		setTimeout(() => {
+			setShowKeyboard(false);
+			setKeyboardTransition(prev => ({
+				...prev,
+				isTransitioning: false
+			}));
+			
+			// Notify coordinator of completion
+			coordinatorRef.current?.completeTransition();
+		}, 300);
+	}, []);
+
+	// CRITICAL FIX: Enhanced Keyboard Show with Layout Coordination
+	const showKeyboardSmooth = React.useCallback(async () => {
+		// Request coordinated transition through layout coordinator
+		const transitionAllowed = await coordinatorRef.current?.requestTransition({
+			type: 'keyboard-show',
+			duration: 300,
+			priority: 10,
+			canInterrupt: false
+		});
+
+		if (!transitionAllowed) {
+			console.warn('[ChatFlow07] Keyboard show transition denied by coordinator');
+			return;
+		}
+
+		setKeyboardTransition({
+			isTransitioning: true,
+			targetState: 'visible',
+			transitionDuration: 300
+		});
+		
+		setShowKeyboard(true);
+		
+		setTimeout(() => {
+			setKeyboardTransition(prev => ({
+				...prev,
+				isTransitioning: false
+			}));
+			
+			// Notify coordinator of completion
+			coordinatorRef.current?.completeTransition();
+		}, 300);
+	}, []);
+
+	// CRITICAL FIX: Protected scroll with transition awareness
+	const protectedScrollIntoView = React.useCallback((element, options = {}) => {
+		if (isLayoutTransition) {
+			// Defer scroll until transition completes
+			setTimeout(() => {
+				element?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'end',
+					...options
+				});
+			}, keyboardTransition.transitionDuration + 100);
+		} else {
+			element?.scrollIntoView({
+				behavior: 'smooth',
+				block: 'end',
+				...options
+			});
+		}
+	}, [isLayoutTransition, keyboardTransition.transitionDuration]);
+
 	// Enhanced scroll function with better reliability
 	const scrollToBottom = () => {
 		if (messagesEndRef.current && chatContainerRef.current) {
 			// Use both methods for better reliability
 			chatContainerRef.current.scrollTop =
 				chatContainerRef.current.scrollHeight;
-			messagesEndRef.current.scrollIntoView({
+			protectedScrollIntoView(messagesEndRef.current, {
 				behavior: "smooth",
 				block: "end",
 				inline: "nearest",
@@ -86,45 +186,63 @@ export const ChatFlow07 = ({
 		}
 	};
 
-	// CRITICAL FIX: Safe message update function with enhanced validation and logging
+	// CRITICAL FIX: EMERGENCY MESSAGE PROTECTION - Disable Layout Coordinator interference
 	const updateMessagesWithBackup = React.useCallback(
 		(threadId) => {
+			console.log(`🔥 EMERGENCY UPDATE for thread ${threadId}`);
+			
 			try {
 				const newMessages =
 					conversationManager.getThreadMessages(threadId);
 
-				// Validate messages before updating
+				// CRITICAL: Extra validation and protection
 				if (!Array.isArray(newMessages)) {
-					console.error("🚨 Invalid messages received, using backup");
+					console.error("🚨 CRITICAL: Invalid messages received, using backup");
+					if (messageBackupRef.current.length > 0) {
+						console.log("🔄 EMERGENCY: Restoring from backup immediately");
+						setMessages([...messageBackupRef.current]);
+					}
 					return;
 				}
 
-				// Ensure threadId matches the current thread
+				// CRITICAL: Protect against thread mismatch
 				if (threadId !== currentThreadId) {
-					console.warn(
-						`⚠️ Thread ID mismatch: expected ${currentThreadId}, got ${threadId}`
+					console.error(
+						`🚨 CRITICAL: Thread ID mismatch: expected ${currentThreadId}, got ${threadId}`
 					);
 					return;
 				}
 
-				// Backup current state before update
-				messageBackupRef.current = messages;
+				// CRITICAL: Validate message content exists
+				if (newMessages.length === 0 && messages.length > 0) {
+					console.error("🚨 CRITICAL: Messages disappeared! Preventing state loss");
+					return; // Don't update to empty state if we had messages
+				}
+
+				// CRITICAL: Always backup before ANY update
+				messageBackupRef.current = [...messages];
 				lastKnownThreadIdRef.current = currentThreadId;
 
-				// Log the update for debugging
-				console.log(`📝 Updating messages for thread ${threadId}:`, {
-					previousCount: messages.length,
-					newCount: newMessages.length,
-					threadId: threadId,
-				});
+				// CRITICAL: Force immediate state update - bypass any coordinator interference
+				console.log(`🔥 EMERGENCY UPDATE: ${messages.length} -> ${newMessages.length} messages`);
+				setMessages([...newMessages]); // Force new array reference
 
-				setMessages(newMessages);
+				// CRITICAL: Immediate validation that update worked
+				setTimeout(() => {
+					const currentState = conversationManager.getThreadMessages(threadId);
+					if (currentState.length !== newMessages.length) {
+						console.error("🚨 CRITICAL: Message update verification failed!");
+						console.log("🔄 EMERGENCY RECOVERY: Forcing state restoration");
+						setMessages([...newMessages]); // Force again
+					}
+				}, 50);
+
 			} catch (error) {
-				console.error("🚨 Error updating messages:", error);
-				// Restore from backup if possible
+				console.error("🚨 CRITICAL ERROR in updateMessagesWithBackup:", error);
+				// EMERGENCY RECOVERY: Restore from backup immediately
 				if (messageBackupRef.current.length > 0) {
-					console.log("🔄 Restoring from backup");
-					setMessages(messageBackupRef.current);
+					console.log("🔄 EMERGENCY RECOVERY: Restoring from backup");
+					setMessages([...messageBackupRef.current]);
 				}
 			}
 		},
@@ -141,6 +259,23 @@ export const ChatFlow07 = ({
 			setShowOldMessagesIndicator(isAtTop && hasOldMessages);
 		}
 	};
+
+	// CRITICAL FIX: DISABLED Message Visibility Protection - PREVENTS MESSAGE LOSS
+	React.useEffect(() => {
+		// EMERGENCY DISABLE: This system was interfering with message persistence
+		console.log("🔥 VISIBILITY PROTECTION DISABLED - Preventing message interference");
+		
+		// Keep transition state tracking but don't manipulate messages
+		if (keyboardTransition.isTransitioning) {
+			setIsLayoutTransition(true);
+			
+			const timer = setTimeout(() => {
+				setIsLayoutTransition(false);
+			}, keyboardTransition.transitionDuration + 50);
+			
+			return () => clearTimeout(timer);
+		}
+	}, [keyboardTransition.isTransitioning, keyboardTransition.transitionDuration]);
 
 	// Enhanced auto-scroll with delay for better UX
 	React.useEffect(() => {
@@ -165,6 +300,19 @@ export const ChatFlow07 = ({
 	// Initialize chat service and conversation management
 	React.useEffect(() => {
 		const initializeChat = async () => {
+			// CRITICAL FIX: Register with Layout Coordinator
+			coordinatorRef.current = layoutCoordinator.registerComponent(
+				'chatflow07-keyboard',
+				'keyboard',
+				{
+					priority: 10,
+					canInterrupt: false,
+					maxDuration: 300
+				}
+			);
+
+			console.log('[ChatFlow07] Registered with Layout Coordinator');
+
 			// Set language change callback
 			chatService.setLanguageChangeCallback((language) => {
 				setCurrentLanguage(language);
@@ -195,6 +343,14 @@ export const ChatFlow07 = ({
 		};
 
 		initializeChat();
+
+		// Cleanup: Unregister from Layout Coordinator
+		return () => {
+			if (coordinatorRef.current) {
+				layoutCoordinator.unregisterComponent('chatflow07-keyboard');
+				console.log('[ChatFlow07] Unregistered from Layout Coordinator');
+			}
+		};
 	}, []);
 
 	// Blob decay and update system
@@ -369,11 +525,17 @@ export const ChatFlow07 = ({
 		});
 	};
 
-	// Enhanced response processing with dramatic pauses and expressions
+	// CRITICAL FIX: EMERGENCY Response Processing - BYPASS ALL COORDINATOR INTERFERENCE
 	const processResponseWithPauses = async (
 		fullResponse,
 		userMessage = ""
 	) => {
+		console.log("🔥 EMERGENCY RESPONSE PROCESSING - NO COORDINATOR INTERFERENCE");
+		
+		// CRITICAL: Get current message state BEFORE processing
+		const preResponseMessages = conversationManager.getThreadMessages(currentThreadId);
+		console.log(`🔥 PRE-RESPONSE: ${preResponseMessages.length} messages in thread`);
+		
 		const segments = splitIntoSemanticSegments(fullResponse);
 		setResponseSegments(segments);
 
@@ -395,7 +557,7 @@ export const ChatFlow07 = ({
 			// Type the current segment with expression-based timing
 			await typeMessage(segments[i], true);
 
-			// Add the completed segment to conversation manager
+			// CRITICAL: Add segment to conversation manager WITHOUT triggering updates yet
 			const segmentMessage = {
 				type: "ai",
 				text: segments[i],
@@ -409,14 +571,27 @@ export const ChatFlow07 = ({
 				timestamp: Date.now(),
 			};
 
+			console.log(`🔥 EMERGENCY: Adding AI segment ${i+1}/${segments.length}`);
 			conversationManager.addMessageToThread(
 				currentThreadId,
 				segmentMessage
 			);
 
-			// CRITICAL FIX: Use safe message update instead of direct setMessages
-			updateMessagesWithBackup(currentThreadId);
+			// CRITICAL: FORCE IMMEDIATE UPDATE WITHOUT BACKUP SYSTEM
+			const currentMessages = conversationManager.getThreadMessages(currentThreadId);
+			console.log(`🔥 EMERGENCY UPDATE: Segment ${i+1} - ${currentMessages.length} total messages`);
+			setMessages([...currentMessages]); // Force immediate array update
 			setTypingMessage("");
+
+			// CRITICAL: Validate that messages weren't lost
+			if (currentMessages.length < preResponseMessages.length) {
+				console.error("🚨 CRITICAL: Messages lost during segment processing!");
+				console.log("🔄 EMERGENCY RECOVERY: Rebuilding message state");
+				
+				// Emergency recovery - force rebuild
+				const allMessages = conversationManager.getThreadMessages(currentThreadId);
+				setMessages([...allMessages]);
+			}
 
 			// Dramatic pause between segments with varying duration
 			if (i < segments.length - 1) {
@@ -428,6 +603,22 @@ export const ChatFlow07 = ({
 					setTimeout(resolve, pauseDuration)
 				);
 			}
+		}
+
+		// CRITICAL: Final validation and cleanup
+		const finalMessages = conversationManager.getThreadMessages(currentThreadId);
+		console.log(`🔥 FINAL VALIDATION: ${finalMessages.length} messages after processing`);
+		
+		if (finalMessages.length === 0) {
+			console.error("🚨 CRITICAL: ALL MESSAGES LOST! Emergency recovery needed");
+			// Try to recover from backup
+			if (messageBackupRef.current.length > 0) {
+				console.log("🔄 EMERGENCY: Attempting backup recovery");
+				setMessages([...messageBackupRef.current]);
+			}
+		} else {
+			// Force final update to ensure UI reflects all messages
+			setMessages([...finalMessages]);
 		}
 
 		// Clear segments and reset to neutral expression
@@ -462,7 +653,12 @@ export const ChatFlow07 = ({
 			!isTypingAnimation &&
 			!isThinking
 		) {
+			console.log("🔥 EMERGENCY SEND - BYPASSING LAYOUT COORDINATOR");
 			const userMessage = inputText.trim();
+
+			// CRITICAL: Store message state BEFORE any async operations
+			const preMessageState = [...messages];
+			messageBackupRef.current = preMessageState;
 
 			// Process message with blob manager and get emotional analysis
 			const blobUpdate = blobManager.processChatInput(
@@ -472,11 +668,7 @@ export const ChatFlow07 = ({
 			setActiveBlobs(blobUpdate.activeBlobs);
 			setBlobAnalysis(blobUpdate.analysis);
 
-			// Log emotional analysis for debugging
-			console.log("🧠 Emotional Analysis:", blobUpdate.analysis);
-			console.log("🎯 Active Blobs:", blobUpdate.activeBlobs);
-
-			// Add user message to conversation manager
+			// Add user message to conversation manager - IMMEDIATE, NO DELAYS
 			const userMessageObj = {
 				type: "user",
 				text: userMessage,
@@ -485,28 +677,35 @@ export const ChatFlow07 = ({
 				timestamp: Date.now(),
 			};
 
+			console.log("🔥 EMERGENCY: Adding user message to thread");
 			const addedUserMessage = conversationManager.addMessageToThread(
 				currentThreadId,
 				userMessageObj,
 				blobUpdate.analysis
 			);
 
-			// Validate if the message was successfully added
+			// CRITICAL: Validate message was added
 			if (!addedUserMessage) {
-				console.error("🚨 Failed to add user message to thread.");
+				console.error("🚨 CRITICAL: Failed to add user message to thread.");
 				return;
 			}
 
-			// Log the added message for debugging
-			console.log("📝 User message added:", addedUserMessage);
+			console.log("📝 EMERGENCY: User message added:", addedUserMessage);
 
-			// CRITICAL FIX: Use safe message update instead of direct setMessages
-			updateMessagesWithBackup(currentThreadId);
+			// CRITICAL: FORCE IMMEDIATE UI UPDATE - NO COORDINATOR INTERFERENCE
+			const newMessages = conversationManager.getThreadMessages(currentThreadId);
+			console.log(`🔥 FORCE UPDATE: ${messages.length} -> ${newMessages.length} messages`);
+			setMessages([...newMessages]); // Force immediate update
+
+			// CRITICAL: Clear input IMMEDIATELY to show user interaction worked
 			setInputText("");
 			setIsLoading(true);
-			setShowKeyboard(false); // Hide keyboard when waiting for AI response
 
-			// Get AI response first to analyze for facial expressions
+			// CRITICAL: SKIP KEYBOARD ANIMATION DURING MESSAGE SEND
+			console.log("🔥 EMERGENCY: Skipping keyboard animation to prevent message loss");
+			setShowKeyboard(false); // Immediate hide, no animation
+
+			// Get AI response
 			try {
 				const responseData = await chatService.sendMessage(userMessage);
 				setIsLoading(false);
@@ -537,7 +736,9 @@ export const ChatFlow07 = ({
 				// Process response with enhanced semantic pauses and facial expressions
 				await processResponseWithPauses(response, userMessage);
 
-				setShowKeyboard(true); // Show keyboard again when ready for user input
+				// CRITICAL: Show keyboard back immediately after response
+				console.log("🔥 EMERGENCY: Showing keyboard immediately after response");
+				setShowKeyboard(true); // Immediate show, no animation
 			} catch (error) {
 				setIsLoading(false);
 
@@ -571,10 +772,13 @@ export const ChatFlow07 = ({
 					errorMessage
 				);
 
-				// CRITICAL FIX: Use safe message update instead of direct setMessages
-				updateMessagesWithBackup(currentThreadId);
+				// CRITICAL: FORCE IMMEDIATE UPDATE
+				const errorMessages_new = conversationManager.getThreadMessages(currentThreadId);
+				setMessages([...errorMessages_new]);
 				setTypingMessage("");
-				setShowKeyboard(true); // Show keyboard again when ready for user input
+				
+				// Show keyboard back
+				setShowKeyboard(true);
 			}
 		}
 	};
@@ -594,6 +798,14 @@ export const ChatFlow07 = ({
 		<div
 			className={`chat-flow-07 ${
 				!showKeyboard ? "keyboard-hidden" : ""
+			} ${
+				keyboardTransition.isTransitioning ? "keyboard-transitioning" : ""
+			} ${
+				keyboardTransition.targetState === 'hidden' && keyboardTransition.isTransitioning ? "keyboard-transitioning-out" : ""
+			} ${
+				keyboardTransition.targetState === 'visible' && keyboardTransition.isTransitioning ? "keyboard-transitioning-in" : ""
+			} ${
+				isLayoutTransition ? "layout-transition" : ""
 			} ${className || ""}`}
 		>
 			<div className="check-in">Check In</div>

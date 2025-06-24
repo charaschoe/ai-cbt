@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import layoutCoordinator from "../services/LayoutCoordinator";
 import "./EmotionalUrgencyBlob.css";
 import {
 	BLOB_SIZES,
@@ -14,6 +15,50 @@ const EmotionalUrgencyBlob = ({
 	animationIntensity = 1,
 }) => {
 	const [animationPhase, setAnimationPhase] = useState(0);
+	
+	// CRITICAL FIX: Layout Coordinator Integration
+	const coordinatorRef = React.useRef(null);
+	
+	// CRITICAL FIX: Color Transition State Management
+	const [colorTransition, setColorTransition] = useState({
+		isTransitioning: false,
+		fromColors: null,
+		toColors: null,
+		progress: 0,
+		duration: 2000
+	});
+
+	// CRITICAL FIX: Visibility Transition State
+	const [visibilityTransition, setVisibilityTransition] = useState({
+		isVisible: isVisible,
+		isFading: false,
+		fadeDirection: null
+	});
+
+	// CRITICAL FIX: Layout Coordinator Registration and Management
+	useEffect(() => {
+		// Register with Layout Coordinator
+		const blobId = `emotional-blob-${emotionType}-${Date.now()}`;
+		coordinatorRef.current = layoutCoordinator.registerComponent(
+			blobId,
+			'blob',
+			{
+				priority: 5,
+				canInterrupt: true,
+				maxDuration: 2000
+			}
+		);
+
+		console.log(`[EmotionalUrgencyBlob] Registered with Layout Coordinator: ${blobId}`);
+
+		// Cleanup: Unregister from Layout Coordinator
+		return () => {
+			if (coordinatorRef.current) {
+				layoutCoordinator.unregisterComponent(blobId);
+				console.log(`[EmotionalUrgencyBlob] Unregistered from Layout Coordinator: ${blobId}`);
+			}
+		};
+	}, [emotionType]);
 
 	useEffect(() => {
 		// MEMORY FIX: Optimiertes Interval-Management
@@ -39,6 +84,72 @@ const EmotionalUrgencyBlob = ({
 		};
 	}, [animationIntensity, isVisible, size]); // MEMORY FIX: Abhängigkeiten hinzugefügt
 
+	// CRITICAL FIX: Smooth Transition Trigger
+	React.useEffect(() => {
+		const currentColors = getBlobColors();
+		const previousColors = colorTransition.toColors || currentColors;
+		
+		// Check if colors have changed
+		const colorsChanged = JSON.stringify(currentColors) !== JSON.stringify(previousColors);
+		
+		if (colorsChanged && !colorTransition.isTransitioning) {
+			setColorTransition({
+				isTransitioning: true,
+				fromColors: previousColors,
+				toColors: currentColors,
+				progress: 0,
+				duration: 2000
+			});
+			
+			// Animate color transition
+			const startTime = Date.now();
+			const animate = () => {
+				const elapsed = Date.now() - startTime;
+				const progress = Math.min(elapsed / 2000, 1);
+				
+				setColorTransition(prev => ({
+					...prev,
+					progress: easeInOutCubic(progress)
+				}));
+				
+				if (progress < 1) {
+					requestAnimationFrame(animate);
+				} else {
+					setColorTransition({
+						isTransitioning: false,
+						fromColors: null,
+						toColors: currentColors,
+						progress: 1,
+						duration: 2000
+					});
+				}
+			};
+			
+			requestAnimationFrame(animate);
+		}
+	}, [emotionType, urgencyLevel, colorTransition.isTransitioning, easeInOutCubic]);
+
+	// CRITICAL FIX: Smooth Show/Hide Logic
+	React.useEffect(() => {
+		if (isVisible !== visibilityTransition.isVisible && !visibilityTransition.isFading) {
+			setVisibilityTransition({
+				isVisible: isVisible,
+				isFading: true,
+				fadeDirection: isVisible ? 'in' : 'out'
+			});
+
+			const fadeTimeout = setTimeout(() => {
+				setVisibilityTransition(prev => ({
+					...prev,
+					isFading: false,
+					fadeDirection: null
+				}));
+			}, 500);
+
+			return () => clearTimeout(fadeTimeout);
+		}
+	}, [isVisible, visibilityTransition.isVisible, visibilityTransition.isFading]);
+
 	// Bestimme Blob-Eigenschaften basierend auf Größe und Emotion
 	const getBlobProperties = () => {
 		const baseProperties = {
@@ -59,6 +170,53 @@ const EmotionalUrgencyBlob = ({
 
 		return baseProperties[size] || baseProperties[BLOB_SIZES.SMALL];
 	};
+
+	// CRITICAL FIX: Easing Function
+	const easeInOutCubic = (t) => {
+		return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+	};
+
+	// CRITICAL FIX: Enhanced Color Calculation with Interpolation
+	const getTransitioningColors = React.useCallback(() => {
+		if (!colorTransition.isTransitioning || !colorTransition.fromColors) {
+			return getBlobColors();
+		}
+		
+		const { fromColors, toColors, progress } = colorTransition;
+		
+		// Linear interpolation for smooth color morphing
+		const interpolateColor = (from, to, t) => {
+			// Handle string colors by converting to RGB
+			const parseColor = (color) => {
+				if (typeof color === 'string' && color.startsWith('#')) {
+					const hex = color.slice(1);
+					return {
+						r: parseInt(hex.slice(0, 2), 16),
+						g: parseInt(hex.slice(2, 4), 16),
+						b: parseInt(hex.slice(4, 6), 16)
+					};
+				}
+				return color; // Assume it's already an RGB object
+			};
+			
+			const fromRGB = parseColor(from);
+			const toRGB = parseColor(to);
+			
+			const r = Math.round(fromRGB.r + (toRGB.r - fromRGB.r) * t);
+			const g = Math.round(fromRGB.g + (toRGB.g - fromRGB.g) * t);
+			const b = Math.round(fromRGB.b + (toRGB.b - fromRGB.b) * t);
+			
+			return `rgb(${r}, ${g}, ${b})`;
+		};
+		
+		return {
+			primary: interpolateColor(fromColors.primary, toColors.primary, progress),
+			secondary: interpolateColor(fromColors.secondary, toColors.secondary, progress),
+			tertiary: toColors.tertiary, // Keep tertiary for gradient structure
+			quaternary: toColors.quaternary,
+			quinary: toColors.quinary
+		};
+	}, [colorTransition]);
 
 	// Bestimme Farben basierend auf Emotionstyp und Dringlichkeit
 	const getBlobColors = () => {
@@ -178,11 +336,16 @@ const EmotionalUrgencyBlob = ({
 	};
 
 	const properties = getBlobProperties();
-	const colors = getBlobColors();
+	const colors = getTransitioningColors(); // CRITICAL FIX: Use transitioning colors
 
-	if (size === BLOB_SIZES.NONE || !isVisible) {
+	// CRITICAL FIX: Render with Smooth Transitions
+	if (!visibilityTransition.isVisible && !visibilityTransition.isFading) {
 		return null;
 	}
+
+	const blobOpacity = visibilityTransition.isFading
+		? (visibilityTransition.fadeDirection === 'in' ? 0.8 : 0.2)
+		: (visibilityTransition.isVisible ? 1 : 0);
 
 	// Animationsintensität basierend auf Dringlichkeit
 	const getAnimationIntensity = () => {
@@ -225,13 +388,18 @@ const EmotionalUrgencyBlob = ({
 
 	return (
 		<div
-			className={`emotional-urgency-blob-container ${emotionType} ${urgencyLevel}`}
+			className={`emotional-urgency-blob-container ${emotionType} ${urgencyLevel} ${
+				colorTransition.isTransitioning ? 'color-morphing' : ''
+			} ${
+				visibilityTransition.isFading ? 'visibility-transitioning' : ''
+			}`}
 			style={{
 				position: "absolute",
 				width: `${properties.containerSize}px`,
 				height: `${properties.containerSize}px`,
 				transform: `translate(${offsetX}px, ${offsetY}px)`,
-				transition: "all 0.1s ease-out",
+				transition: "all 0.1s ease-out, opacity 0.5s ease",
+				opacity: blobOpacity,
 			}}
 		>
 			<div
@@ -248,9 +416,16 @@ const EmotionalUrgencyBlob = ({
 					}px)`,
 					background: getGradientBackground(),
 					borderRadius: "50%",
-					transition: "all 0.1s ease-out",
-					opacity: 0.8 + 0.2 * currentIntensity,
+					// CRITICAL FIX: Enhanced transition for smooth color morphing
+					transition: colorTransition.isTransitioning
+						? "all 0.1s ease-out"
+						: "all 0.1s ease-out, background 2s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+					opacity: (0.8 + 0.2 * currentIntensity) * blobOpacity,
 					filter: `blur(${Math.max(0, 2 - currentIntensity)}px)`,
+					// GPU acceleration for smooth animations
+					willChange: 'background, opacity, transform',
+					backfaceVisibility: 'hidden',
+					transform: 'translateZ(0)',
 				}}
 			/>
 

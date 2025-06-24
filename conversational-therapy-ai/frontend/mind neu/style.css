@@ -1,0 +1,928 @@
+.mind-subpage,
+.mind-subpage * {
+  box-sizing: border-box;
+}
+.mind-subpage {
+  background: #fbf4f1;
+  height: 1408px;
+  position: relative;
+  overflow: hidden;
+}
+.vector-2138 {
+  width: 445.11px;
+  height: 909.64px;
+  position: absolute;
+  left: -24.95px;
+  top: 576.43px;
+  transform: translate(118.84px, -372.11px);
+  overflow: visible;
+}
+.vector-2139 {
+  width: 371.93px;
+  height: 917.89px;
+  position: absolute;
+  left: 439.36px;
+  top: 227.27px;
+  transform: translate(-439.36px, -227.27px);
+  overflow: visible;
+}
+.blob-4 {
+  opacity: 0.5;
+  height: auto;
+  position: absolute;
+  left: 365.65px;
+  top: 1435.02px;
+  transform: translate(-365.65px, -599.25px);
+  overflow: visible;
+}
+.ellipse-40 {
+  background: radial-gradient(
+    closest-side,
+    rgba(164, 154, 189, 0.24) 0%,
+    rgba(164, 154, 189, 0.09) 35.09576916694641%,
+    rgba(164, 154, 189, 0) 76.44295692443848%
+  );
+  border-radius: 50%;
+  width: 435.13px;
+  height: 497.04px;
+  position: absolute;
+  left: 370.52px;
+  top: -125.69px;
+  transform-origin: 0 0;
+  transform: rotate(43.65deg) scale(1, 1);
+}
+.frame-90 {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 354px;
+  position: absolute;
+  left: 20px;
+  top: 140px;
+}
+.card-energy-block {
+  background: rgba(255, 255, 255, 0.33);
+  border-radius: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-image: linear-gradient(
+    176.74deg,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-image-slice: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+  box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.1),
+    0px 4px 16px 0px rgba(0, 0, 0, 0.1), 0px 2px 12px 0px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(30px);
+}
+.title-physiological-readiness {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.icon-link {
+  color: #000000;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.title {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.frame-83 {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: 194.94px;
+  position: relative;
+}
+.frame-81 {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  width: 157px;
+  position: relative;
+}
+.ellipse-1 {
+  background: radial-gradient(
+    closest-side,
+    rgba(135, 132, 165, 1) 0%,
+    rgba(165, 157, 227, 0.5) 57.21170902252197%,
+    rgba(162, 140, 196, 0.25) 70.19280195236206%,
+    rgba(165, 157, 227, 0.25) 82.69311189651489%,
+    rgba(165, 157, 227, 0) 100%
+  );
+  border-radius: 50%;
+  flex-shrink: 0;
+  width: 84.94px;
+  height: 84.94px;
+  position: relative;
+}
+.body-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex: 1;
+  position: relative;
+}
+.frame-84 {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.thought {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpWriter-RegularItalic", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  font-style: italic;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.i-ve-been-so-off-today {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.frame-82 {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  width: 161px;
+  position: relative;
+}
+.ellipse-12 {
+  background: radial-gradient(
+    closest-side,
+    rgba(0, 242, 255, 1) 11.059201508760452%,
+    rgba(79, 164, 255, 0.5) 71.1543619632721%,
+    rgba(249, 255, 214, 0.25) 100%
+  );
+  border-radius: 50%;
+  flex-shrink: 0;
+  width: 84.94px;
+  height: 84.94px;
+  position: relative;
+}
+.body-copy2 {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  flex: 1;
+  position: relative;
+}
+.reframe {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpWriter-RegularItalic", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  font-style: italic;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.maybe-today-s-just-a-slower-rhythm-not-a-failure-just-a-pause {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.divider-line {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: auto;
+  position: relative;
+  overflow: visible;
+}
+.suggestion-block {
+  background: rgba(165, 157, 227, 0.23);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 319px;
+  position: relative;
+  backdrop-filter: blur(15px);
+}
+.pill-label-ai {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.bard-line-streamline-remix-line {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  overflow: visible;
+}
+.ai-suggestion {
+  color: #695eb9;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.suggestion-text {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.blob-noticed-this-might-be-weighing-on-you-want-to-revisit-how-you-re-holding-it {
+  color: #695eb9;
+  text-align: left;
+  font-family: "-", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.blob-noticed-this-might-be-weighing-on-you-want-to-revisit-how-you-re-holding-it-span {
+  font-family: "PpNeueMontreal-Book", sans-serif;
+}
+.blob-noticed-this-might-be-weighing-on-you-want-to-revisit-how-you-re-holding-it-span2 {
+  font-family: "PpWriter-RegularItalic", sans-serif;
+  font-style: italic;
+}
+.t-imestamp {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-end;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: 14px;
+  position: relative;
+}
+.last-update-9-44 {
+  color: rgba(83, 76, 73, 0.6);
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.card-regulation-moment {
+  background: rgba(255, 255, 255, 0.13);
+  border-radius: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-image-slice: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.12),
+    0px 0px 20px 0px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(30px);
+}
+.title2 {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.icon {
+  color: #000000;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.your-regulation-moment {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.exercise-header {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.label-exercise {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+._5-4-3-2-1-grounding {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.frame-86 {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.completed-11-32-am {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.ai-suggested-exercise {
+  color: rgba(111, 111, 111, 0.7);
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.reflection-copy {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.you-named-colors-textures-and-nature-your-system-softened-as-you-returned-to-the-present {
+  color: #6f6662;
+  text-align: left;
+  font-family: "-", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.you-named-colors-textures-and-nature-your-system-softened-as-you-returned-to-the-present-span {
+  font-family: "PpNeueMontreal-Book", sans-serif;
+}
+.you-named-colors-textures-and-nature-your-system-softened-as-you-returned-to-the-present-span2 {
+  font-family: "PpWriter-RegularItalic", sans-serif;
+  font-style: italic;
+}
+.card-insight {
+  background: rgba(255, 255, 255, 0.13);
+  border-radius: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-image-slice: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.12),
+    0px 0px 20px 0px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(30px);
+}
+.icon-title {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.div {
+  color: #000000;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.ambient-insight {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.cycle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.blob-noticed-you-ve-scrolled-through-over-40-minutes-of-emotionally-charged-content {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.frame-89 {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.rectangle-21 {
+  background: rgba(83, 76, 73, 0.5);
+  align-self: stretch;
+  flex-shrink: 0;
+  width: 2px;
+  position: relative;
+}
+.when-this-happens-you-often-feel-more-drained-later-especially-after-low-sleep {
+  color: rgba(83, 76, 73, 0.7);
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.divider-line2 {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: auto;
+  position: relative;
+  overflow: visible;
+}
+.bard-line-streamline-remix-line2 {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  overflow: visible;
+}
+.if-you-re-going-to-stay-online-consider-switching-to-something-calming-want-to-open-your-feel-good-instagram-folder {
+  color: #695eb9;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.if-you-re-going-to-stay-online-consider-switching-to-something-calming-want-to-open-your-feel-good-instagram-folder-span {
+}
+.if-you-re-going-to-stay-online-consider-switching-to-something-calming-want-to-open-your-feel-good-instagram-folder-span2 {
+  text-decoration: underline;
+}
+.memroy-label-ai {
+  display: flex;
+  flex-direction: row;
+  gap: 7px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.notebook-fill-streamline-outlined-fill-material-pro {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.notebook-fill {
+  width: 79.17%;
+  height: 83.33%;
+  position: absolute;
+  right: 4.17%;
+  left: 16.67%;
+  bottom: 8.33%;
+  top: 8.33%;
+  overflow: visible;
+}
+.blob-remembered-this-helped-last-time {
+  color: rgba(105, 94, 185, 0.6);
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  position: relative;
+  width: 269.71px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.card-reflect {
+  background: rgba(255, 255, 255, 0.13);
+  border-radius: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-image-slice: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.12),
+    0px 0px 20px 0px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(30px);
+}
+.section-title {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.div2 {
+  color: #000000;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.leave-a-note-for-later {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.insight-label {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.how-did-you-feel-after-your-presentation {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  position: relative;
+  width: 305.27px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.notebook-fill2 {
+  width: 79.17%;
+  height: 83.33%;
+  position: absolute;
+  right: 4.17%;
+  left: 16.67%;
+  bottom: 8.33%;
+  top: 8.33%;
+  overflow: visible;
+}
+.blob-will-keep-your-response-in-mind-it-may-be-brought-up-when-relevant {
+  color: #6f6662;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  position: relative;
+  width: 269.71px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.button-type-audio {
+  display: flex;
+  flex-direction: row;
+  gap: 7px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.button-type {
+  background: rgba(255, 255, 255, 0.33);
+  border-radius: 1000px;
+  border-style: solid;
+  border-color: #eed8d8;
+  border-width: 1px;
+  padding: 10px 16px 10px 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  flex-shrink: 0;
+  width: 267px;
+  position: relative;
+}
+.voice-input {
+  color: #000000;
+  text-align: center;
+  font-family: "PpNeueMontreal-Book", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.button-voice {
+  background: rgba(255, 255, 255, 0.33);
+  border-radius: 1000px;
+  border-style: solid;
+  border-color: #eed8d8;
+  border-width: 1px;
+  padding: 10px 16px 10px 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 46px;
+  height: 38px;
+  position: relative;
+}
+.pencil-streamline-lucide-line {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  overflow: visible;
+}
+.frame-91 {
+  background: linear-gradient(
+    180deg,
+    rgba(251, 244, 241, 0.7) 37.499675154685974%,
+    rgba(251, 244, 241, 0) 100%
+  );
+  padding: 10px 16px 24px 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 393px;
+  height: 130px;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  backdrop-filter: blur(0px);
+}
+.frame-77 {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  height: auto;
+  position: relative;
+  overflow: visible;
+}
+.label-subpage-mind {
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.mind {
+  color: #413737;
+  text-align: center;
+  font-family: "PpWriter-Regular", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  position: relative;
+}
+.button-more-options {
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.ellipse-5 {
+  background: #413737;
+  border-radius: 50%;
+  flex-shrink: 0;
+  width: 4px;
+  height: 4px;
+  position: relative;
+}
+.ellipse-6 {
+  background: #413737;
+  border-radius: 50%;
+  flex-shrink: 0;
+  width: 4px;
+  height: 4px;
+  position: relative;
+}
+.ellipse-7 {
+  background: #413737;
+  border-radius: 50%;
+  flex-shrink: 0;
+  width: 4px;
+  height: 4px;
+  position: relative;
+}

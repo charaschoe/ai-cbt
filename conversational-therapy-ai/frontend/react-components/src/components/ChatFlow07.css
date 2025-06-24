@@ -291,29 +291,103 @@
 	top: 240px;
 }
 
-/* Enhanced chat messages container with better scrolling */
+/* CORRECTED: RESTORE PROPER LAYOUT WITH ANTI-GLITCH PROTECTION */
 .chat-flow-07 .chat-messages-container {
-	position: absolute;
-	left: calc(50% - 176.5px);
-	top: 260px; /* Positioned below orb at 120px + orb size */
-	width: 353px;
-	height: calc(100vh - 490px); /* More space available due to smaller orb */
-	overflow-y: auto;
-	overflow-x: hidden;
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
-	padding: 10px 0;
-	padding-bottom: 15px; /* Reduced bottom padding to save space */
-	transition: all 0.3s ease;
-	scroll-behavior: smooth;
-	-webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
+	position: absolute !important;
+	left: calc(50% - 176.5px) !important;
+	top: 260px !important; /* Positioned below orb at 120px + orb size */
+	width: 353px !important;
+	height: calc(100vh - 490px) !important; /* More space available due to smaller orb */
+	overflow-y: auto !important;
+	overflow-x: hidden !important;
+	display: flex !important;
+	flex-direction: column !important;
+	gap: 12px !important;
+	padding: 10px 0 !important;
+	padding-bottom: 15px !important; /* Reduced bottom padding to save space */
+	
+	/* EMERGENCY: DISABLE ALL TRANSITIONS THAT CAUSE MESSAGE GLITCHES */
+	transition: none !important;
+	will-change: auto !important;
+	
+	/* Prevent layout thrashing */
+	backface-visibility: hidden !important;
+	transform: translateZ(0) !important;
+	
+	/* CRITICAL: FORCE VISIBILITY ALWAYS */
+	opacity: 1 !important;
+	visibility: visible !important;
+	
+	scroll-behavior: smooth !important;
+	-webkit-overflow-scrolling: touch !important; /* iOS smooth scrolling */
+	
+	/* CRITICAL: ENSURE CONTAINER STAYS IN PLACE */
+	z-index: 5 !important;
+	contain: layout !important;
 }
 
-.chat-flow-07.keyboard-hidden .chat-messages-container {
+.chat-flow-07.keyboard-hidden .chat-messages-container,
+.chat-flow-07.keyboard-transitioning-out .chat-messages-container {
 	height: calc(100vh - 260px); /* Much more space when keyboard is hidden */
 	top: 260px; /* Same position as above */
 	padding-bottom: 40px; /* More padding when keyboard is hidden */
+	
+	/* EMERGENCY: NO TRANSITIONS */
+	transition: none !important;
+	opacity: 1 !important;
+	visibility: visible !important;
+}
+
+/* EMERGENCY: FORCE ALL KEYBOARD STATES TO BE VISIBLE */
+.chat-flow-07.keyboard-transitioning,
+.chat-flow-07.keyboard-transitioning-in,
+.chat-flow-07.keyboard-transitioning-out,
+.chat-flow-07.layout-transition {
+	/* EMERGENCY: FORCE ALL MESSAGES VISIBLE DURING ANY TRANSITION */
+}
+
+.chat-flow-07.keyboard-transitioning .chat-messages-container,
+.chat-flow-07.keyboard-transitioning-in .chat-messages-container,
+.chat-flow-07.keyboard-transitioning-out .chat-messages-container,
+.chat-flow-07.layout-transition .chat-messages-container {
+	/* EMERGENCY: FORCE VISIBILITY DURING ALL TRANSITIONS */
+	opacity: 1 !important;
+	visibility: visible !important;
+	display: flex !important;
+	transition: none !important;
+	transform: none !important;
+	height: calc(100vh - 490px) !important;
+}
+
+.chat-flow-07.keyboard-transitioning .message,
+.chat-flow-07.keyboard-transitioning-in .message,
+.chat-flow-07.keyboard-transitioning-out .message,
+.chat-flow-07.layout-transition .message {
+	/* EMERGENCY: FORCE ALL MESSAGES VISIBLE DURING TRANSITIONS */
+	opacity: 1 !important;
+	visibility: visible !important;
+	display: flex !important;
+	transform: none !important;
+}
+
+.chat-flow-07.keyboard-transitioning .message-bubble,
+.chat-flow-07.keyboard-transitioning-in .message-bubble,
+.chat-flow-07.keyboard-transitioning-out .message-bubble,
+.chat-flow-07.layout-transition .message-bubble {
+	/* EMERGENCY: FORCE ALL MESSAGE BUBBLES VISIBLE DURING TRANSITIONS */
+	opacity: 1 !important;
+	visibility: visible !important;
+	display: block !important;
+	transform: none !important;
+}
+
+/* EMERGENCY: DISABLED MESSAGE BACKUP SYSTEM - CAUSES GLITCHES */
+.chat-flow-07 .message-backup-container {
+	display: none !important; /* Completely disable backup system */
+}
+
+.chat-flow-07.layout-transition .message-backup-container {
+	display: none !important; /* Completely disable backup system */
 }
 
 /* Mobile-specific adjustments for chat messages */
@@ -399,14 +473,24 @@
 .chat-flow-07 .message {
 	display: flex;
 	margin-bottom: 8px;
+	/* EMERGENCY: FORCE VISIBILITY */
+	opacity: 1 !important;
+	visibility: visible !important;
+	transform: none !important;
 }
 
 .chat-flow-07 .ai-message {
 	justify-content: flex-start;
+	/* EMERGENCY: FORCE VISIBILITY */
+	opacity: 1 !important;
+	visibility: visible !important;
 }
 
 .chat-flow-07 .user-message {
 	justify-content: flex-end;
+	/* EMERGENCY: FORCE VISIBILITY */
+	opacity: 1 !important;
+	visibility: visible !important;
 }
 
 .chat-flow-07 .message-bubble {
@@ -418,8 +502,17 @@
 	line-height: 22px;
 	word-wrap: break-word;
 	position: relative;
-	transition: all 0.3s ease;
+	
+	/* EMERGENCY: DISABLE ALL TRANSITIONS THAT CAUSE GLITCHES */
+	transition: none !important;
+	
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	
+	/* EMERGENCY: FORCE VISIBILITY ALWAYS */
+	opacity: 1 !important;
+	visibility: visible !important;
+	display: block !important;
+	transform: none !important;
 }
 
 .chat-flow-07 .ai-message .message-bubble {
@@ -939,4 +1032,175 @@
 	height: 24px;
 	position: relative;
 	overflow: visible;
+}
+
+/* CORRECTED ANTI-GLITCH OVERRIDE - ONLY APPLY TO CHAT MESSAGES */
+.chat-flow-07 .chat-messages-container .message,
+.chat-flow-07 .chat-messages-container .message-bubble,
+.chat-flow-07 .chat-messages-container .ai-message,
+.chat-flow-07 .chat-messages-container .user-message,
+.chat-flow-07 .chat-messages-container .message *,
+.chat-flow-07 .chat-messages-container .message-bubble *,
+.chat-flow-07 .chat-messages-container .ai-message *,
+.chat-flow-07 .chat-messages-container .user-message * {
+	opacity: 1 !important;
+	visibility: visible !important;
+	/* REMOVED: display: block !important; - This was breaking the layout */
+	transform: none !important;
+	transition: none !important;
+	animation: none !important;
+	filter: none !important;
+	clip: none !important;
+	clip-path: none !important;
+	mask: none !important;
+	-webkit-mask: none !important;
+}
+
+/* CRITICAL: ENSURE INPUT ELEMENTS ARE COMPLETELY EXCLUDED FROM ANTI-GLITCH RULES */
+.chat-flow-07 input,
+.chat-flow-07 .div,
+.chat-flow-07 textarea,
+.chat-flow-07 .keyboard-text-inputs input,
+.chat-flow-07 .keyboard-text-inputs .div,
+.chat-flow-07 .frame-10 input,
+.chat-flow-07 .frame-10 .div {
+	/* RESTORE NATURAL BEHAVIOR FOR INPUT ELEMENTS */
+	opacity: 1 !important;
+	visibility: visible !important;
+	display: block !important;
+	pointer-events: auto !important;
+	user-select: text !important;
+	-webkit-user-select: text !important;
+	cursor: text !important;
+	background: transparent !important;
+	border: none !important;
+	outline: none !important;
+	/* ALLOW NATURAL INPUT BEHAVIOR */
+	transform: none !important;
+	transition: all 0.2s ease !important;
+	animation: none !important;
+	filter: none !important;
+}
+
+/* EMERGENCY: FORCE MESSAGE CONTAINERS TO STAY VISIBLE */
+.chat-flow-07 .message {
+	display: flex !important;
+}
+
+.chat-flow-07 .chat-messages-container {
+	display: flex !important;
+}
+
+/* EMERGENCY: OVERRIDE ANY POSSIBLE HIDING MECHANISMS */
+.chat-flow-07 * {
+	will-change: auto !important;
+	backface-visibility: visible !important;
+	perspective: none !important;
+}
+
+/* EMERGENCY: DISABLE ALL POSSIBLE GLITCH-CAUSING ANIMATIONS */
+.chat-flow-07 .message-bubble.loading,
+.chat-flow-07 .message-bubble.typing-animation,
+.chat-flow-07 .thinking-indicator,
+.chat-flow-07 .typing-indicator {
+	opacity: 1 !important;
+	visibility: visible !important;
+	display: block !important;
+}
+
+/* EMERGENCY: FORCE MESSAGE TEXT TO BE VISIBLE */
+.chat-flow-07 .message-bubble {
+	color: #383232 !important;
+	background: rgba(229, 214, 214, 0.23) !important;
+	min-height: 20px !important;
+	min-width: 50px !important;
+}
+
+.chat-flow-07 .user-message .message-bubble {
+	color: #383232 !important;
+	background: rgba(240, 240, 245, 0.9) !important;
+}
+
+/* CORRECTED ANTI-GLITCH OVERRIDE - PRESERVE NATURAL LAYOUT */
+.chat-flow-07 [class*="message"],
+.chat-flow-07 [class*="bubble"],
+.chat-flow-07 [data-testid*="message"],
+.chat-flow-07 [id*="message"] {
+	opacity: 1 !important;
+	visibility: visible !important;
+	/* KEEP LAYOUT - DON'T OVERRIDE POSITIONING OR DISPLAY */
+	transform: none !important;
+	transition: none !important;
+	animation: none !important;
+	clip: none !important;
+	clip-path: none !important;
+	mask: none !important;
+	filter: none !important;
+	backdrop-filter: none !important;
+	mix-blend-mode: normal !important;
+}
+
+/* PRESERVE NATURAL FLEX DISPLAY FOR MESSAGE CONTAINERS */
+.chat-flow-07 [class*="message"]:not([class*="bubble"]) {
+	/* DON'T FORCE display: this will use the natural CSS display */
+	/* PRESERVE ORIGINAL LAYOUT PROPERTIES */
+	margin-bottom: 8px !important;
+	opacity: 1 !important;
+	visibility: visible !important;
+}
+
+/* PRESERVE NATURAL BLOCK DISPLAY FOR MESSAGE BUBBLES */
+.chat-flow-07 [class*="bubble"] {
+	/* DON'T FORCE display: this will use the natural CSS display */
+	max-width: 80% !important;
+	padding: 16px !important;
+	border-radius: 20px !important;
+	word-wrap: break-word !important;
+	position: relative !important;
+	opacity: 1 !important;
+	visibility: visible !important;
+}
+
+/* EMERGENCY: PREVENT ANY EXTERNAL CSS FROM HIDING MESSAGES */
+.chat-flow-07 .chat-messages-container * {
+	pointer-events: auto !important;
+}
+
+/* SIMPLIFIED: RESTORE FULL INPUT FUNCTIONALITY */
+.chat-flow-07 .keyboard-text-inputs {
+	display: flex !important;
+	opacity: 1 !important;
+	visibility: visible !important;
+	pointer-events: auto !important;
+	z-index: 15 !important;
+}
+
+.chat-flow-07 .frame-10 {
+	background: #fefcfc !important;
+	display: flex !important;
+	pointer-events: auto !important;
+	opacity: 1 !important;
+	visibility: visible !important;
+	z-index: 16 !important;
+}
+
+.chat-flow-07 .div {
+	/* CRITICAL: ENSURE INPUT FIELD WORKS */
+	display: block !important;
+	opacity: 1 !important;
+	visibility: visible !important;
+	pointer-events: auto !important;
+	user-select: text !important;
+	-webkit-user-select: text !important;
+	cursor: text !important;
+	background: transparent !important;
+	border: none !important;
+	outline: none !important;
+	z-index: 20 !important;
+	position: relative !important;
+	/* ALLOW NATURAL TYPING */
+	transform: none !important;
+	transition: none !important;
+	animation: none !important;
+	filter: none !important;
 }

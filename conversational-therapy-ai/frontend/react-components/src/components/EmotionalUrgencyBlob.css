@@ -1,116 +1,144 @@
-/* Emotional Urgency Blob Styles */
-
-.emotional-urgency-blob-container {
-	pointer-events: none;
-	z-index: 5;
-}
-
+/* CRITICAL FIX: Enhanced Blob Color Morphing Styles */
 .emotional-urgency-blob {
-	will-change: transform, opacity;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: background, opacity, transform;
 }
 
-/* Animations */
+/* Smooth background transitions */
+.emotional-urgency-blob.color-morphing {
+  transition: background 2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* GPU acceleration for smooth animations */
+.emotional-urgency-blob {
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  perspective: 1000px;
+}
+
+/* Enhanced gradient morphing */
+.blob-gradient-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.blob-gradient-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: opacity 2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.blob-gradient-layer.transitioning-out {
+  opacity: 0;
+}
+
+.blob-gradient-layer.transitioning-in {
+  opacity: 1;
+}
+
+/* Enhanced container transition states */
+.emotional-urgency-blob-container.color-morphing {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.emotional-urgency-blob-container.visibility-transitioning {
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth fade animations */
+.emotional-urgency-blob-container.fade-in {
+  animation: blob-fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.emotional-urgency-blob-container.fade-out {
+  animation: blob-fade-out 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes blob-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes blob-fade-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+/* Enhanced urgency pulse animations */
 @keyframes urgency-pulse {
-	0% {
-		transform: scale(0.95);
-		opacity: 0.1;
-	}
-	100% {
-		transform: scale(1.05);
-		opacity: 0.4;
-	}
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
 }
 
 @keyframes critical-warning {
-	0% {
-		opacity: 0.2;
-		transform: scale(0.98);
-	}
-	100% {
-		opacity: 0.8;
-		transform: scale(1.02);
-	}
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
 }
 
-/* Emotionstyp-spezifische Stile */
-.emotional-urgency-blob-container.anxiety {
-	filter: drop-shadow(0 0 20px rgba(74, 144, 226, 0.3));
+/* Emotion-specific color morphing enhancements */
+.emotional-urgency-blob-container.anxiety .emotional-urgency-blob {
+  transition: background 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.emotional-urgency-blob-container.joy {
-	filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.3));
+.emotional-urgency-blob-container.joy .emotional-urgency-blob {
+  transition: background 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.emotional-urgency-blob-container.sadness {
-	filter: drop-shadow(0 0 20px rgba(100, 149, 237, 0.3));
+.emotional-urgency-blob-container.sadness .emotional-urgency-blob {
+  transition: background 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.emotional-urgency-blob-container.anger {
-	filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.3));
+.emotional-urgency-blob-container.neutral .emotional-urgency-blob {
+  transition: background 3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.emotional-urgency-blob-container.fear {
-	filter: drop-shadow(0 0 20px rgba(138, 43, 226, 0.3));
+/* Performance optimizations */
+.emotional-urgency-blob-container {
+  contain: layout style paint;
+  will-change: transform, opacity;
 }
 
-.emotional-urgency-blob-container.emotional_urgency {
-	filter: drop-shadow(0 0 20px rgba(255, 136, 0, 0.3));
+.emotional-urgency-blob {
+  contain: layout style paint;
+  will-change: background, transform, opacity;
 }
 
-/* Dringlichkeitsstufen-spezifische Stile */
-.emotional-urgency-blob-container.critical {
-	filter: drop-shadow(0 0 30px rgba(255, 0, 0, 0.6))
-		drop-shadow(0 0 60px rgba(255, 0, 0, 0.3));
-}
-
-.emotional-urgency-blob-container.high {
-	filter: drop-shadow(0 0 25px rgba(255, 68, 0, 0.5))
-		drop-shadow(0 0 50px rgba(255, 68, 0, 0.2));
-}
-
-.emotional-urgency-blob-container.medium {
-	filter: drop-shadow(0 0 20px rgba(255, 102, 0, 0.4));
-}
-
-.emotional-urgency-blob-container.low {
-	filter: drop-shadow(0 0 15px rgba(255, 136, 0, 0.3));
-}
-
-/* Responsive Anpassungen */
-@media (max-width: 768px) {
-	.emotional-urgency-blob-container {
-		transform: scale(0.8);
-	}
-}
-
-@media (max-width: 480px) {
-	.emotional-urgency-blob-container {
-		transform: scale(0.6);
-	}
-}
-
-/* Performance-Optimierungen */
-.emotional-urgency-blob,
-.emotional-urgency-glow,
-.critical-ring,
-.critical-inner-ring {
-	will-change: transform, opacity;
-	backface-visibility: hidden;
-	transform-style: preserve-3d;
-}
-
-/* Accessibility - Reduzierte Animationen für Benutzer mit entsprechenden Einstellungen */
+/* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
-	.emotional-urgency-blob-container,
-	.emotional-urgency-blob,
-	.emotional-urgency-glow,
-	.critical-ring,
-	.critical-inner-ring {
-		animation: none !important;
-		transition: none !important;
-	}
-
-	.emotional-urgency-blob {
-		transform: none !important;
-	}
+  .emotional-urgency-blob,
+  .emotional-urgency-blob-container {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .emotional-urgency-blob-container.color-morphing .emotional-urgency-blob {
+    transition: background 0.3s ease !important;
+  }
 }

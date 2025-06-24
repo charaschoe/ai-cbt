@@ -62,18 +62,6 @@
   left: 20px;
   top: 140px;
 }
-.mind-subpage .physiological-readiness {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  align-self: stretch;
-  flex-shrink: 0;
-  position: relative;
-  box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.1),
-    0px 4px 16px 0px rgba(0, 0, 0, 0.1), 0px 2px 12px 0px rgba(0, 0, 0, 0.1);
-}
 .mind-subpage .card-energy-block {
   background: rgba(255, 255, 255, 0.33);
   border-radius: 20px;
@@ -94,6 +82,8 @@
   align-self: stretch;
   flex-shrink: 0;
   position: relative;
+  box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.1),
+    0px 4px 16px 0px rgba(0, 0, 0, 0.1), 0px 2px 12px 0px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(30px);
 }
 .mind-subpage .title-physiological-readiness {
@@ -373,18 +363,6 @@
   align-items: center;
   justify-content: flex-start;
 }
-.mind-subpage .your-regulation-moment {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  align-self: stretch;
-  flex-shrink: 0;
-  position: relative;
-  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.12),
-    0px 0px 20px 0px rgba(0, 0, 0, 0.1);
-}
 .mind-subpage .card-regulation-moment {
   background: rgba(255, 255, 255, 0.13);
   border-radius: 20px;
@@ -405,6 +383,8 @@
   align-self: stretch;
   flex-shrink: 0;
   position: relative;
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.12),
+    0px 0px 20px 0px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(30px);
 }
 .mind-subpage .title2 {
@@ -427,7 +407,7 @@
   align-items: center;
   justify-content: flex-start;
 }
-.mind-subpage .your-regulation-moment2 {
+.mind-subpage .your-regulation-moment {
   color: #534c49;
   text-align: left;
   font-family: "PpNeueMontreal-Medium", sans-serif;
@@ -528,18 +508,6 @@
   font-family: "PpWriter-RegularItalic", sans-serif;
   font-style: italic;
 }
-.mind-subpage .card-ambient-insight {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  align-self: stretch;
-  flex-shrink: 0;
-  position: relative;
-  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.12),
-    0px 0px 20px 0px rgba(0, 0, 0, 0.1);
-}
 .mind-subpage .card-insight {
   background: rgba(255, 255, 255, 0.13);
   border-radius: 20px;
@@ -560,6 +528,8 @@
   align-self: stretch;
   flex-shrink: 0;
   position: relative;
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.12),
+    0px 0px 20px 0px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(30px);
 }
 .mind-subpage .icon-title {
@@ -722,18 +692,6 @@
   justify-content: flex-start;
 }
 .mind-subpage .card-reflect {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  align-self: stretch;
-  flex-shrink: 0;
-  position: relative;
-  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.12),
-    0px 0px 20px 0px rgba(0, 0, 0, 0.1);
-}
-.mind-subpage .card-reflect2 {
   background: rgba(255, 255, 255, 0.13);
   border-radius: 20px;
   border-width: 1px;
@@ -753,6 +711,8 @@
   align-self: stretch;
   flex-shrink: 0;
   position: relative;
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.12),
+    0px 0px 20px 0px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(30px);
 }
 .mind-subpage .section-title {

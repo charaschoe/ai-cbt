@@ -362,3 +362,91 @@
 		color: #000;
 	}
 }
+
+/* ===== CRITICAL FIX: COORDINATED ORBIA TRANSITION STYLES ===== */
+
+/* Phase-based transition system für smooth orb switching */
+.orb-container.orb-fade-out {
+	opacity: 0;
+	transform: scale(0.95);
+	transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+		transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.orb-container.orb-fade-in {
+	opacity: 1;
+	transform: scale(1);
+	transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+		transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced coordinated transition for inner orbs */
+.standard-orb.coordinated-fade-out {
+	opacity: 0;
+	transform: scale(0.9) translateZ(0);
+	transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+		transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.standard-orb.coordinated-fade-in {
+	opacity: 1;
+	transform: scale(1) translateZ(0);
+	transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+		transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.emotional-orb.coordinated-fade-out {
+	opacity: 0;
+	transform: scale(0.9) translateZ(0);
+	transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+		transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.emotional-orb.coordinated-fade-in {
+	opacity: 1;
+	transform: scale(1) translateZ(0);
+	transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+		transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* GPU acceleration für smooth transitions */
+.orb-container.orb-fade-out,
+.orb-container.orb-fade-in,
+.standard-orb.coordinated-fade-out,
+.standard-orb.coordinated-fade-in,
+.emotional-orb.coordinated-fade-out,
+.emotional-orb.coordinated-fade-in {
+	will-change: opacity, transform;
+	backface-visibility: hidden;
+	transform-style: preserve-3d;
+}
+
+/* Transition coordination states */
+.orb-container[data-transition-direction="to-emotional"] {
+	transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.orb-container[data-transition-direction="to-standard"] {
+	transition-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+}
+
+/* Enhanced therapeutic glow during transitions */
+.orb-therapeutic-glow.transitioning {
+	filter: blur(25px);
+	opacity: 0.5;
+	transition: filter 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+		opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reduced motion support für coordinated transitions */
+@media (prefers-reduced-motion: reduce) {
+	.orb-container.orb-fade-out,
+	.orb-container.orb-fade-in,
+	.standard-orb.coordinated-fade-out,
+	.standard-orb.coordinated-fade-in,
+	.emotional-orb.coordinated-fade-out,
+	.emotional-orb.coordinated-fade-in {
+		transition: opacity 0.1s ease !important;
+		transform: none !important;
+	}
+}

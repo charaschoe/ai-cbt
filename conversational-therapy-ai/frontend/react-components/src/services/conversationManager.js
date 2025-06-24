@@ -341,38 +341,23 @@ class ConversationManager {
   }
 
   /**
-   * Performs cleanup of old data - ENHANCED: Protects active threads and messages
+   * EMERGENCY FIX: DISABLED CLEANUP - Prevents active message deletion
    */
   performCleanup() {
-    // CRITICAL FIX: Never cleanup message history if we have active threads
-    if (this.messageHistory.length > this.maxHistoryLength && this.threads.size === 0) {
-      const removed = this.messageHistory.splice(0, this.messageHistory.length - this.maxHistoryLength);
-      console.log(`🧹 Cleaned up ${removed.length} old messages (no active threads)`);
-    }
-
-    // CRITICAL FIX: Much more conservative thread cleanup
-    const sixHoursAgo = Date.now() - (6 * 60 * 60 * 1000); // 6 hours instead of 1
-    let cleanedThreads = 0;
-
-    for (const [threadId, thread] of this.threads) {
-      const isCurrentThread = threadId === this.currentThread;
-      const hasRecentActivity = (Date.now() - thread.lastActivity) < (30 * 60 * 1000); // 30 min protection
-      const hasMessages = thread.messages && thread.messages.length > 0;
-      
-      // NEVER delete current thread, recent activity, or threads with messages
-      if (!thread.isActive &&
-          !isCurrentThread &&
-          !hasRecentActivity &&
-          !hasMessages &&
-          thread.lastActivity < sixHoursAgo) {
-        this.threads.delete(threadId);
-        cleanedThreads++;
-      }
-    }
-
-    if (cleanedThreads > 0) {
-      console.log(`🧹 Cleaned up ${cleanedThreads} inactive threads (protected current and recent)`);
-    }
+  	console.log("🔥 EMERGENCY: Cleanup DISABLED to prevent message loss");
+  	
+  	// CRITICAL: DISABLE ALL CLEANUP during message operations
+  	// Only cleanup if we have NO active threads AND excessive history
+  	if (this.threads.size === 0 && this.messageHistory.length > (this.maxHistoryLength * 3)) {
+  		console.log("🧹 Emergency cleanup: Only cleaning with no active threads and excessive history");
+  		const removed = this.messageHistory.splice(0, this.messageHistory.length - this.maxHistoryLength);
+  		console.log(`🧹 Emergency cleaned up ${removed.length} old messages`);
+  	} else {
+  		console.log(`🔒 Cleanup BLOCKED: ${this.threads.size} active threads, ${this.messageHistory.length} messages`);
+  	}
+ 
+  	// CRITICAL: NEVER cleanup active threads
+  	console.log("🔒 Thread cleanup DISABLED to prevent active thread deletion");
   }
 
   /**

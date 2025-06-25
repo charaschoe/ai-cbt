@@ -1158,6 +1158,15 @@ export const ChatFlow07Enhanced = ({
 						</div>
 					</div>
 				)}
+
+				{/* Fix: Zeige die Bubble weiter an, bis die neue AI-Nachricht sicher in messages ist */}
+				{!isTypingAnimation && typingMessage && (
+					<div className="simple-message-container ai-message">
+						<div className="simple-message-bubble">
+							{typingMessage}
+						</div>
+					</div>
+				)}
 				<div ref={messagesEndRef} />
 			</div>
 

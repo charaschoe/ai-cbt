@@ -1,108 +1,108 @@
 /* Screen2V4 – exaktes CSS aus Figma-Export */
 .screen-2-v-4,
 .screen-2-v-4 * {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 .screen-2-v-4 {
-  background: #fbf4f1;
-  height: 852px;
-  position: relative;
-  overflow: hidden;
+	background: #fbf4f1;
+	height: 852px;
+	position: relative;
+	overflow: hidden;
 }
 .blob-4 {
-  height: auto;
-  position: absolute;
-  left: 15.07px;
-  top: 512.07px;
-  overflow: visible;
+	height: auto;
+	position: absolute;
+	left: 15.07px;
+	top: 512.07px;
+	overflow: visible;
 }
 .frame-79 {
-  width: 358.82px;
-  height: 341.11px;
-  position: absolute;
-  left: -68.47px;
-  top: 87px;
+	width: 358.82px;
+	height: 341.11px;
+	position: absolute;
+	left: -68.47px;
+	top: 87px;
 }
 .blob-mental-negative {
-  height: auto;
-  position: absolute;
-  left: 0px;
-  top: 0px;
-  overflow: visible;
+	height: auto;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	overflow: visible;
 }
 .adaptive-insight-mind {
-  color: #543c3c;
-  text-align: center;
-  font-family: "PpWriter-RegularText", sans-serif;
-  font-size: 20px;
-  font-weight: 400;
-  position: absolute;
-  left: 149.86px;
-  top: 155.99px;
+	color: #543c3c;
+	text-align: center;
+	font-family: "PpWriter-RegularText", sans-serif;
+	font-size: 20px;
+	font-weight: 400;
+	position: absolute;
+	left: 149.86px;
+	top: 155.99px;
 }
 .label-subpage-navigatino {
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
-  gap: 16px;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  left: 50%;
-  translate: -50%;
-  top: 72px;
+	padding: 10px;
+	display: flex;
+	flex-direction: row;
+	gap: 16px;
+	align-items: center;
+	justify-content: center;
+	position: absolute;
+	left: 50%;
+	translate: -50%;
+	top: 72px;
 }
 .what-s-surfacing-today {
-  color: #413737;
-  text-align: center;
-  font-family: "PpWriter-Regular", sans-serif;
-  font-size: 16px;
-  font-weight: 400;
-  position: relative;
+	color: #413737;
+	text-align: center;
+	font-family: "PpWriter-Regular", sans-serif;
+	font-size: 16px;
+	font-weight: 400;
+	position: relative;
 }
 .frame-78 {
-  width: 316.02px;
-  height: 294.12px;
-  position: absolute;
-  left: 108.74px;
-  top: 313.44px;
+	width: 316.02px;
+	height: 294.12px;
+	position: absolute;
+	left: 108.74px;
+	top: 313.44px;
 }
 .blob-negative-body {
-  height: auto;
-  position: absolute;
-  left: 0px;
-  top: 0px;
-  overflow: visible;
+	height: auto;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	overflow: visible;
 }
 .frame-63 {
-  padding: 20.03px;
-  display: flex;
-  flex-direction: row;
-  gap: 20.03px;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  left: 61.64px;
-  top: 98.87px;
+	padding: 20.03px;
+	display: flex;
+	flex-direction: row;
+	gap: 20.03px;
+	align-items: center;
+	justify-content: center;
+	position: absolute;
+	left: 61.64px;
+	top: 98.87px;
 }
 .adaptive-insight-body {
-  color: #543c3c;
-  text-align: center;
-  font-family: "PpWriter-RegularText", sans-serif;
-  font-size: 20px;
-  font-weight: 400;
-  position: relative;
-  width: 152.69px;
+	color: #543c3c;
+	text-align: center;
+	font-family: "PpWriter-RegularText", sans-serif;
+	font-size: 20px;
+	font-weight: 400;
+	position: relative;
+	width: 152.69px;
 }
 .adaptive-insight-social {
-  color: #543c3c;
-  text-align: center;
-  font-family: "PpWriter-RegularText", sans-serif;
-  font-size: 20px;
-  font-weight: 400;
-  position: absolute;
-  left: 75.71px;
-  top: 637.07px;
-  width: 160px;
-  height: 51px;
+	color: #543c3c;
+	text-align: center;
+	font-family: "PpWriter-RegularText", sans-serif;
+	font-size: 20px;
+	font-weight: 400;
+	position: absolute;
+	left: 75.71px;
+	top: 637.07px;
+	width: 160px;
+	height: 51px;
 }

@@ -26,7 +26,9 @@ export default function Screen2V4({ onBodyPageClick, onMindPageClick }) {
 				</div>
 			</div>
 			<div className="label-subpage-navigatino">
-				<div className="what-s-surfacing-today">What’s Surfacing Today</div>
+				<div className="what-s-surfacing-today">
+					What’s Surfacing Today
+				</div>
 			</div>
 			<div className="frame-78">
 				<img
@@ -39,7 +41,9 @@ export default function Screen2V4({ onBodyPageClick, onMindPageClick }) {
 					onClick={onBodyPageClick}
 					style={{ cursor: "pointer" }}
 				>
-					<div className="adaptive-insight-body">Low energy today</div>
+					<div className="adaptive-insight-body">
+						Low energy today
+					</div>
 				</div>
 			</div>
 			<div className="adaptive-insight-social">Craving connection</div>

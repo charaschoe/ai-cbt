@@ -1,0 +1,68 @@
+.component-15-category-body-more-info-false,
+.component-15-category-body-more-info-false * {
+  box-sizing: border-box;
+}
+.component-15-category-body-more-info-false {
+  width: 150px;
+  height: 92px;
+  position: relative;
+}
+.component-15-category-body-more-info-false .frame-121 {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  height: auto;
+  position: absolute;
+  left: 49.54px;
+  top: 0px;
+  overflow: visible;
+}
+.component-15-category-body-more-info-false .body {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  border-style: solid;
+  border-color: #a7c6f2;
+  border-width: 0.75px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  position: absolute;
+  left: 6.5px;
+  top: 0px;
+  backdrop-filter: blur(2.5px);
+  transition: transform 0.2s ease;
+}
+
+.component-15-category-body-more-info-false .body:hover {
+  transform: translateY(-2px);
+}
+
+.component-15-category-body-more-info-false ._10 {
+  color: #4189f0;
+  text-align: center;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.component-15-category-body-more-info-false .body2 {
+  color: #4189f0;
+  text-align: center;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

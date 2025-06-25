@@ -1,0 +1,59 @@
+.component-15-category-social-more-info-false,
+.component-15-category-social-more-info-false * {
+  box-sizing: border-box;
+}
+.component-15-category-social-more-info-false {
+  width: 150px;
+  height: 96px;
+  position: relative;
+}
+.component-15-category-social-more-info-false .vector {
+  width: 86.96px;
+  height: 86.96px;
+  position: absolute;
+  left: 0px;
+  top: 0.01px;
+  overflow: visible;
+}
+.component-15-category-social-more-info-false .social {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  border-style: solid;
+  border-color: #f1cbd1;
+  border-width: 0.75px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-end;
+  justify-content: flex-start;
+  width: 60.04px;
+  position: absolute;
+  left: 63px;
+  top: 0px;
+  backdrop-filter: blur(2.5px);
+  transition: transform 0.2s ease;
+}
+
+.component-15-category-social-more-info-false .social:hover {
+  transform: translateY(-2px);
+}
+
+.component-15-category-social-more-info-false ._12 {
+  color: #ef8194;
+  text-align: center;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  position: relative;
+  align-self: stretch;
+}
+.component-15-category-social-more-info-false .social2 {
+  color: #ef8194;
+  text-align: center;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  position: relative;
+  align-self: stretch;
+}

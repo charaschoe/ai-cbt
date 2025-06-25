@@ -1,0 +1,625 @@
+.overview-light-v-3,
+.overview-light-v-3 * {
+  box-sizing: border-box;
+}
+.overview-light-v-3 {
+  background: #fbf4f1;
+  height: 852px;
+  position: relative;
+  overflow: hidden;
+}
+.overview-light-v-3 .vector-2139 {
+  width: 214.83px;
+  height: 890.05px;
+  position: absolute;
+  left: 714.75px;
+  top: 257.03px;
+  transform: translate(-714.75px, -257.03px);
+  overflow: visible;
+}
+.overview-light-v-3 .vector-2140 {
+  width: 214.83px;
+  height: 760.02px;
+  position: absolute;
+  left: 151.43px;
+  top: 757.57px;
+  transform: translate(-151.43px, -757.57px);
+  overflow: visible;
+}
+.overview-light-v-3 .frame-118 {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 353px;
+  position: absolute;
+  left: 20px;
+  top: 123px;
+}
+.overview-light-v-3 .timeframe {
+  background: linear-gradient(
+    108.82deg,
+    rgba(244, 252, 255, 0.9) 0%,
+    rgba(255, 244, 249, 0.9) 29.360082745552063%,
+    rgba(255, 255, 255, 0.9) 71.71208262443542%,
+    rgba(247, 247, 247, 0.9) 100%
+  );
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.1);
+}
+.overview-light-v-3 .time-day {
+  background: #ede2e2;
+  border-radius: 4px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 29px;
+  position: relative;
+}
+.overview-light-v-3 .d {
+  color: #6f6662;
+  text-align: center;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 12px;
+  line-height: 20.93px;
+  font-weight: 500;
+  position: relative;
+  align-self: stretch;
+}
+.overview-light-v-3 .time-week {
+  background: #ede2e2;
+  border-radius: 4px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 29px;
+  position: relative;
+}
+.overview-light-v-3 .w {
+  color: #6f6662;
+  text-align: center;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 12px;
+  line-height: 20.93px;
+  font-weight: 500;
+  position: relative;
+  align-self: stretch;
+}
+.overview-light-v-3 .time-month {
+  background: #ede2e2;
+  border-radius: 4px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 29px;
+  position: relative;
+}
+.overview-light-v-3 .m {
+  color: #6f6662;
+  text-align: center;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 12px;
+  line-height: 20.93px;
+  font-weight: 500;
+  position: relative;
+  align-self: stretch;
+}
+.overview-light-v-3 .time-6-months {
+  background: #ede2e2;
+  border-radius: 4px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 29px;
+  position: relative;
+}
+.overview-light-v-3 ._6-m {
+  color: #6f6662;
+  text-align: center;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 12px;
+  line-height: 20.93px;
+  font-weight: 500;
+  position: relative;
+  align-self: stretch;
+}
+.overview-light-v-3 .time-year {
+  background: #ede2e2;
+  border-radius: 4px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 29px;
+  position: relative;
+}
+.overview-light-v-3 .y {
+  color: #6f6662;
+  text-align: center;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 12px;
+  line-height: 20.93px;
+  font-weight: 500;
+  position: relative;
+  align-self: stretch;
+}
+.overview-light-v-3 .frame-37 {
+  background: rgba(255, 255, 255, 0.33);
+  border-radius: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-image-slice: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: 308px;
+  position: relative;
+  box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.1),
+    0px 6px 16px 0px rgba(0, 0, 0, 0.1), 0px 4px 12px 0px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(1.9px);
+}
+.overview-light-v-3 .card-title {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.overview-light-v-3 .icon {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.overview-light-v-3 .div {
+  color: #000000;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 20px;
+  line-height: 20.93px;
+  font-weight: 500;
+  position: relative;
+  width: 24px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.overview-light-v-3 .title {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 20px;
+  line-height: 20.93px;
+  font-weight: 500;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.overview-light-v-3 .graph {
+  flex-shrink: 0;
+  width: 307px;
+  height: 134.97px;
+  position: static;
+}
+.overview-light-v-3 .graph-lines {
+  width: 307px;
+  height: 134.97px;
+  position: static;
+}
+.overview-light-v-3 .lines {
+  width: 305.82px;
+  height: 113.31px;
+  position: absolute;
+  left: calc(50% - 155.32px);
+  top: 55px;
+  overflow: visible;
+}
+.overview-light-v-3 .numbers {
+  display: flex;
+  flex-direction: row;
+  gap: 73px;
+  align-items: center;
+  justify-content: flex-start;
+  width: 306px;
+  position: absolute;
+  left: calc(50% - 156.5px);
+  top: 168.97px;
+}
+.overview-light-v-3 ._12-a {
+  color: #9b9595;
+  text-align: center;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 10px;
+  line-height: 20.93px;
+  font-weight: 500;
+  position: relative;
+  width: 20.68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.overview-light-v-3 ._3 {
+  color: #9b9595;
+  text-align: center;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 10px;
+  line-height: 20.93px;
+  font-weight: 500;
+  position: relative;
+  width: 20.68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.overview-light-v-3 ._6 {
+  color: #9b9595;
+  text-align: center;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 10px;
+  line-height: 20.93px;
+  font-weight: 500;
+  position: relative;
+  width: 20.68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.overview-light-v-3 ._9 {
+  color: #9b9595;
+  text-align: center;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 10px;
+  line-height: 20.93px;
+  font-weight: 500;
+  position: relative;
+  width: 20.68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.overview-light-v-3 .fluctuation-line {
+  width: 305px;
+  height: 35.37px;
+  position: absolute;
+  left: 21px;
+  top: 75.46px;
+  overflow: visible;
+}
+.overview-light-v-3 .average {
+  width: 305.5px;
+  height: 0px;
+  position: absolute;
+  left: 20.5px;
+  top: 92.97px;
+  overflow: visible;
+}
+.overview-light-v-3 .frame-36 {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  width: 311px;
+  position: relative;
+}
+.overview-light-v-3 .frame-35 {
+  display: flex;
+  flex-direction: row;
+  gap: 79px;
+  align-items: flex-end;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.overview-light-v-3 .score {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  width: 84px;
+  position: relative;
+}
+.overview-light-v-3 ._67 {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 46px;
+  line-height: 22.46px;
+  font-weight: 500;
+  position: relative;
+  align-self: stretch;
+}
+.overview-light-v-3 .current-score {
+  color: #c79ea0;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 14px;
+  line-height: 20.93px;
+  font-weight: 500;
+  position: relative;
+  align-self: stretch;
+}
+.overview-light-v-3 .frame-26 {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.overview-light-v-3 .frame-18 {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  padding: 4px 16px 4px 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: 29px;
+  position: relative;
+}
+.overview-light-v-3 .div2 {
+  color: #000000;
+  text-align: center;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 16px;
+  line-height: 20.93px;
+  font-weight: 500;
+  position: relative;
+  width: 10px;
+  height: 21px;
+}
+.overview-light-v-3 .frame-16 {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  padding: 4px 10px 4px 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: 29px;
+  position: relative;
+}
+.overview-light-v-3 ._7-this-week {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 14px;
+  line-height: 20.93px;
+  font-weight: 500;
+  position: relative;
+}
+.overview-light-v-3 .frame-34 {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.overview-light-v-3 .summary {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  position: relative;
+}
+.overview-light-v-3 .card-well-being-score-index {
+  background: rgba(255, 255, 255, 0.33);
+  border-radius: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-image-slice: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  width: 353px;
+  height: 308px;
+  position: relative;
+  box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.1),
+    0px 6px 16px 0px rgba(0, 0, 0, 0.1), 0px 4px 12px 0px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  backdrop-filter: blur(1.9px);
+}
+.overview-light-v-3 .label-well-being-score-index {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.overview-light-v-3 .well-being-score-index {
+  color: #534c49;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 20px;
+  line-height: 20.93px;
+  font-weight: 500;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.overview-light-v-3 .well-being-graphic {
+  padding: 0px 55px 0px 55px;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: 163px;
+  position: relative;
+}
+.overview-light-v-3 .component-15-instance {
+  position: absolute !important;
+  left: 25px !important;
+  top: 4px !important;
+}
+.overview-light-v-3 .component-15-instance2 {
+  width: 127px !important;
+  height: 89px !important;
+  position: absolute !important;
+  left: 149.79px !important;
+  top: 6.28px !important;
+}
+.overview-light-v-3 .component-15-instance3 {
+  position: absolute !important;
+  left: 55.04px !important;
+  top: 67px !important;
+}
+.overview-light-v-3 .score2 {
+  display: flex;
+  flex-direction: row;
+  gap: 81px;
+  align-items: flex-end;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  position: relative;
+}
+.overview-light-v-3 .frame-87 {
+  background: linear-gradient(
+    180deg,
+    rgba(251, 244, 241, 0.7) 37.499675154685974%,
+    rgba(251, 244, 241, 0) 100%
+  );
+  padding: 10px 16px 0px 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 393px;
+  height: 107px;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  backdrop-filter: blur(0px);
+}
+.overview-light-v-3 .frame-77 {
+  opacity: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  height: auto;
+  position: relative;
+  overflow: visible;
+}
+.overview-light-v-3 .label-subpage-body {
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.overview-light-v-3 .overview {
+  color: #413737;
+  text-align: center;
+  font-family: "PpWriter-Regular", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  position: relative;
+}
+.overview-light-v-3 .button-more-options {
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.overview-light-v-3 .ellipse-5 {
+  background: #413737;
+  border-radius: 50%;
+  flex-shrink: 0;
+  width: 4px;
+  height: 4px;
+  position: relative;
+}
+.overview-light-v-3 .ellipse-6 {
+  background: #413737;
+  border-radius: 50%;
+  flex-shrink: 0;
+  width: 4px;
+  height: 4px;
+  position: relative;
+}
+.overview-light-v-3 .ellipse-7 {
+  background: #413737;
+  border-radius: 50%;
+  flex-shrink: 0;
+  width: 4px;
+  height: 4px;
+  position: relative;
+}

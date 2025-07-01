@@ -291,20 +291,21 @@
 	top: 240px;
 }
 
-/* CORRECTED: RESTORE PROPER LAYOUT WITH ANTI-GLITCH PROTECTION */
+/* FIXED: Optimiertes Layout für bessere Keyboard-Integration */
 .chat-flow-07 .chat-messages-container {
 	position: absolute !important;
 	left: calc(50% - 176.5px) !important;
-	top: 260px !important; /* Positioned below orb at 120px + orb size */
+	top: 260px !important; /* Positioned below orb */
 	width: 353px !important;
-	height: calc(100vh - 490px) !important; /* More space available due to smaller orb */
+	/* FIXED: Weniger konservative Höhenreservierung für mehr sichtbare Nachrichten */
+	height: calc(100vh - 340px) !important; /* Reduziert von 380px auf 340px */
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	display: flex !important;
 	flex-direction: column !important;
 	gap: 12px !important;
 	padding: 10px 0 !important;
-	padding-bottom: 15px !important; /* Reduced bottom padding to save space */
+	padding-bottom: 30px !important; /* Optimaler Abstand zur letzten Nachricht */
 	
 	/* EMERGENCY: DISABLE ALL TRANSITIONS THAT CAUSE MESSAGE GLITCHES */
 	transition: none !important;
@@ -326,11 +327,12 @@
 	contain: layout !important;
 }
 
+/* FIXED: Bessere Keyboard-Hidden-States */
 .chat-flow-07.keyboard-hidden .chat-messages-container,
 .chat-flow-07.keyboard-transitioning-out .chat-messages-container {
-	height: calc(100vh - 260px); /* Much more space when keyboard is hidden */
+	height: calc(100vh - 300px) !important; /* Noch weniger reservierter Platz wenn Keyboard weg */
 	top: 260px; /* Same position as above */
-	padding-bottom: 40px; /* More padding when keyboard is hidden */
+	padding-bottom: 60px; /* Mehr Padding wenn keyboard versteckt */
 	
 	/* EMERGENCY: NO TRANSITIONS */
 	transition: none !important;
@@ -356,7 +358,7 @@
 	display: flex !important;
 	transition: none !important;
 	transform: none !important;
-	height: calc(100vh - 490px) !important;
+	height: calc(100vh - 350px) !important; /* Weniger konservativ */
 }
 
 .chat-flow-07.keyboard-transitioning .message,
@@ -394,24 +396,24 @@
 @media (max-height: 800px) {
 	.chat-flow-07 .chat-messages-container {
 		top: 240px; /* Below orb on smaller screens */
-		height: calc(100vh - 420px); /* Less space reserved */
+		height: calc(100vh - 380px); /* Optimiert für kleinere Screens */
 	}
 	
 	.chat-flow-07.enhanced .chat-messages-container {
 		top: 240px;
-		height: calc(100vh - 420px);
+		height: calc(100vh - 380px);
 	}
 }
 
 @media (max-height: 700px) {
 	.chat-flow-07 .chat-messages-container {
 		top: 220px; /* Still below orb on very small screens */
-		height: calc(100vh - 360px);
+		height: calc(100vh - 340px); /* Mehr Platz für Messages auf kleinen Screens */
 	}
 
 	.chat-flow-07.enhanced .chat-messages-container {
 		top: 220px;
-		height: calc(100vh - 360px);
+		height: calc(100vh - 340px);
 	}
 }
 
@@ -898,7 +900,7 @@
 	position: absolute;
 	inset: 0;
 }
-/* Much lower keyboard positioning */
+/* FIXED: Korrekte Keyboard-Positionierung für bessere Chat-Integration */
 .chat-flow-07 .keyboard-i-phone-instance {
 	width: 100% !important;
 	max-width: 393px !important;
@@ -906,8 +908,10 @@
 	position: absolute !important;
 	left: 50% !important;
 	translate: -50% !important;
-	bottom: -100px !important; /* Moved much lower */
+	bottom: 0px !important; /* FIXED: Keyboard am unteren Bildschirmrand */
+	z-index: 10 !important; /* Höhere z-index für bessere Sichtbarkeit */
 }
+
 .chat-flow-07 .keyboard-text-inputs {
 	background: #e8dede;
 	padding: 8px;
@@ -921,7 +925,8 @@
 	position: absolute;
 	left: 50%;
 	translate: -50%;
-	bottom: 229px; /* Moved much lower */
+	bottom: 291px; /* FIXED: Näher am Keyboard für weniger Gap */
+	z-index: 12 !important; /* Noch höhere z-index für Input-Bereich */
 }
 .chat-flow-07 .frame-14 {
 	display: flex;

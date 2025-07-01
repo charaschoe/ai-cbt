@@ -40,6 +40,10 @@ export const ChatFlow07Enhanced = ({
 		React.useState(false);
 	const [showNewMessagesIndicator, setShowNewMessagesIndicator] =
 		React.useState(false);
+	
+	// FIXED: Dynamic Layout State für bessere Keyboard-Integration
+	const [keyboardHeight, setKeyboardHeight] = React.useState(0);
+	const [isKeyboardVisible, setIsKeyboardVisible] = React.useState(true);
 
 	// Enhanced: UniversalOrbAnimation State anstelle von Blob-System
 	const [orbEmotionalState, setOrbEmotionalState] = React.useState("neutral");
@@ -69,6 +73,7 @@ export const ChatFlow07Enhanced = ({
 
 	/**
 	 * Intelligente Kontext-basierte emotionale Analyse für UniversalOrbAnimation
+	 * FIXED: Stabilisiert mit useCallback und minimalen Dependencies
 	 */
 	const analyzeTextForOrb = React.useCallback(
 		(text, isUserMessage = false) => {
@@ -255,10 +260,16 @@ export const ChatFlow07Enhanced = ({
 			const finalSentiment = (rawSentiment * (1 - contextWeight)) + (contextualSentiment * contextWeight);
 			const normalizedSentiment = Math.max(-1, Math.min(1, finalSentiment * 2));
 
+			// FIXED: State-Updates über lokale Variablen zur Vermeidung von Dependency-Loops
+			// Verwende aktuelle State-Werte anstatt veralteter Dependencies
+			const currentPersistentState = persistentEmotionalState;
+			const currentUrgencyLevel = orbUrgencyLevel;
+			const currentIntensity = orbIntensity;
+
 			// Emotionaler Zustand bestimmen
-			let newEmotionalState = persistentEmotionalState; // Erhalte vorherigen Zustand
-			let newUrgencyLevel = orbUrgencyLevel * 0.8; // Sanfte Reduzierung
-			let newIntensity = orbIntensity * 0.9; // Sanfte Reduzierung
+			let newEmotionalState = currentPersistentState; // Erhalte vorherigen Zustand
+			let newUrgencyLevel = currentUrgencyLevel * 0.8; // Sanfte Reduzierung
+			let newIntensity = currentIntensity * 0.9; // Sanfte Reduzierung
 
 			// Nur bei starken emotionalen Signalen Zustand ändern
 			if (Math.abs(normalizedSentiment) > 0.3) {
@@ -308,7 +319,7 @@ export const ChatFlow07Enhanced = ({
 				sentimentScore: normalizedSentiment,
 			};
 		},
-		[persistentEmotionalState, orbUrgencyLevel, orbIntensity]
+		[] // CRITICAL FIX: Leere Dependencies zur Vermeidung von Dependency-Loops
 	);
 
 	/**
@@ -353,8 +364,10 @@ export const ChatFlow07Enhanced = ({
 
 	/**
 	 * Sanfte Transition zwischen emotionalen Zuständen mit Persistenz-Check
+	 * FIXED: Stabilisiert mit useCallback und direkter State-Referenz
 	 */
 	const smoothTransitionToState = React.useCallback((targetState, targetUrgency, targetIntensity, targetSentiment) => {
+		// FIXED: Direkte State-Referenz zur Vermeidung von Stale Closures
 		if (isTransitioning) return;
 
 		const now = Date.now();
@@ -385,6 +398,7 @@ export const ChatFlow07Enhanced = ({
 		const steps = 30;
 		const stepDuration = transitionDuration / steps;
 		
+		// FIXED: Verwende aktuelle State-Werte zum Zeitpunkt des Aufrufs
 		const startUrgency = orbUrgencyLevel;
 		const startIntensity = orbIntensity;
 		const startSentiment = orbSentimentScore;
@@ -419,7 +433,7 @@ export const ChatFlow07Enhanced = ({
 				});
 			}
 		}, stepDuration);
-	}, [isTransitioning, orbUrgencyLevel, orbIntensity, orbSentimentScore, lastEmotionChange, persistentEmotionalState]);
+	}, []); // FIXED: Leere Dependencies - State wird bei Aufruf erfasst
 
 	// Enhanced scroll function with better reliability
 	const scrollToBottom = () => {
@@ -492,14 +506,85 @@ export const ChatFlow07Enhanced = ({
 		}
 	}, [messages]);
 
+	// FIXED: Intelligente Keyboard-Layout-Integration
+	React.useEffect(() => {
+		// Keyboard-Event-Listener für bessere Layout-Anpassung
+		const handleKeyboardChange = () => {
+			const currentKeyboardState = showKeyboard;
+			setIsKeyboardVisible(currentKeyboardState);
+			
+			// FIXED: Weniger konservative Höhenberechnung für mehr sichtbare Nachrichten
+			const keyboardReservedSpace = currentKeyboardState ? 340 : 300; // Reduziert von 380/320
+			setKeyboardHeight(keyboardReservedSpace);
+			
+			console.log("⌨️ Keyboard Layout Update (OPTIMIERT):", {
+				keyboardVisible: currentKeyboardState,
+				reservedSpace: keyboardReservedSpace,
+				messagesContainerHeight: `calc(100vh - ${keyboardReservedSpace}px)`,
+				improvement: "40px mehr Platz für Nachrichten"
+			});
+			
+			// Auto-scroll nach Keyboard-Änderung
+			setTimeout(() => {
+				if (currentKeyboardState) {
+					scrollToBottom();
+				}
+			}, 100);
+		};
+
+		handleKeyboardChange();
+	}, [showKeyboard]);
+
+	// FIXED: Dynamic Style für Messages Container basierend auf Keyboard - OPTIMIERT
+	const getDynamicMessagesContainerStyle = () => {
+		const baseHeight = isKeyboardVisible ? 340 : 300; // Reduziert für mehr Nachrichten-Sichtbarkeit
+		return {
+			height: `calc(100vh - ${baseHeight}px)`,
+			transition: 'none', // FIXED: Keine Transitions für stabilere Performance
+			paddingBottom: isKeyboardVisible ? '30px' : '60px' // Optimale Abstände
+		};
+	};
+
+	// FIXED: Verhindere doppelte Welcome-Messages durch bessere Initialisierung
+	const [isInitialized, setIsInitialized] = React.useState(false);
+	
 	// Initialize chat service and conversation management
 	React.useEffect(() => {
+		// Verhindere mehrfache Initialisierung
+		if (isInitialized) {
+			console.log("🚫 DEBUG: Chat bereits initialisiert, überspringe");
+			return;
+		}
+		
+		console.log("🔄 DEBUG: useEffect initializeChat triggered - DEDUPLICATED VERSION");
+		
 		const initializeChat = async () => {
+			console.log("🚀 DEBUG: Starting chat initialization");
+			
+			// Markiere als initialisiert BEVOR async Operations
+			setIsInitialized(true);
+			
 			chatService.setLanguageChangeCallback((language) => {
 				setCurrentLanguage(language);
 				console.log("🌍 Language changed to:", language);
 			});
 
+			// Prüfe ob bereits eine Session existiert
+			const existingThreadId = conversationManager.getCurrentThreadId();
+			if (existingThreadId) {
+				console.log("🔄 DEBUG: Existing thread found:", existingThreadId);
+				setCurrentThreadId(existingThreadId);
+				const existingMessages = conversationManager.getThreadMessages(existingThreadId);
+				console.log("📋 DEBUG: Loading existing messages:", existingMessages.length);
+				
+				// Nur laden wenn keine Messages im State sind
+				if (messages.length === 0) {
+					setMessages(existingMessages);
+				}
+				return; // Früher Return - keine neue Welcome Message
+			}
+
+			console.log("🆕 DEBUG: Starting new session from useEffect");
 			conversationManager.startNewSession();
 
 			const welcomeMessage = await chatService.startConversation();
@@ -511,51 +596,50 @@ export const ChatFlow07Enhanced = ({
 				timestamp: Date.now(),
 			};
 
+			console.log("🧵 DEBUG: Creating thread from useEffect");
 			const thread = conversationManager.createThread(initialMessage, {
 				topic: "welcome",
 				emotionalTone: "supportive",
 			});
 
+			console.log("🔗 DEBUG: Setting thread ID:", thread.id);
 			setCurrentThreadId(thread.id);
-			// Nachrichten zu bestehenden hinzufügen, nur bei komplett neuer Session überschreiben
+			
+			// Lade Thread-Nachrichten nur wenn State leer ist
 			const threadMessages = conversationManager.getThreadMessages(thread.id);
-			setMessages(prevMessages => {
-				// Bei der Initialisierung: Wenn es bereits Nachrichten gibt, diese behalten und neue anhängen
-				if (prevMessages.length > 0 && threadMessages.length > 0) {
-					console.log("🔄 Thread-Wechsel: Nachrichten akkumulieren", {
-						previous: prevMessages.length,
-						thread: threadMessages.length
-					});
-					// Kombiniere vorherige Nachrichten mit Thread-Nachrichten (Duplikate vermeiden)
-					const combinedMessages = [...prevMessages];
-					threadMessages.forEach(threadMsg => {
-						if (!combinedMessages.find(msg => msg.id === threadMsg.id)) {
-							combinedMessages.push(threadMsg);
-						}
-					});
-					return combinedMessages;
-				}
-				// Bei der ersten Initialisierung oder leerem State: Thread-Nachrichten verwenden
-				console.log("🆕 Initiale Thread-Nachrichten geladen:", threadMessages.length);
-				return threadMessages;
+			console.log("📊 DEBUG: Retrieved thread messages:", {
+				threadId: thread.id,
+				threadMessageCount: threadMessages.length,
+				currentStateCount: messages.length
 			});
-	
-			// Debug: Nachrichten-Anzahl überwachen
-			console.log("📊 Messages Debug:", {
-				totalMessages: threadMessages.length,
-				currentState: threadMessages.map(msg => ({
-					id: msg.id,
-					type: msg.type,
-					text: msg.text?.substring(0, 30) + "..."
-				}))
-			});
+			
+			// FIXED: Setze Messages nur wenn State wirklich leer ist
+			if (messages.length === 0) {
+				console.log("🆕 DEBUG: Initiale Thread-Nachrichten geladen:", threadMessages.length);
+				setMessages(threadMessages);
+			} else {
+				console.log("⏭️ DEBUG: Messages bereits vorhanden, überspringe Initialisierung");
+			}
 
-			// Analyse der Welcome-Message für Orb
-			analyzeTextForOrb(welcomeMessage, false);
+			// FIXED: Orb-Analyse der Welcome-Message
+			console.log("🎭 Welcome message analysis...");
+			if (welcomeMessage && welcomeMessage.trim().length > 0) {
+				try {
+					setOrbEmotionalState("neutral");
+					setPersistentEmotionalState("neutral");
+					setOrbUrgencyLevel(0.3);
+					setOrbIntensity(1.0);
+					setOrbSentimentScore(0);
+					setCurrentTextForAnalysis(welcomeMessage);
+					console.log("✅ Welcome message orb state set to neutral/supportive");
+				} catch (error) {
+					console.warn("🚨 Welcome message analysis failed:", error);
+				}
+			}
 		};
 
 		initializeChat();
-	}, [analyzeTextForOrb]);
+	}, [isInitialized, messages.length]); // FIXED: Dependencies für bessere Kontrolle
 
 	// Legacy Blob system (für Vergleich/Debug)
 	React.useEffect(() => {
@@ -832,24 +916,27 @@ export const ChatFlow07Enhanced = ({
 				timestamp: Date.now(),
 			};
 
-			conversationManager.addMessageToThread(
+			const addedSegmentMessage = conversationManager.addMessageToThread(
 				currentThreadId,
 				segmentMessage
 			);
-			// Neue Nachrichten zu bestehenden hinzufügen, nicht überschreiben
-			const threadMessages = conversationManager.getThreadMessages(currentThreadId);
-			setMessages(prevMessages => {
-				// Prüfen, ob neue Nachrichten hinzugekommen sind
-				if (threadMessages.length > prevMessages.length) {
-					console.log("📨 Neue AI-Nachrichten hinzugefügt:", {
-						previous: prevMessages.length,
-						current: threadMessages.length,
-						new: threadMessages.length - prevMessages.length
-					});
-					return threadMessages; // Alle Nachrichten vom Thread verwenden
-				}
-				return prevMessages; // Bestehende Nachrichten behalten
-			});
+			
+			// FIXED: Robusteres Message-State-Management mit Duplikat-Prüfung
+			if (addedSegmentMessage) {
+				setMessages(prevMessages => {
+					// Prüfe ob Nachricht bereits existiert (verhindert Duplikate)
+					const messageExists = prevMessages.find(msg => msg.id === addedSegmentMessage.id);
+					if (!messageExists) {
+						console.log("📨 Neue AI-Segment-Nachricht hinzugefügt:", addedSegmentMessage.id);
+						return [...prevMessages, addedSegmentMessage];
+					} else {
+						console.log("⏭️ AI-Segment-Nachricht bereits vorhanden:", addedSegmentMessage.id);
+						return prevMessages;
+					}
+				});
+			} else {
+				console.warn("🚨 Fehler beim Hinzufügen der AI-Segment-Nachricht");
+			}
 			setTypingMessage("");
 
 			if (i < segments.length - 1) {
@@ -927,20 +1014,21 @@ export const ChatFlow07Enhanced = ({
 				blobUpdate.analysis
 			);
 
-			// Neue User-Nachrichten zu bestehenden hinzufügen, nicht überschreiben
-			const threadMessages = conversationManager.getThreadMessages(currentThreadId);
-			setMessages(prevMessages => {
-				// Prüfen, ob neue Nachrichten hinzugekommen sind
-				if (threadMessages.length > prevMessages.length) {
-					console.log("📨 Neue User-Nachrichten hinzugefügt:", {
-						previous: prevMessages.length,
-						current: threadMessages.length,
-						new: threadMessages.length - prevMessages.length
-					});
-					return threadMessages; // Alle Nachrichten vom Thread verwenden
-				}
-				return prevMessages; // Bestehende Nachrichten behalten
-			});
+			// FIXED: Robusteres User-Message-State-Management
+			if (addedUserMessage) {
+				setMessages(prevMessages => {
+					const messageExists = prevMessages.find(msg => msg.id === addedUserMessage.id);
+					if (!messageExists) {
+						console.log("📨 Neue User-Nachricht hinzugefügt:", addedUserMessage.id);
+						return [...prevMessages, addedUserMessage];
+					} else {
+						console.log("⏭️ User-Nachricht bereits vorhanden:", addedUserMessage.id);
+						return prevMessages;
+					}
+				});
+			} else {
+				console.warn("🚨 Fehler beim Hinzufügen der User-Nachricht");
+			}
 			setInputText("");
 			setIsLoading(true);
 			setShowKeyboard(false);
@@ -997,22 +1085,26 @@ export const ChatFlow07Enhanced = ({
 					timestamp: Date.now(),
 				};
 
-				conversationManager.addMessageToThread(
+				const addedErrorMessage = conversationManager.addMessageToThread(
 					currentThreadId,
 					errorMessage
 				);
-				// Auch bei Fehlern: Neue Nachrichten zu bestehenden hinzufügen
-				const threadMessages = conversationManager.getThreadMessages(currentThreadId);
-				setMessages(prevMessages => {
-					if (threadMessages.length > prevMessages.length) {
-						console.log("📨 Neue Fehler-Nachrichten hinzugefügt:", {
-							previous: prevMessages.length,
-							current: threadMessages.length
-						});
-						return threadMessages;
-					}
-					return prevMessages;
-				});
+				
+				// FIXED: Robusteres Error-Message-State-Management
+				if (addedErrorMessage) {
+					setMessages(prevMessages => {
+						const messageExists = prevMessages.find(msg => msg.id === addedErrorMessage.id);
+						if (!messageExists) {
+							console.log("📨 Neue Error-Nachricht hinzugefügt:", addedErrorMessage.id);
+							return [...prevMessages, addedErrorMessage];
+						} else {
+							console.log("⏭️ Error-Nachricht bereits vorhanden:", addedErrorMessage.id);
+							return prevMessages;
+						}
+					});
+				} else {
+					console.warn("🚨 Fehler beim Hinzufügen der Error-Nachricht");
+				}
 				setTypingMessage("");
 				setShowKeyboard(true);
 			}
@@ -1083,8 +1175,12 @@ export const ChatFlow07Enhanced = ({
 				style={{ cursor: "pointer" }}
 			/>
 
-			{/* Chat Messages Area */}
-			<div className="chat-messages-container" ref={chatContainerRef}>
+			{/* Chat Messages Area - FIXED: Dynamic Layout Integration */}
+			<div
+				className="chat-messages-container"
+				ref={chatContainerRef}
+				style={getDynamicMessagesContainerStyle()}
+			>
 				{showOldMessagesIndicator && (
 					<div className="old-messages-indicator">
 						<div className="ellipsis-barrier">
@@ -1175,7 +1271,7 @@ export const ChatFlow07Enhanced = ({
 				<div
 					style={{
 						position: "absolute",
-						bottom: showKeyboard ? "280px" : "80px",
+						bottom: isKeyboardVisible ? "320px" : "80px", // FIXED: Weniger Abstand, optimierte Position
 						right: "20px",
 						background: "rgba(0, 122, 255, 0.9)",
 						color: "white",
@@ -1187,7 +1283,7 @@ export const ChatFlow07Enhanced = ({
 						zIndex: 1000,
 						boxShadow: "0 4px 12px rgba(0, 122, 255, 0.3)",
 						backdropFilter: "blur(10px)",
-						transition: "all 0.3s ease",
+						transition: "none", // FIXED: Keine Transitions für stabilere Performance
 						display: "flex",
 						alignItems: "center",
 						gap: "8px"

@@ -1,0 +1,79 @@
+.suggestionBlockProperty1Default,
+.suggestionBlockProperty1Default * {
+  box-sizing: border-box;
+}
+.suggestionBlockProperty1Default {
+  background: linear-gradient(
+    90deg,
+    rgba(238, 142, 185, 0.23) 0%,
+    rgba(238, 142, 185, 0.23) 50%,
+    rgba(238, 142, 185, 0.23) 100%
+  );
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  backdrop-filter: blur(15px);
+}
+.pillLabelAi {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.bardLineStreamlineRemixLine {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  overflow: visible;
+}
+.aiSuggestion {
+  color: #bf5e89;
+  text-align: left;
+  font-family: "PpNeueMontreal-Medium", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.suggestionText {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.thisEveningIsFreeAndYourMoodAndDesireIsElevatedThisCouldBeAWonderfulNightForSomethingSweetWithJohnny {
+  color: #bf5e89;
+  text-align: left;
+  font-family: "-", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.thisEveningIsFreeAndYourMoodAndDesireIsElevatedThisCouldBeAWonderfulNightForSomethingSweetWithJohnnySpan {
+  font-family: "PpNeueMontreal-Book", sans-serif;
+}
+.thisEveningIsFreeAndYourMoodAndDesireIsElevatedThisCouldBeAWonderfulNightForSomethingSweetWithJohnnySpan2 {
+  font-family: "PpWriter-RegularItalic", sans-serif;
+  font-style: italic;
+}

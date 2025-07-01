@@ -1,0 +1,48 @@
+/* Figma Styles of your File */:root {
+  /* Colors */
+  /* Fonts */
+  /* Effects */
+
+}
+/* Figma Color Variables of your File */:root, [data-system-colors-mode=light] {
+  /* light */
+  --fills-secondary: rgba(120, 120, 128, 0.16);
+  --miscellaneous-kit-section-fill: #f5f5f5;
+  --colors-green: #34c759;
+}
+
+[data-system-colors-mode=dark] {
+  /* dark */
+  --fills-secondary: rgba(120, 120, 128, 0.32);
+  --miscellaneous-kit-section-fill: #f5f5f5;
+  --colors-green: #30d158;
+}
+
+[data-system-colors-mode=dark-elevated] {
+  /* dark-elevated */
+  --fills-secondary: rgba(120, 120, 128, 0.32);
+  --miscellaneous-kit-section-fill: #f5f5f5;
+  --colors-green: #30d158;
+}
+
+[data-system-colors-mode=ic-light] {
+  /* ic-light */
+  --fills-secondary: rgba(120, 120, 128, 0.24);
+  --miscellaneous-kit-section-fill: #f5f5f5;
+  --colors-green: #248a3d;
+}
+
+[data-system-colors-mode=ic-dark] {
+  /* ic-dark */
+  --fills-secondary: rgba(120, 120, 128, 0.40);
+  --miscellaneous-kit-section-fill: #f5f5f5;
+  --colors-green: #30db5b;
+}
+
+[data-system-colors-mode=ic-dark-elevated] {
+  /* ic-dark-elevated */
+  --fills-secondary: rgba(120, 120, 128, 0.40);
+  --miscellaneous-kit-section-fill: #f5f5f5;
+  --colors-green: #30db5b;
+}
+

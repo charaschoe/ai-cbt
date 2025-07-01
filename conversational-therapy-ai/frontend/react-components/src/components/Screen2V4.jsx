@@ -5,7 +5,7 @@ const imgBlob4 = "../screen neu 2v4/blob-40.svg";
 const imgBlobMentalNegative = "../screen neu 2v4/blob-mental-negative0.svg";
 const imgBlobNegativeBody = "../screen neu 2v4/blob-negative-body0.svg";
 
-export default function Screen2V4({ onBodyPageClick, onMindPageClick }) {
+export default function Screen2V4({ onConnectionPageClick }) {
 	return (
 		<div className="screen-2-v-4">
 			<img className="blob-4" src={imgBlob4} alt="Blob 4" />
@@ -15,11 +15,7 @@ export default function Screen2V4({ onBodyPageClick, onMindPageClick }) {
 					src={imgBlobMentalNegative}
 					alt="Mental Negative"
 				/>
-				<div
-					className="adaptive-insight-mind"
-					onClick={onMindPageClick}
-					style={{ cursor: "pointer" }}
-				>
+				<div className="adaptive-insight-mind">
 					Mental Load
 					<br />
 					Detected
@@ -27,7 +23,7 @@ export default function Screen2V4({ onBodyPageClick, onMindPageClick }) {
 			</div>
 			<div className="label-subpage-navigatino">
 				<div className="what-s-surfacing-today">
-					What’s Surfacing Today
+					What's Surfacing Today
 				</div>
 			</div>
 			<div className="frame-78">
@@ -36,17 +32,19 @@ export default function Screen2V4({ onBodyPageClick, onMindPageClick }) {
 					src={imgBlobNegativeBody}
 					alt="Negative Body"
 				/>
-				<div
-					className="frame-63"
-					onClick={onBodyPageClick}
-					style={{ cursor: "pointer" }}
-				>
+				<div className="frame-63">
 					<div className="adaptive-insight-body">
 						Low energy today
 					</div>
 				</div>
 			</div>
-			<div className="adaptive-insight-social">Craving connection</div>
+			<div
+				className="adaptive-insight-social"
+				onClick={onConnectionPageClick}
+				style={{ cursor: "pointer" }}
+			>
+				Craving connection
+			</div>
 		</div>
 	);
 }

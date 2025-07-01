@@ -1,9 +1,21 @@
 import React from 'react';
-import { OverviewLightV3 } from './OverviewLightV3';
+import EmotionalBlobsWidget from './EmotionalBlobsWidget';
 
-const WidgetsLeft = ({ onBackClick, className, ...props }) => {
+const WidgetsLeft = ({
+  onMindClick,
+  onBodyClick,
+  onConnectionClick,
+  className,
+  ...props
+}) => {
   return (
-    <OverviewLightV3 className={className} {...props} />
+    <EmotionalBlobsWidget
+      className={className}
+      onMindClick={onMindClick}
+      onBodyClick={onBodyClick}
+      onConnectionClick={onConnectionClick}
+      {...props}
+    />
   );
 };
 

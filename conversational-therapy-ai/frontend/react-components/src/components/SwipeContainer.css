@@ -55,6 +55,6 @@
 /* Desktop: iPhone-like appearance */
 @media (min-width: 769px) {
 	.swipe-container-wrapper {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		background: #fbf4f1; /* Same as mobile background */
 	}
 }

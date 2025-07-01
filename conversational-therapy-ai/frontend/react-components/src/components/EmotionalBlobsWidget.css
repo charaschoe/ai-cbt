@@ -1,0 +1,289 @@
+/* EmotionalBlobsWidget CSS */
+.emotional-blobs-widget,
+.emotional-blobs-widget * {
+  box-sizing: border-box;
+}
+
+.emotional-blobs-widget {
+  background: #fbf4f1;
+  height: 852px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+.emotional-blobs-widget .widget-container {
+  width: 100%;
+  height: 852px;
+  position: relative;
+  max-width: 390px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+/* Header Title */
+.emotional-blobs-widget .header-title {
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 72px;
+  z-index: 10;
+}
+
+.emotional-blobs-widget .title-text {
+  color: #413737;
+  text-align: center;
+  font-family: 'PpWriter-Regular', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  position: relative;
+  white-space: nowrap;
+}
+
+/* Blobs Container */
+.emotional-blobs-widget .blobs-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: visible;
+}
+
+/* Blob Containers */
+.emotional-blobs-widget .blob-container {
+  position: absolute;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 20px;
+  overflow: visible;
+  transform-origin: center;
+}
+
+.emotional-blobs-widget .blob-container:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+.emotional-blobs-widget .blob-container:active {
+  transform: scale(0.98);
+  transition: all 0.1s ease;
+}
+
+.emotional-blobs-widget .blob-container.loading {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+/* Blob Images */
+.emotional-blobs-widget .blob-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+  transition: filter 0.3s ease;
+}
+
+/* Blob Text */
+.emotional-blobs-widget .blob-text {
+  color: #543c3c;
+  text-align: center;
+  font-family: 'PpWriter-RegularText', 'PpWriter-Regular', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  position: absolute;
+  pointer-events: none;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+}
+
+.emotional-blobs-widget .blob-text-separate {
+  pointer-events: auto;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.emotional-blobs-widget .blob-text-separate:hover {
+  transform: scale(1.05);
+  color: #402e2e;
+}
+
+.emotional-blobs-widget .blob-text-separate:active {
+  transform: scale(0.98);
+}
+
+/* Specific Blob Styles */
+.emotional-blobs-widget .blob-mental {
+  z-index: 3;
+}
+
+.emotional-blobs-widget .blob-energy {
+  z-index: 2;
+}
+
+.emotional-blobs-widget .blob-connection {
+  z-index: 1;
+}
+
+/* Energy blob has special text container */
+.emotional-blobs-widget .blob-energy .blob-text {
+  padding: 20.03px;
+  display: flex;
+  flex-direction: row;
+  gap: 20.03px;
+  align-items: center;
+  justify-content: center;
+  width: 152.69px;
+}
+
+/* Focus styles for accessibility */
+.emotional-blobs-widget .blob-container:focus,
+.emotional-blobs-widget .blob-text-separate:focus {
+  outline: 3px solid #4189f0;
+  outline-offset: 4px;
+  border-radius: 20px;
+}
+
+/* Entrance Animations */
+.emotional-blobs-widget .blob-container {
+  animation: blobEnter 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+  transform: translateY(30px) scale(0.9);
+}
+
+.emotional-blobs-widget .blob-mental {
+  animation-delay: 0.1s;
+}
+
+.emotional-blobs-widget .blob-energy {
+  animation-delay: 0.2s;
+}
+
+.emotional-blobs-widget .blob-connection {
+  animation-delay: 0.3s;
+}
+
+.emotional-blobs-widget .blob-text-separate {
+  animation: blobEnter 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation-delay: 0.4s;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes blobEnter {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Hover Effects for Individual Blobs */
+.emotional-blobs-widget .blob-mental:hover .blob-image {
+  filter: hue-rotate(10deg) brightness(1.1);
+}
+
+.emotional-blobs-widget .blob-energy:hover .blob-image {
+  filter: hue-rotate(-10deg) brightness(1.1);
+}
+
+.emotional-blobs-widget .blob-connection:hover .blob-image {
+  filter: hue-rotate(5deg) brightness(1.1);
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .emotional-blobs-widget .widget-container {
+    max-width: 100%;
+    padding: 0 10px;
+  }
+  
+  .emotional-blobs-widget .header-title {
+    top: 60px;
+  }
+  
+  .emotional-blobs-widget .title-text {
+    font-size: 14px;
+  }
+  
+  .emotional-blobs-widget .blob-text {
+    font-size: 18px;
+  }
+}
+
+@media (min-width: 768px) {
+  .emotional-blobs-widget .widget-container {
+    max-width: 500px;
+  }
+  
+  .emotional-blobs-widget .blob-container {
+    transform-origin: center;
+  }
+  
+  .emotional-blobs-widget .blob-container:hover {
+    transform: scale(1.08);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .emotional-blobs-widget .blob-container,
+  .emotional-blobs-widget .blob-text-separate,
+  .emotional-blobs-widget .blob-image,
+  .emotional-blobs-widget .blob-text {
+    animation: none;
+    transition: none;
+  }
+  
+  .emotional-blobs-widget .blob-container:hover,
+  .emotional-blobs-widget .blob-text-separate:hover {
+    transform: none;
+    filter: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .emotional-blobs-widget .blob-text {
+    color: #000000;
+    text-shadow: 1px 1px 0 #ffffff;
+  }
+  
+  .emotional-blobs-widget .title-text {
+    color: #000000;
+  }
+  
+  .emotional-blobs-widget .blob-container:focus,
+  .emotional-blobs-widget .blob-text-separate:focus {
+    outline: 4px solid #000000;
+  }
+}
+
+/* Loading state */
+.emotional-blobs-widget .blob-container.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid #543c3c;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  z-index: 10;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}

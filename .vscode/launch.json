@@ -54,16 +54,6 @@
             }
         },
         {
-            "name": "Full Stack - React + FastAPI",
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Full Stack",
-            "compounds": [
-                "Backend Server - FastAPI",
-                "React App - Development"
-            ]
-        },
-        {
             "name": "Debug React Components",
             "type": "chrome",
             "request": "launch",
@@ -116,7 +106,7 @@
     ],
     "compounds": [
         {
-            "name": "Full Stack Development",
+            "name": "react + server",
             "configurations": [
                 "Backend Server - FastAPI",
                 "React App - Development"
@@ -126,6 +116,19 @@
                 "hidden": false,
                 "group": "Full Stack",
                 "order": 1
+            }
+        },
+        {
+            "name": "Full Stack Development",
+            "configurations": [
+                "Backend Server - FastAPI",
+                "React App - Development"
+            ],
+            "stopAll": true,
+            "presentation": {
+                "hidden": false,
+                "group": "Full Stack",
+                "order": 2
             }
         }
     ]

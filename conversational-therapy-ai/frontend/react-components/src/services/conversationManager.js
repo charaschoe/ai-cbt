@@ -55,8 +55,11 @@ class ConversationManager {
   createThread(initialMessage, context = {}) {
     const threadId = this.generateThreadId();
     
+    console.log(`🔄 DEBUG: Creating thread ${threadId}, current threads: ${this.threads.size}`);
+    
     // Ensure we have an active session
     if (!this.currentSessionId) {
+      console.log(`🆕 DEBUG: No active session, creating new one`);
       this.startNewSession();
     }
 
@@ -77,18 +80,23 @@ class ConversationManager {
       messageCount: 0
     };
 
-    // Add initial message if provided
-    if (initialMessage) {
-      this.addMessageToThread(threadId, initialMessage);
-    }
-
+    // CRITICAL: Store thread in Map BEFORE any operations
     this.threads.set(threadId, thread);
     this.currentThread = threadId;
+    
+    console.log(`✅ DEBUG: Thread ${threadId} stored in Map, Map size: ${this.threads.size}`);
+
+    // Add initial message if provided (AFTER thread is in Map)
+    if (initialMessage) {
+      console.log(`📝 DEBUG: Adding initial message to thread ${threadId}`);
+      this.addMessageToThread(threadId, initialMessage);
+    }
 
     // Add thread to current session
     const currentSession = this.getCurrentSession();
     if (currentSession) {
       currentSession.threads.push(threadId);
+      console.log(`🔗 DEBUG: Thread ${threadId} added to session ${this.currentSessionId}`);
     }
 
     console.log(`💬 New thread created: ${threadId}`);
@@ -99,11 +107,19 @@ class ConversationManager {
    * Adds a message to a specific thread
    */
   addMessageToThread(threadId, message, emotionalAnalysis = null) {
+    console.log(`🔍 DEBUG: Looking for thread ${threadId}, Map has ${this.threads.size} threads`);
+    console.log(`🗂️ DEBUG: Available thread IDs:`, Array.from(this.threads.keys()));
+    
     const thread = this.threads.get(threadId);
     if (!thread) {
-      console.warn(`Thread ${threadId} not found`);
+      console.error(`🚨 RACE CONDITION: Thread ${threadId} not found in Map!`);
+      console.error(`🚨 Current threads:`, Array.from(this.threads.keys()));
+      console.error(`🚨 Current thread:`, this.currentThread);
+      console.error(`🚨 Map size:`, this.threads.size);
       return null;
     }
+    
+    console.log(`✅ DEBUG: Thread ${threadId} found successfully`);
 
     // Ensure message has required fields
     const enhancedMessage = {
@@ -222,6 +238,13 @@ class ConversationManager {
    */
   getCurrentThread() {
     return this.currentThread ? this.threads.get(this.currentThread) : null;
+  }
+
+  /**
+   * Gets the current thread ID
+   */
+  getCurrentThreadId() {
+    return this.currentThread;
   }
 
   /**

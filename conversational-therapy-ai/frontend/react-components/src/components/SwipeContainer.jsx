@@ -145,6 +145,7 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 	const showMindSubpage = () => setCurrentScreen("mind");
 	const showConnectionSubpage = () => setCurrentScreen("connection");
 	const backToInsights = () => setCurrentScreen("emotional-tasks");
+	const backToWidgets = () => setCurrentScreen("widgets");
 
 	// Mouse event handlers for desktop testing
 	const [mouseStart, setMouseStart] = useState(null);
@@ -415,7 +416,11 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 			>
 				{currentScreen === "widgets" && (
 					<div className="screen active">
-						<WidgetsLeft />
+						<WidgetsLeft
+							onMindClick={showMindSubpage}
+							onBodyClick={showBodySubpage}
+							onConnectionClick={showConnectionSubpage}
+						/>
 					</div>
 				)}
 
@@ -451,8 +456,6 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 				{currentScreen === "emotional-tasks" && (
 					<div className="screen active">
 						<Screen2V4
-							onBodyPageClick={showBodySubpage}
-							onMindPageClick={showMindSubpage}
 							onConnectionPageClick={showConnectionSubpage}
 						/>
 					</div>
@@ -460,22 +463,89 @@ const SwipeContainer = ({ onDebugUpdate }) => {
 
 				{currentScreen === "body" && (
 					<div className="screen active">
-						<BodySubpage onBackClick={backToInsights} />
+						<BodySubpage onBackClick={backToWidgets} />
 					</div>
 				)}
 
 				{currentScreen === "mind" && (
 					<div className="screen active">
-						<MindSubpage onBackClick={backToInsights} />
+						<MindSubpage onBackClick={backToWidgets} />
 					</div>
 				)}
 
 				{currentScreen === "connection" && (
 					<div className="screen active">
-						<ConnectionSubpage onBackClick={backToInsights} />
+						<ConnectionSubpage onBackClick={backToWidgets} />
 					</div>
 				)}
 
+			</div>
+
+			{/* Bottom Navigation Bar */}
+			<div
+				style={{
+					position: "fixed",
+					bottom: "20px",
+					left: "50%",
+					transform: "translateX(-50%)",
+					background: "rgba(0, 0, 0, 0.7)",
+					backdropFilter: "blur(10px)",
+					borderRadius: "25px",
+					padding: "8px 16px",
+					display: "flex",
+					alignItems: "center",
+					gap: "12px",
+					zIndex: 1000,
+				}}
+			>
+				<button
+					onClick={showWidgets}
+					style={{
+						background: currentScreen === "widgets" ? "rgba(255, 255, 255, 0.2)" : "transparent",
+						border: "none",
+						color: "white",
+						padding: "8px 12px",
+						borderRadius: "15px",
+						fontSize: "14px",
+						cursor: "pointer",
+						transition: "all 0.3s ease",
+						opacity: currentScreen === "widgets" ? 1 : 0.7,
+					}}
+				>
+					Widgets
+				</button>
+				<button
+					onClick={showChat}
+					style={{
+						background: (currentScreen === "chat" || currentScreen === "chatflow07") ? "rgba(255, 255, 255, 0.2)" : "transparent",
+						border: "none",
+						color: "white",
+						padding: "8px 12px",
+						borderRadius: "15px",
+						fontSize: "14px",
+						cursor: "pointer",
+						transition: "all 0.3s ease",
+						opacity: (currentScreen === "chat" || currentScreen === "chatflow07") ? 1 : 0.7,
+					}}
+				>
+					Chat
+				</button>
+				<button
+					onClick={() => setCurrentScreen("emotional-tasks")}
+					style={{
+						background: currentScreen === "emotional-tasks" ? "rgba(255, 255, 255, 0.2)" : "transparent",
+						border: "none",
+						color: "white",
+						padding: "8px 12px",
+						borderRadius: "15px",
+						fontSize: "14px",
+						cursor: "pointer",
+						transition: "all 0.3s ease",
+						opacity: currentScreen === "emotional-tasks" ? 1 : 0.7,
+					}}
+				>
+					Emotional Tasks
+				</button>
 			</div>
 		</div>
 	);

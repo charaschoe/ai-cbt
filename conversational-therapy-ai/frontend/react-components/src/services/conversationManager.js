@@ -15,17 +15,51 @@ class ConversationManager {
   }
 
   /**
+   * Generates a cryptographically secure random string using Web Crypto API.
+   * Falls back to Math.random if crypto is not available (very old environments).
+   */
+  getSecureRandomString(length) {
+    const chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+    const charsLength = chars.length;
+
+    // Prefer Web Crypto APIs where available
+    const cryptoObj =
+      (typeof window !== 'undefined' && (window.crypto || window.msCrypto)) ||
+      (typeof self !== 'undefined' && self.crypto) ||
+      (typeof crypto !== 'undefined' && crypto);
+
+    if (cryptoObj && cryptoObj.getRandomValues) {
+      const randomValues = new Uint8Array(length);
+      cryptoObj.getRandomValues(randomValues);
+      let result = '';
+      for (let i = 0; i < length; i++) {
+        result += chars[randomValues[i] % charsLength];
+      }
+      return result;
+    }
+
+    // Fallback: use Math.random (not cryptographically secure)
+    let fallback = '';
+    for (let i = 0; i < length; i++) {
+      fallback += chars[Math.floor(Math.random() * charsLength)];
+    }
+    return fallback;
+  }
+
+  /**
    * Generates a unique thread ID
    */
   generateThreadId() {
-    return `thread_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const randomPart = this.getSecureRandomString(9);
+    return `thread_${Date.now()}_${randomPart}`;
   }
 
   /**
    * Generates a unique session ID
    */
   generateSessionId() {
-    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const randomPart = this.getSecureRandomString(9);
+    return `session_${Date.now()}_${randomPart}`;
   }
 
   /**
